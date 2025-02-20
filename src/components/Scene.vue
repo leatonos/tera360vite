@@ -12,6 +12,7 @@ const store = useTourStore()
 const thisSceneIndex = ref(0);
 
 // https://cdn.aframe.io/360-image-gallery-boilerplate/img/cubes.jpg
+// https://pedrobaptista.com/photos360/testA.jpg
 
 //Current assets
 const textureResult = await useTexture({ map: store.$state.tour.scenes[thisSceneIndex.value].background });
@@ -48,7 +49,6 @@ function updateCamera() {
     const cameraDirection = new THREE.Vector3();
     camera.getWorldDirection(cameraDirection);
 
-
     store.setCameraPosition({ x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z })
     store.setCameraDirection({ x: cameraDirection.x, y: cameraDirection.y, z: cameraDirection.z })
     
@@ -58,12 +58,12 @@ function updateCamera() {
 </script>
 
 <template>
-  <TresCanvas clear-color="#82DBC5" :shadows="true">
-    <TresPerspectiveCamera ref="cameraRef" :position="[0, 0, 1]" />
+  <TresCanvas preset="flat" :tone-mapping-exposure="0.35">
+    <TresPerspectiveCamera ref="cameraRef" :position="[0, 0, .1]" :far="200" />
     <CameraControls @end="updateCamera"/>
     <!-- Sphere with the current texture -->
-    <TresMesh :position="[0, 0, 0]" :scale="50">
-      <TresSphereGeometry />
+    <TresMesh :position="[0, 0, 0]" :scale="1">
+      <TresSphereGeometry :args="[1, 180, 40]" />
       <TresMeshBasicMaterial
         :map="currentTexture"
         :side="1"

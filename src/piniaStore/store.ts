@@ -12,7 +12,7 @@ export const useTourStore = defineStore('tour', () => {
             {
                 id: uuidv4(),
                 name: "New scene",
-                background: 'https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg',
+                background: 'https://pedrobaptista.com/photos360/testA.jpg',
                 circles: [] as CircleInfo[],
                 spheres: [] as SphereInfo[]
             }
@@ -77,6 +77,12 @@ export const useTourStore = defineStore('tour', () => {
         tour.value.scenes[sceneIndex].circles[circleIndex] = newCircleInfo;
     };
 
+    const deleteCircle = (sceneIndex: number, circleIndex: number) => {
+
+        tour.value.scenes[sceneIndex].circles.splice(circleIndex, 1);
+  
+      }
+
     const editSphere = (sceneIndex: number, sphereIndex: number, sphereInfo: SphereInfo) => {
         tour.value.scenes[sceneIndex].spheres[sphereIndex] = sphereInfo;
     };
@@ -98,6 +104,7 @@ export const useTourStore = defineStore('tour', () => {
         addScene,
         setSceneName,
         addCircle,
+        deleteCircle,
         addSphere,
         editCircle,
         editSphere,

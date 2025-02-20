@@ -85,6 +85,10 @@ const handleSceneChange = (event: Event) => {
     store.setCircleActionArgs(sceneIndex, thisCircleIndex, target.value);
 };
 
+const deleteCircle = () => {
+    store.deleteCircle(sceneIndex, thisCircleIndex);
+}
+
 </script>
 
 
@@ -92,11 +96,11 @@ const handleSceneChange = (event: Event) => {
 <template>
     <div>
         <h3>Circle Editor</h3>
-        <p>{{ props.thisCircle.id }}</p>
-        <p>{{ props.thisCircle.coordinates }}</p>
-        
     </div>
     <div>
+        <div>
+            <button @click="deleteCircle">Delete Circle</button>
+        </div>
         <!-- Color -->
         <div>
             <label for="favcolor">Color:</label>

@@ -12,7 +12,7 @@ export const useTourStore = defineStore('tour', () => {
             {
                 id: uuidv4(),
                 name: "New scene",
-                background: 'https://pedrobaptista.com/photos360/testA.jpg',
+                background: 'https://pedrobaptista.com/photos360/welder_01.jpg',
                 circles: [] as CircleInfo[],
                 spheres: [] as SphereInfo[]
             }

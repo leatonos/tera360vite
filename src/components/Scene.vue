@@ -11,16 +11,23 @@ import type { PerspectiveCamera } from "three";
 const store = useTourStore()
 const thisSceneIndex = ref(0);
 
-// https://cdn.aframe.io/360-image-gallery-boilerplate/img/cubes.jpg
-// https://pedrobaptista.com/photos360/testA.jpg
+// Test Image been used
+// https://pedrobaptista.com/photos360/welder_01.jpg
 
 //Current assets
 const textureResult = await useTexture({ map: store.$state.tour.scenes[thisSceneIndex.value].background });
 const circles = ref(store.$state.tour.scenes[thisSceneIndex.value].circles)
 let currentTexture = ref(textureResult.map);
 
+// ✅ Fix brightness/contrast of the texture
+if (currentTexture.value) {
+  currentTexture.value.mapping = THREE.EquirectangularReflectionMapping;
+  currentTexture.value.colorSpace = THREE.SRGBColorSpace;
+}
+
 const cameraRef = ref(null);
 
+// Function to handle actions
 async function performAction(actionType: string, actionArgs: string){
 
   if (actionType == "Teleport") {
@@ -58,15 +65,17 @@ function updateCamera() {
 </script>
 
 <template>
-  <TresCanvas preset="flat" :tone-mapping-exposure="0.35">
-    <TresPerspectiveCamera ref="cameraRef" :position="[0, 0, .1]" :far="200" />
+  <TresCanvas preset="realistic">
+    <TresPerspectiveCamera ref="cameraRef" :position="[0, 0, .5]" :far="10" />
     <CameraControls @end="updateCamera"/>
-    <!-- Sphere with the current texture -->
-    <TresMesh :position="[0, 0, 0]" :scale="1">
-      <TresSphereGeometry :args="[1, 180, 40]" />
+    <!-- Skybox Sphere with the current texture, rendered inside -->
+    <TresMesh :position="[0, 0, 0]" :scale="1" castShadow receiveShadow>
+      <TresSphereGeometry :args="[1, 100, 100]" />
       <TresMeshBasicMaterial
         :map="currentTexture"
-        :side="1"
+        :side=2
+        :toneMapped="false"
+        
       />
     </TresMesh>
     <!-- Flat Circles -->

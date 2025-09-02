@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute,useRouter } from 'vue-router';
 import { v4 as uuidv4 } from 'uuid';
 import Scene from '../components/3d-components/Scene.vue';
 import TuorEditor from '../components/editor-components/TourEditor.vue';
@@ -10,6 +10,7 @@ const loading = ref(true)
 
 const route = useRoute();
 const tourId = route.params.tourId as string | undefined
+const router = useRouter();
 
 const newTour = {
   name: "New tour",
@@ -33,7 +34,13 @@ async function createNewTour() {
   return await response.json();
 }
 
+async function getTour(id:string) {
 
+  console.log("Fetching tour with ID: ", id);
+  const response = await fetch(`https://ro6e24o5bkdiilj4vt2jylqgvm0puruz.lambda-url.us-east-2.on.aws/tour/id=${id}`);
+  return await response.json(); 
+  
+}
 
 
 onMounted(async ()=>{
@@ -41,14 +48,13 @@ onMounted(async ()=>{
   if(!tourId){
     
     const newTourResponse = await createNewTour();
-    console.log("New tour created with ID: ", newTourResponse.tourId);
-    console.log(newTourResponse)
+    console.log("New tour created with ID: ", newTourResponse.id);
+    console.log(newTourResponse.id);
+    router.push({path:`/tour/${newTourResponse.id}`})
     
   } else {
-    // simulate loading for demo purposes, remove in real use
-    setTimeout(() => {
-      loading.value = false
-    }, 2000)
+    const tourData = await getTour(tourId);
+    console.log("Tour data fetched: ", tourData);
   }
 })
 

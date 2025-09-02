@@ -1,6 +1,6 @@
 export type Coordinates = [number, number, number];
 
-export interface Scene {
+export interface SceneInfo {
     id: string; // Unique identifier for the Scene
     name: string;
     background: string;
@@ -11,7 +11,7 @@ export interface Scene {
 export interface Tour {
     id: string; // Unique identifier for the Tour
     name: string;
-    scenes: Scene[];
+    scenes: SceneInfo[];
 }
 
 export interface CircleInfo {

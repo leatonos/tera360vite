@@ -127,7 +127,7 @@ const handleZChange = (value:string) =>{
         </div>
         <div>
             <div>
-                <label for="favcolor">X:</label>
+                <label>X:</label>
                 <input type="range" id="x" name="x" min="-50" max="50" step=".1" :value="sphereX" @change="(e: Event) => handleXChange((e.target as HTMLInputElement).value)">
             </div>
             <div>

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
-import type { CircleInfo, Scene, SphereInfo, Tour } from '../types';
+import type { CircleInfo, SceneInfo, SphereInfo, Tour } from '../types';
 
 export const useTourStore = defineStore('tour', () => {
     
@@ -16,8 +16,10 @@ export const useTourStore = defineStore('tour', () => {
                 circles: [] as CircleInfo[],
                 spheres: [] as SphereInfo[]
             }
-        ]
+        ] as SceneInfo[],
     });
+
+    const currentSceneIndex = ref(0);
 
     const cameraPosition = ref({ x: 0, y: 0, z: 0 });
     const cameraDirection = ref({ x: 0, y: 0, z: 0 });
@@ -29,6 +31,14 @@ export const useTourStore = defineStore('tour', () => {
     const setCameraDirection = (direction: { x: number; y: number; z: number }) => {
         cameraDirection.value = direction;
     };
+
+    const setCurrentSceneIndex = (index: number) => {
+        currentSceneIndex.value = index;
+    }
+
+    const setTourName = (name: string) => {
+        tour.value.name = name;
+    }
 
     const addScene = () => {
         const newScene: Scene = {
@@ -99,8 +109,11 @@ export const useTourStore = defineStore('tour', () => {
         tour,
         cameraPosition,
         cameraDirection,
+        currentSceneIndex,
+        setCurrentSceneIndex,
         setCameraPosition,
         setCameraDirection,
+        setTourName,
         addScene,
         setSceneName,
         addCircle,

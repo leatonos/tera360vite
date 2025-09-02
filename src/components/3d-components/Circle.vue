@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import type { CircleInfo } from '../types';
+import type { CircleInfo } from '../../types';
 
 
 const props = defineProps<{

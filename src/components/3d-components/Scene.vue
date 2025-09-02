@@ -2,21 +2,22 @@
 import { TresCanvas } from "@tresjs/core";
 import { CameraControls } from "@tresjs/cientos";
 import { useTexture } from "@tresjs/core";
-import { useTourStore } from "../piniaStore/store";
+import { useTourStore } from "../../piniaStore/store";
 import { ref, watch } from 'vue';
 import * as THREE from "three";
 import type { PerspectiveCamera } from "three";
 
 //Store
 const store = useTourStore()
-const thisSceneIndex = ref(0);
+const currentSceneIndex = ref(store.$state.currentSceneIndex)
+
 
 // Test Image been used
 // https://pedrobaptista.com/photos360/welder_01.jpg
 
 //Current assets
-const textureResult = await useTexture({ map: store.$state.tour.scenes[thisSceneIndex.value].background });
-const circles = ref(store.$state.tour.scenes[thisSceneIndex.value].circles)
+const textureResult = await useTexture({ map: store.$state.tour.scenes[currentSceneIndex.value].background });
+const circles = ref(store.$state.tour.scenes[currentSceneIndex.value].circles)
 let currentTexture = ref(textureResult.map);
 
 
@@ -35,9 +36,9 @@ async function performAction(actionType: string, actionArgs: string){
     console.log("Teleporting to: ", actionArgs);
     const sceneIndex = store.$state.tour.scenes.findIndex(scene => scene.id === actionArgs);
     if (sceneIndex !== -1) {
-      thisSceneIndex.value = sceneIndex;
-      console.log("Teleported to: ", store.$state.tour.scenes[thisSceneIndex.value].background);
-      const newTexture = await useTexture({ map: store.$state.tour.scenes[thisSceneIndex.value].background });
+      store.setCurrentSceneIndex(sceneIndex);
+      console.log("Teleported to: ", store.$state.tour.scenes[currentSceneIndex.value].background);
+      const newTexture = await useTexture({ map: store.$state.tour.scenes[currentSceneIndex.value].background });
       currentTexture.value = newTexture.map;
 
     }
@@ -46,7 +47,7 @@ async function performAction(actionType: string, actionArgs: string){
 }
 
 // Watch for changes in thisSceneIndex and update circles accordingly
-watch(thisSceneIndex, (newIndex) => {
+watch(() => currentSceneIndex.value, (newIndex: number) => {
   circles.value = store.$state.tour.scenes[newIndex].circles;
 });
 

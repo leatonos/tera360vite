@@ -42,6 +42,7 @@ onMounted(async ()=>{
     
     const newTourResponse = await createNewTour();
     console.log("New tour created with ID: ", newTourResponse.tourId);
+    console.log(newTourResponse)
     
   } else {
     // simulate loading for demo purposes, remove in real use

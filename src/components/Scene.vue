@@ -19,6 +19,7 @@ const textureResult = await useTexture({ map: store.$state.tour.scenes[thisScene
 const circles = ref(store.$state.tour.scenes[thisSceneIndex.value].circles)
 let currentTexture = ref(textureResult.map);
 
+
 // ✅ Fix brightness/contrast of the texture
 if (currentTexture.value) {
   currentTexture.value.mapping = THREE.EquirectangularReflectionMapping;
@@ -68,8 +69,8 @@ function updateCamera() {
   <TresCanvas preset="realistic">
     <TresPerspectiveCamera ref="cameraRef" :position="[0, 0, .5]" :far="10" />
     <CameraControls @end="updateCamera"/>
-    <!-- Skybox Sphere with the current texture, rendered inside -->
-    <TresMesh :position="[0, 0, 0]" :scale="1" castShadow receiveShadow>
+    <!-- Skybox Sphere with the current texture, rendered inside --> 
+     <TresMesh :position="[0, 0, 0]" :scale="6">
       <TresSphereGeometry :args="[1, 100, 100]" />
       <TresMeshBasicMaterial
         :map="currentTexture"
@@ -83,6 +84,7 @@ function updateCamera() {
       <TresCircleGeometry :args="[1, 32]" />
       <TresMeshBasicMaterial :color="circle.color"  :side="2" />
     </TresMesh>
+  
   </TresCanvas>
 </template>
 

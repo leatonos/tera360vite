@@ -109,21 +109,21 @@ const deleteCircle = () => {
         <!-- Size -->
         <div>
             <label for="size">Size:</label>
-            <input type="range" id="size" name="size" min="0" max="10" step=".1" v-model="circleSize"  @change="(e: Event) => handleSizeChange((e.target as HTMLInputElement).value)">
+            <input type="range" id="size" name="size" min=".1" max="5" step=".1" v-model="circleSize"  @change="(e: Event) => handleSizeChange((e.target as HTMLInputElement).value)">
         </div>
         <!-- Coordinates -->
         <div>
             <div>
                 <label for="x">X:</label>
-                <input type="range" id="x" name="x" min="-50" max="50" step=".1" v-model="circleX" @change="(e: Event) => handleXChange((e.target as HTMLInputElement).value)">
+                <input type="range" id="x" name="x" min="-5" max="5" step=".1" v-model="circleX" @change="(e: Event) => handleXChange((e.target as HTMLInputElement).value)">
             </div>
             <div>
                 <label for="y">Y:</label>
-                <input type="range" id="y" name="y" min="-50" max="50" step=".1" v-model="circleY" @change="(e: Event) => handleYChange((e.target as HTMLInputElement).value)">
+                <input type="range" id="y" name="y" min="-4.3" max="5" step=".1" v-model="circleY" @change="(e: Event) => handleYChange((e.target as HTMLInputElement).value)">
             </div>
             <div>
                 <label for="z">Z:</label>
-                <input type="range" id="z" name="z" min="-50" max="50" step=".1" v-model="circleZ" @change="(e: Event) => handleZChange((e.target as HTMLInputElement).value)">
+                <input type="range" id="z" name="z" min="-5" max="5" step=".1" v-model="circleZ" @change="(e: Event) => handleZChange((e.target as HTMLInputElement).value)">
             </div>
         </div>
         <!-- Action -->

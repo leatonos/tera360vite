@@ -22,7 +22,10 @@ const addSceneAction = store.addScene
     <div class="tour-editor">
         <h1>Tour Editor</h1>
         <p>{{ uniqueId }}</p>
-    
+         <!-- 
+            <p>{{ JSON.stringify(store.$state) }}</p>
+         -->
+         
     <div>
         <button @click="addSceneAction">Add new scene</button>
     </div>

@@ -41,7 +41,7 @@ export const useTourStore = defineStore('tour', () => {
     }
 
     const addScene = () => {
-        const newScene: Scene = {
+        const newScene: SceneInfo = {
             id: uuidv4(),
             name: "New scene",
             background: 'https://cdn.aframe.io/360-image-gallery-boilerplate/img/cubes.jpg',

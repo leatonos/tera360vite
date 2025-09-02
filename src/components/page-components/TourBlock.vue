@@ -5,7 +5,7 @@ import type { Tour } from '../../types';
 
 //Props
 const props = defineProps<{
-    thisCircle:Tour
+    thisTour:Tour
 }>()
 
 
@@ -15,7 +15,7 @@ const props = defineProps<{
 
 <template>
     <div class="">
-        <h2>Tour Name:</h2>
+        <h2>{{ props.thisTour.name }}</h2>
     </div>
 </template>
 

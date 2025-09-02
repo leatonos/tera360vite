@@ -1,14 +1,14 @@
 <script setup lang="ts">
 
 import { useTourStore } from "../../piniaStore/store";
-import type { Scene } from "../../types";
+import type { SceneInfo } from "../../types";
 import CircleEditor from "./CircleEditor.vue";
 import SphereEditor from "./SphereEditor.vue";
 import { ref } from 'vue';
 
 //Props
 const props = defineProps<{
-    thisScene:Scene
+    thisScene:SceneInfo
 }>()
 
 //Store

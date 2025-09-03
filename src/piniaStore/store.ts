@@ -24,6 +24,10 @@ export const useTourStore = defineStore('tour', () => {
     const cameraPosition = ref({ x: 0, y: 0, z: 0 });
     const cameraDirection = ref({ x: 0, y: 0, z: 0 });
 
+    const setTour = (newTour: Tour) => {
+        tour.value = newTour;
+    }
+
     const setCameraPosition = (position: { x: number; y: number; z: number }) => {
         cameraPosition.value = position;
     };
@@ -110,6 +114,7 @@ export const useTourStore = defineStore('tour', () => {
         cameraPosition,
         cameraDirection,
         currentSceneIndex,
+        setTour,
         setCurrentSceneIndex,
         setCameraPosition,
         setCameraDirection,

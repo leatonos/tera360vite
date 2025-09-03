@@ -4,10 +4,12 @@ import { useRoute,useRouter } from 'vue-router';
 import { v4 as uuidv4 } from 'uuid';
 import Scene from '../components/3d-components/Scene.vue';
 import TuorEditor from '../components/editor-components/TourEditor.vue';
-
+import type { Tour } from '../types';
+import { useTourStore } from "../piniaStore/store";
 
 const loading = ref(true)
 
+const store = useTourStore()
 const route = useRoute();
 const tourId = route.params.tourId as string | undefined
 const router = useRouter();
@@ -53,8 +55,11 @@ onMounted(async ()=>{
     router.push({path:`/tour/${newTourResponse.id}`})
     
   } else {
-    const tourData = await getTour(tourId);
-    console.log("Tour data fetched: ", tourData);
+    const tourData:Tour = await getTour(tourId);
+    console.log("Tour data fetched:");
+    console.table(tourData);
+    store.setTour(tourData);
+    loading.value = false;
   }
 })
 
@@ -63,14 +68,19 @@ onMounted(async ()=>{
 
 <template>
   <div class="main-container">
-    <div class="tuor-editor">
-      <TuorEditor/>
-    </div>
-    <div class="canvas">
-        <Suspense>
-          <Scene/>
-        </Suspense>
-    </div>
+     <template v-if="loading">
+        <p>Planning... boring loading</p>
+      </template>
+       <template v-else>
+         <div class="tuor-editor">
+           <TuorEditor/>
+         </div>
+         <div class="canvas">
+             <Suspense>
+               <Scene/>
+             </Suspense>
+         </div>
+       </template>
   </div>
 </template>
 

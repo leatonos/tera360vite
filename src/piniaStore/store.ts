@@ -6,7 +6,7 @@ import type { CircleInfo, SceneInfo, SphereInfo, Tour } from '../types';
 export const useTourStore = defineStore('tour', () => {
     
     const tour = ref<Tour>({
-        id: uuidv4(),
+        _id: '',
         name: "New tour",
         scenes: [
             {
@@ -31,18 +31,18 @@ export const useTourStore = defineStore('tour', () => {
     const setCameraPosition = (position: { x: number; y: number; z: number }) => {
         cameraPosition.value = position;
     };
-
+ 
     const setCameraDirection = (direction: { x: number; y: number; z: number }) => {
         cameraDirection.value = direction;
     };
 
     const setCurrentSceneIndex = (index: number) => {
         currentSceneIndex.value = index;
-    }
+    };
 
     const setTourName = (name: string) => {
         tour.value.name = name;
-    }
+    };
 
     const addScene = () => {
         const newScene: SceneInfo = {
@@ -59,7 +59,7 @@ export const useTourStore = defineStore('tour', () => {
 
         tour.value.scenes[sceneIndex].name = name;
   
-      }
+    };
 
     const addCircle = (sceneIndex: number) => {
         const defaultCircle: CircleInfo = {

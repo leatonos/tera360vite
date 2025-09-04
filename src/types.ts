@@ -9,7 +9,7 @@ export interface SceneInfo {
 }
 
 export interface Tour {
-    id: string; // Unique identifier for the Tour
+    _id: string; // Unique identifier for the Tour
     name: string;
     scenes: SceneInfo[];
 }

@@ -4,7 +4,6 @@ import TourCreator from "../pages/Tour-Creator.vue"
 import Tour from "../pages/Tour.vue"
 import type { RouteLocationNormalized } from "vue-router"
 
-
 const routes = [
   { path: "/", component: Home },
   { path: "/tour-creator/:tourId?", component: TourCreator },

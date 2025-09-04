@@ -8,11 +8,14 @@ import type { Tour } from '../types';
 import { useTourStore } from "../piniaStore/store";
 
 const loading = ref(true)
+const loadingText = ref("Creating new tour...")
 
 const store = useTourStore()
 const route = useRoute();
 const tourId = route.params.tourId as string | undefined
 const router = useRouter();
+const apiUrl = import.meta.env.VITE_API
+
 
 const newTour = {
   name: "New tour",
@@ -28,7 +31,7 @@ const newTour = {
 };
 
 async function createNewTour() {
-  const response = await fetch("https://ro6e24o5bkdiilj4vt2jylqgvm0puruz.lambda-url.us-east-2.on.aws/create-tour", {
+  const response = await fetch(`${apiUrl}/create-tour`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newTour)
@@ -39,7 +42,7 @@ async function createNewTour() {
 async function getTour(id:string) {
 
   console.log("Fetching tour with ID: ", id);
-  const response = await fetch(`https://ro6e24o5bkdiilj4vt2jylqgvm0puruz.lambda-url.us-east-2.on.aws/tour/id=${id}`);
+  const response = await fetch(`${apiUrl}/tour/${id}`);
   return await response.json(); 
   
 }
@@ -50,12 +53,14 @@ onMounted(async ()=>{
   if(!tourId){
     
     const newTourResponse = await createNewTour();
+    loadingText.value = `New tour created with ID: ${newTourResponse.id}`
     console.log("New tour created with ID: ", newTourResponse.id);
     console.log(newTourResponse.id);
-    router.push({path:`/tour/${newTourResponse.id}`})
+    router.push({path:`/tour-creator/${newTourResponse.id}`})
     
   } else {
     const tourData:Tour = await getTour(tourId);
+    loadingText.value = `Loading tour: ${tourId}`
     console.log("Tour data fetched:");
     console.table(tourData);
     store.setTour(tourData);
@@ -69,7 +74,7 @@ onMounted(async ()=>{
 <template>
   <div class="main-container">
      <template v-if="loading">
-        <p>Planning... boring loading</p>
+        <p>{{ loadingText }}</p>
       </template>
        <template v-else>
          <div class="tuor-editor">

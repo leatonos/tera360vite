@@ -9,9 +9,6 @@ const router = useRouter()
 
 const loading = ref(true)
 
-
-
-
 const tourId = route.params.tourId as string | undefined
 
 onMounted(()=>{

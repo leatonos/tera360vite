@@ -1,10 +1,9 @@
 <script setup lang="ts">
 
 import { useTourStore } from "../../piniaStore/store";
-import { v4 as uuidv4 } from 'uuid';
 import SceneEditor from "./SceneEditor.vue";
 
-const uniqueId = uuidv4();
+const apiUrl = import.meta.env.VITE_API
 
 //Store
 const store = useTourStore()
@@ -16,8 +15,36 @@ const storeState = store.$state
 
 const addSceneAction = store.addScene
 
-const save = () =>{
-    console.log("Saving tour...");
+const save = async() =>{
+    
+  const itemId = store.$state.tour._id
+  const updateData = store.$state.tour
+
+  console.log("Saving tour with ID:", itemId)
+  console.log("Update data:")
+  console.log(JSON.stringify(updateData
+
+  ))
+
+  try {
+    const response = await fetch(`${apiUrl}/update/${itemId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updateData),
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`)
+    }
+
+    const updatedDoc = await response.json()
+    console.log("Updated document:", updatedDoc)
+  } catch (err) {
+    console.error("Update failed:", err)
+  }
+    
 }
 
 const handleNameChange = (value:string) =>{
@@ -33,15 +60,14 @@ const handleNameChange = (value:string) =>{
 <template>
     <div class="tour-editor">
         <h1>Tour Editor</h1>
-        <p>{{ uniqueId }}</p>
+        <p>{{ store.$state.tour._id }}</p>
          <!-- 
             <p>{{ JSON.stringify(store.$state) }}</p>
          -->
         <div>
             <label for="tuor_name">Tuor Name:</label>
             <input type="text" id="tuor_name" name="tuor_name" v-model="storeState.tour.name"  @change="(e: Event) => handleNameChange((e.target as HTMLInputElement).value)">
-        </div>
-         
+        </div>         
         <div>
             <button @click="save">Save</button>
             <button @click="addSceneAction">Add new scene</button>

@@ -35,10 +35,11 @@ async function performAction(actionType: string, actionArgs: string){
   if (actionType == "Teleport") {
     console.log("Teleporting to: ", actionArgs);
     const sceneIndex = store.$state.tour.scenes.findIndex(scene => scene.id === actionArgs);
+    console.log("Found scene index: ", sceneIndex);
     if (sceneIndex !== -1) {
       store.setCurrentSceneIndex(sceneIndex);
-      console.log("Teleported to: ", store.$state.tour.scenes[currentSceneIndex.value].background);
-      const newTexture = await useTexture({ map: store.$state.tour.scenes[currentSceneIndex.value].background });
+      console.log("Teleported to: ", store.$state.tour.scenes[sceneIndex].background);
+      const newTexture = await useTexture({ map: store.$state.tour.scenes[sceneIndex].background });
       currentTexture.value = newTexture.map;
 
     }

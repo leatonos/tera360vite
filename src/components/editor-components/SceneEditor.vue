@@ -22,6 +22,9 @@ const spheres = props.thisScene.spheres
 
 const sceneIndex = ref(store.tour.scenes.findIndex(scene => scene.id === props.thisScene.id));
 
+
+/*
+
 const uploadImage = async (file: File, sceneId: string, tourId:string) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -45,6 +48,8 @@ const uploadImage = async (file: File, sceneId: string, tourId:string) => {
     return null;
   }
 };
+
+*/
 
 const handleFileChange = async (event: Event) => {
   const target = event.target as HTMLInputElement;

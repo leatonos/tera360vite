@@ -22,41 +22,11 @@ const spheres = props.thisScene.spheres
 
 const sceneIndex = ref(store.tour.scenes.findIndex(scene => scene.id === props.thisScene.id));
 
-
-/*
-
-const uploadImage = async (file: File, sceneId: string, tourId:string) => {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('scene_id', sceneId);
-  formData.append('tuor_id', tourId);
-
-  try {
-    const response = await fetch(`${import.meta.env.VITE_API}/upload`, {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    return data.newURL;
-  } catch (error) {
-    console.error('Upload failed:', error);
-    return null;
-  }
-};
-
-*/
-
 const handleFileChange = async (event: Event) => {
   const target = event.target as HTMLInputElement;
   console.log(target.files);
   if (target.files && target.files[0]) {
     const file = target.files[0];
-    //const imageUrl = await uploadImage(file,props.thisScene.id,store.$state.tour._id);
     const imageUrl = await uploadToS3(file, store.$state.tour._id, props.thisScene.id);
     console.log("Uploaded image URL:", imageUrl);
     if (imageUrl) {

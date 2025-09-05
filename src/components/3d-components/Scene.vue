@@ -11,7 +11,6 @@ import type { PerspectiveCamera } from "three";
 const store = useTourStore()
 const currentSceneIndex = ref(store.$state.currentSceneIndex)
 
-
 // Test Image been used
 // https://pedrobaptista.com/photos360/welder_01.jpg
 

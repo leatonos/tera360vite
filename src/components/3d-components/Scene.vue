@@ -3,7 +3,7 @@ import { TresCanvas } from "@tresjs/core";
 import { CameraControls } from "@tresjs/cientos";
 import { useTexture } from "@tresjs/core";
 import { useTourStore } from "../../piniaStore/store";
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import * as THREE from "three";
 import type { PerspectiveCamera } from "three";
 

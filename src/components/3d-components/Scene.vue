@@ -43,11 +43,6 @@ async function performAction(actionType: string, actionArgs: string){
 
 }
 
-// Watch for changes in thisSceneIndex and update circles accordingly
-watch(() => currentSceneIndex.value, (newIndex: number) => {
-  circles.value = store.$state.tour.scenes[newIndex].circles;
-});
-
 function updateCamera() {
   if (cameraRef.value) {
     const camera: PerspectiveCamera = cameraRef.value;

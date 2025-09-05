@@ -129,12 +129,17 @@ const deleteCircle = () => {
         <!-- Action -->
          <div>
             <label for="action">Action Type:</label>
-            <select id="action" name="action">
+            <select id="action" name="action" v-model="props.thisCircle.onClickAction.actionType">
                 <option value="Teleport">Teleport</option>
             </select>
             <label for="location">Location</label>
-            <select id="location" name="location" @change="handleSceneChange">
-                <option value="">None   </option>
+            <select
+                id="location"
+                name="location"
+                v-model="store.tour.scenes[sceneIndex].circles[thisCircleIndex].onClickAction.actionArgs"
+                @change="handleSceneChange"
+            >
+                <option value="">None</option>
                 <option v-for="scene in store.tour.scenes" :key="scene.id" :value="scene.id">{{ scene.name }}</option>
             </select>
          </div>

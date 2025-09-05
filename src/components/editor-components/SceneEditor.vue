@@ -22,7 +22,6 @@ const spheres = props.thisScene.spheres
 
 const sceneIndex = ref(store.tour.scenes.findIndex(scene => scene.id === props.thisScene.id));
 
-
 const uploadImage = async (file: File, sceneId: string, tourId:string) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -52,12 +51,47 @@ const handleFileChange = async (event: Event) => {
   console.log(target.files);
   if (target.files && target.files[0]) {
     const file = target.files[0];
-    const imageUrl = await uploadImage(file,props.thisScene.id,store.$state.tour._id);
+    //const imageUrl = await uploadImage(file,props.thisScene.id,store.$state.tour._id);
+    const imageUrl = await uploadToS3(file, store.$state.tour._id, props.thisScene.id);
+    console.log("Uploaded image URL:", imageUrl);
     if (imageUrl) {
       store.setSceneBackground(sceneIndex.value, imageUrl);
     }
   }
 };
+
+const uploadToS3 = async(file: File, tourId: string, sceneId: string) => {
+  try {
+    // 1. Ask backend for presigned URL
+    console.log("Requesting presigned URL for tour:", tourId, "scene:", sceneId);
+    const res = await fetch(`${import.meta.env.VITE_API}/get-presigned-url`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tour_id: tourId, scene_id: sceneId })
+    });
+
+    if (!res.ok) throw new Error("Failed to get presigned URL");
+    const { uploadURL, fileURL } = await res.json();
+
+    console.log("Received presigned URL:", uploadURL);
+    console.log("Uploading file to S3...");  
+    // 2. Upload file directly to S3
+    const uploadRes = await fetch(uploadURL, {
+      method: "PUT",
+      body: file
+    });
+
+    if (!uploadRes.ok) throw new Error("Upload to S3 failed");
+
+    console.log("✅ File uploaded:", fileURL);
+    return fileURL; // final public S3 link
+
+  } catch (err) {
+    console.error("Upload error:", err);
+    throw err;
+  }
+}
+
 
 const handleNameChange = (event: Event) => {
   const target = event.target as HTMLInputElement;

@@ -8,7 +8,7 @@ import type { Tour } from '../types';
 import { useTourStore } from "../piniaStore/store";
 
 const loading = ref(true)
-const loadingText = ref("Creating new tour...")
+const loadingText = ref("")
 
 const store = useTourStore()
 const route = useRoute();
@@ -51,7 +51,7 @@ async function getTour(id:string) {
 onMounted(async ()=>{
   // if no tourId, create new tour on database
   if(!tourId){
-    
+    loadingText.value = "Creating new tour..."
     const newTourResponse = await createNewTour();
     loadingText.value = `New tour created with ID: ${newTourResponse.id}`
     console.log("New tour created with ID: ", newTourResponse.id);
@@ -59,10 +59,11 @@ onMounted(async ()=>{
     router.push({path:`/tour-creator/${newTourResponse.id}`})
     
   } else {
+     loadingText.value = "Loading tour..."
     const tourData:Tour = await getTour(tourId);
     loadingText.value = `Loading tour: ${tourId}`
     console.log("Tour data fetched:");
-    console.table(tourData);
+    console.table(tourData.scenes);
     store.setTour(tourData);
     loading.value = false;
   }

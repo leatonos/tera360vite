@@ -3,20 +3,17 @@ import { TresCanvas } from "@tresjs/core";
 import { CameraControls } from "@tresjs/cientos";
 import { useTexture } from "@tresjs/core";
 import { useTourStore } from "../../piniaStore/store";
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as THREE from "three";
 import type { PerspectiveCamera } from "three";
 
 //Store
 const store = useTourStore()
-const currentSceneIndex = ref(store.$state.currentSceneIndex)
-
-// Test Image been used
-// https://pedrobaptista.com/photos360/welder_01.jpg
+const currentSceneIndex = computed(() => store.$state.currentSceneIndex);
 
 //Current assets
 const textureResult = await useTexture({ map: store.$state.tour.scenes[currentSceneIndex.value].background });
-const circles = ref(store.$state.tour.scenes[currentSceneIndex.value].circles)
+const circles = computed(() => store.$state.tour.scenes[currentSceneIndex.value].circles);
 let currentTexture = ref(textureResult.map);
 
 

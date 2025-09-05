@@ -74,9 +74,11 @@ const handleNameChange = (event: Event) => {
 };
 
 //Actions
+/*
 function addSphereAction(){
   store.addSphere(thisSceneIndex)
 }
+*/
 
 function addCircleAction(){
     store.addCircle(thisSceneIndex)
@@ -98,7 +100,7 @@ function addCircleAction(){
             <p>{{ props.thisScene.background }}</p>
         </div>
         <div>
-            <button @click="addSphereAction">Add new sphere</button>
+            <!-- <button @click="addSphereAction">Add new sphere</button> -->
             <button @click="addCircleAction">Add new circle</button>
         </div>
         <div class="circles-list">

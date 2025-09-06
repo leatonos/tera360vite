@@ -6,24 +6,24 @@ import { useTourStore } from "../../piniaStore/store";
 import { computed, ref } from 'vue';
 import * as THREE from "three";
 import type { PerspectiveCamera } from "three";
+//import { TransformControls } from '@tresjs/cientos';
 
 //Store
 const store = useTourStore()
 const currentSceneIndex = computed(() => store.$state.currentSceneIndex);
+//const boxRef = shallowRef()
+
 
 //Current assets
 const textureResult = await useTexture({ map: store.$state.tour.scenes[currentSceneIndex.value].background });
 const circles = computed(() => store.$state.tour.scenes[currentSceneIndex.value].circles);
 let currentTexture = ref(textureResult.map);
+currentTexture.value.mapping = THREE.EquirectangularReflectionMapping;
+currentTexture.value.colorSpace = THREE.SRGBColorSpace;
 
-
-// ✅ Fix brightness/contrast of the texture
-if (currentTexture.value) {
-  currentTexture.value.mapping = THREE.EquirectangularReflectionMapping;
-  currentTexture.value.colorSpace = THREE.SRGBColorSpace;
-}
 
 const cameraRef = ref(null);
+const loadingTexture = ref(false);
 
 // Function to handle actions
 async function performAction(actionType: string, actionArgs: string){
@@ -34,9 +34,14 @@ async function performAction(actionType: string, actionArgs: string){
     console.log("Found scene index: ", sceneIndex);
     if (sceneIndex !== -1) {
       store.setCurrentSceneIndex(sceneIndex);
+      loadingTexture.value = true;
       console.log("Teleported to: ", store.$state.tour.scenes[sceneIndex].background);
-      const newTexture = await useTexture({ map: store.$state.tour.scenes[sceneIndex].background });
-      currentTexture.value = newTexture.map;
+      const newTextureResult = await useTexture({ map: store.$state.tour.scenes[sceneIndex].background });
+      const newTexture = newTextureResult.map
+      newTexture.mapping = THREE.EquirectangularReflectionMapping;
+      newTexture.colorSpace = THREE.SRGBColorSpace;
+      currentTexture.value = newTexture
+      loadingTexture.value = false;
 
     }
   }
@@ -61,23 +66,30 @@ function updateCamera() {
 <template>
   <TresCanvas preset="realistic">
     <TresPerspectiveCamera ref="cameraRef" :position="[0, 0, .5]" :far="10" />
-    <CameraControls @end="updateCamera"/>
+    <!-- Invert camera controls by setting reverseOrbit and reversePan -->
+    <CameraControls @end="updateCamera" :reverseOrbit="true" :reversePan="true" />
     <!-- Skybox Sphere with the current texture, rendered inside --> 
-     <TresMesh :position="[0, 0, 0]" :scale="6">
+    <TresMesh :position="[0, 0, 0]" :scale="6">
       <TresSphereGeometry :args="[1, 100, 100]" />
       <TresMeshBasicMaterial
         :map="currentTexture"
         :side=2
         :toneMapped="false"
-        
       />
     </TresMesh>
+    <!-- 3D Cube -->
+     <!--
+     <TransformControls :object="boxRef" />
+    <TresMesh ref="boxRef" :position="[2, 0, 0]" :scale="1">
+      <TresBoxGeometry :args="[1, 1, 1]" />
+      <TresMeshStandardMaterial color="#4FC3F7" />
+    </TresMesh>
+     -->
     <!-- Flat Circles -->
     <TresMesh v-for="circle in circles" :position="circle.coordinates" :scale="circle.scale" :key="circle.id" :rotation="[Math.PI / 2, 0, 0]" @click="performAction('Teleport', circle.onClickAction.actionArgs)">
       <TresCircleGeometry :args="[1, 32]" />
       <TresMeshBasicMaterial :color="circle.color"  :side="2" />
     </TresMesh>
-  
   </TresCanvas>
 </template>
 

@@ -40,11 +40,9 @@ async function createNewTour() {
 }
 
 async function getTour(id:string) {
-
   console.log("Fetching tour with ID: ", id);
   const response = await fetch(`${apiUrl}/tour/${id}`);
   return await response.json(); 
-  
 }
 
 
@@ -56,8 +54,9 @@ onMounted(async ()=>{
     loadingText.value = `New tour created with ID: ${newTourResponse.id}`
     console.log("New tour created with ID: ", newTourResponse.id);
     console.log(newTourResponse.id);
-    router.push({path:`/tour-creator/${newTourResponse.id}`})
-    
+    router.push({ path: `/tour-creator/${newTourResponse.id}` }).then(() => {
+      window.location.reload();
+    });
   } else {
      loadingText.value = "Loading tour..."
     const tourData:Tour = await getTour(tourId);
@@ -100,12 +99,12 @@ onMounted(async ()=>{
 }
 .tuor-editor{
   background-color: white;
-  width: 20%;
+  width: 25%;
   height: 100vh;
 }
 .canvas{
   background-color: aquamarine;
-  width: 80%;
+  width: 75%;
   height: 100vh;
 }
 </style>

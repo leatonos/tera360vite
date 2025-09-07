@@ -92,60 +92,187 @@ const deleteCircle = () => {
 </script>
 
 
-
 <template>
-    <div>
-        <h3>Circle Editor</h3>
+  <div class="circle-editor">
+    <h3 class="title">Circle Editor</h3>
+    <!-- Color -->
+    <div class="form-group-inline">
+      <label for="favcolor">Color:</label>
+      <input
+        type="color"
+        id="favcolor"
+        v-model="circleColor"
+        @change="(e: Event) => handleColorChange((e.target as HTMLInputElement).value)"
+      />
+      <!-- Size -->
+      <label for="size">Size:</label>
+      <input
+        type="number"
+        id="size"
+        min=".1"
+        max="5"
+        step=".1"
+        v-model="circleSize"
+        @change="(e: Event) => handleSizeChange((e.target as HTMLInputElement).value)"
+      />
     </div>
-    <div>
-        <div>
-            <button @click="deleteCircle">Delete Circle</button>
-        </div>
-        <!-- Color -->
-        <div>
-            <label for="favcolor">Color:</label>
-            <input type="color" id="favcolor" name="favcolor" v-model="circleColor" @change="(e: Event) => handleColorChange((e.target as HTMLInputElement).value)">
-        </div>
-        <!-- Size -->
-        <div>
-            <label for="size">Size:</label>
-            <input type="range" id="size" name="size" min=".1" max="5" step=".1" v-model="circleSize"  @change="(e: Event) => handleSizeChange((e.target as HTMLInputElement).value)">
-        </div>
-        <!-- Coordinates -->
-        <div>
-            <div>
-                <label for="x">X:</label>
-                <input type="range" id="x" name="x" min="-5" max="5" step=".1" v-model="circleX" @change="(e: Event) => handleXChange((e.target as HTMLInputElement).value)">
-            </div>
-            <div>
-                <label for="y">Y:</label>
-                <input type="range" id="y" name="y" min="-4.3" max="5" step=".1" v-model="circleY" @change="(e: Event) => handleYChange((e.target as HTMLInputElement).value)">
-            </div>
-            <div>
-                <label for="z">Z:</label>
-                <input type="range" id="z" name="z" min="-5" max="5" step=".1" v-model="circleZ" @change="(e: Event) => handleZChange((e.target as HTMLInputElement).value)">
-            </div>
-        </div>
-        <!-- Action -->
-         <div>
-            <label for="action">Action Type:</label>
-            <select id="action" name="action" v-model="props.thisCircle.onClickAction.actionType">
-                <option value="Teleport">Teleport</option>
-            </select>
-            <label for="location">Location</label>
-            <select
-                id="location"
-                name="location"
-                v-model="store.tour.scenes[sceneIndex].circles[thisCircleIndex].onClickAction.actionArgs"
-                @change="handleSceneChange"
-            >
-                <option value="">None</option>
-                <option v-for="scene in store.tour.scenes" :key="scene.id" :value="scene.id">{{ scene.name }}</option>
-            </select>
-         </div>
+    <!-- Coordinates -->
+    <div class="form-group-inline">
+      <div class="form-group-inline">
+        <label for="x">X:</label>
+        <input
+          type="number"
+          id="x"
+          min="-5"
+          max="5"
+          step=".1"
+          v-model="circleX"
+          @change="(e: Event) => handleXChange((e.target as HTMLInputElement).value)"
+        />
+      </div>
+      <div class="form-group-inline">
+        <label for="y">Y:</label>
+        <input
+          type="number"
+          id="y"
+          min="-4.3"
+          max="5"
+          step=".1"
+          v-model="circleY"
+          @change="(e: Event) => handleYChange((e.target as HTMLInputElement).value)"
+        />
+      </div>
+      <div class="form-group-inline">
+        <label for="z">Z:</label>
+        <input
+          type="number"
+          id="z"
+          min="-5"
+          max="5"
+          step=".1"
+          v-model="circleZ"
+          @change="(e: Event) => handleZChange((e.target as HTMLInputElement).value)"
+        />
+      </div>
     </div>
+
+    <!-- Action -->
+    <div class="form-group-inline">
+      <label for="action">Action Type:</label>
+      <select id="action" v-model="props.thisCircle.onClickAction.actionType">
+        <option value="Teleport">Teleport</option>
+      </select>
+    </div>
+
+    <div class="form-group-inline">
+      <label for="location">Location:</label>
+      <select
+        id="location"
+        v-model="store.tour.scenes[sceneIndex].circles[thisCircleIndex].onClickAction.actionArgs"
+        @change="handleSceneChange"
+      >
+        <option value="">None</option>
+        <option v-for="scene in store.tour.scenes" :key="scene.id" :value="scene.id">
+          {{ scene.name }}
+        </option>
+      </select>
+    </div>
+    <button class="delete-btn" @click="deleteCircle">Delete Circle</button>
+
+  </div>
 </template>
 
-<style>
+<style scoped>
+.circle-editor {
+  background: #242424;
+  font-family: sans-serif;
+  color: white;
+}
 
+.title {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #fff;
+}
+
+.delete-btn {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  width: 100%;
+  font-weight: bold;
+}
+.delete-btn:hover {
+  background: #e04345;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group-inline {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-inline {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.form-inline div {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+label {
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+input[type="number"] {
+  padding: 0.4rem;
+  border-radius: 6px;
+  border: 1px solid #555;
+  background: #333;
+  color: white;
+  font-size: 15px;
+  width: 100%;
+}
+
+input[type="color"] {
+  width: 60px;
+  height: 40px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+}
+
+select {
+  padding: 0.5rem;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: #333;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+select option {
+  background: #242424;
+  color: white;
+}
 </style>

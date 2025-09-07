@@ -79,7 +79,6 @@ const handleNameChange = (value:string) =>{
 <template>
     <div class="tour-editor">
       <header class="tour-editor-header">
-        
         <div>
            <h1>Tour Editor</h1>
             <input type="text" id="tuor_name" name="tuor_name" v-model="storeState.tour.name"  @change="(e: Event) => handleNameChange((e.target as HTMLInputElement).value)">
@@ -109,6 +108,7 @@ const handleNameChange = (value:string) =>{
 <style>
     h1{
       color: white;
+      font-size: 2em;
     }
     .tour-editor{
         display: flex;
@@ -118,7 +118,13 @@ const handleNameChange = (value:string) =>{
         background-color: #242424;
     }
     .tour-editor-header{
-      height: 20%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 30%;
+      padding: 0px;
+      max-height: 150px;
     }
     ul{
         list-style-type: none;
@@ -138,6 +144,15 @@ const handleNameChange = (value:string) =>{
         padding: 1rem;
         border: 3px solid rgb(53, 53, 53);
         height: 30%;
+        overflow-y: auto;
+    }
+    .properties-panel{
+        flex-grow: 1;
+        padding: 1rem;
+        border: 3px solid rgb(53, 53, 53);
+        background-color: #242424;
+        color: white;
+        height: 40%;
         overflow-y: auto;
     }
 </style>

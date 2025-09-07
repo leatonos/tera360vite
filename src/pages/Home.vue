@@ -65,6 +65,7 @@ onMounted( async()=>{
 }
 p,h1,h2,h3,a,li {
     color: black;
+    text-align: center;
 }
 .create-tour-button{
         display: block;

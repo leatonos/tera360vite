@@ -84,27 +84,90 @@ function addCircleAction(){
 
 
 <template>
-    <div class="scene-editor">
-        <h3>Editing Scene: {{ thisSceneId }}</h3>
-        <h3>Editing Scene: {{ sceneIndex }}</h3>
-        <div>
-            <input type="text" id="name" v-model="props.thisScene.name" @input="handleNameChange" placeholder="Enter background link" />
-        </div>
-        <div>
-            <label for="background">Background</label>
-            <input type="file" id="background" @change="handleFileChange" />
-            <p>{{ props.thisScene.background }}</p>
-        </div>
-        <div>
-            <!-- <button @click="addSphereAction">Add new sphere</button> -->
-            <button @click="addCircleAction">Add new circle</button>
-        </div>
+  <div class="scene-editor">
+    <h2 class="editor-title">Scene Editor</h2>
+
+    <!-- Scene Name -->
+    <div class="form-group">
+      <input
+        type="text"
+        id="name"
+        v-model="props.thisScene.name"
+        @input="handleNameChange"
+        placeholder="Enter scene name"
+      />
     </div>
+
+    <!-- Background -->
+    <div class="form-group">
+      <input type="file" id="texture-selector" @change="handleFileChange" />
+      <!-- <p class="background-preview">{{ props.thisScene.background }}</p> -->
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <!-- <button @click="addSphereAction">Add new sphere</button> -->
+      <button class="btn" @click="addCircleAction">Add new circle</button>
+    </div>
+  </div>
 </template>
 
 <style>
-    .scene-editor{
-        padding: 1rem;
-        margin: 1rem;
-    }
+.scene-editor {
+  max-width: 400px;
+}
+.editor-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+  color: white;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+  color: #444;
+}
+
+input[type="text"],
+input[type="file"] {
+  padding: 0.6rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+input[type="text"]:focus {
+  outline: none;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  background: white;
+  color: #242424;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 2px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#texture-selector{
+  display: none;
+}
+
+.btn:hover {
+ background: #000000;
+  color: #ffffff;
+}
 </style>

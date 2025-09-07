@@ -3,11 +3,14 @@ import Scene from '../components/3d-components/Scene.vue';
 import { useRoute, useRouter } from "vue-router"
 const apiUrl = import.meta.env.VITE_API
 import { onMounted, ref } from 'vue';
+import type { Tour } from '../types';
+import { useTourStore } from '../piniaStore/store';
 
 const route = useRoute()
 const router = useRouter()
-
+const store = useTourStore()
 const loading = ref(true)
+const loadingText = ref("")
 
 const tourId = route.params.tourId as string | undefined
 
@@ -20,14 +23,16 @@ async function getTour(id:string) {
 }
 
 
-onMounted(()=>{
+onMounted(async()=>{
   if(!tourId){
     router.replace({path:`/`})
   } else {
-    // simulate loading for demo purposes, remove in real use
-    setTimeout(() => {
-      loading.value = false
-    }, 2000)
+   const tourData:Tour = await getTour(tourId);
+    loadingText.value = `Loading tour: ${tourId}...`
+    console.log("Tour data fetched:");
+    console.table(tourData.scenes);
+    store.setTour(tourData);
+    loading.value = false;
   }
 })
 
@@ -37,7 +42,7 @@ onMounted(()=>{
   <div class="main-container">
     <div class="canvas">
       <template v-if="loading">
-        <p>Planning... boring loading</p>
+        <p>{{ loadingText }}</p>
       </template>
       <template v-else>
         <Suspense>

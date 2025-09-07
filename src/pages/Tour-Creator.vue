@@ -12,8 +12,8 @@ const loadingText = ref("")
 
 const store = useTourStore()
 const route = useRoute();
-const tourId = route.params.tourId as string | undefined
 const router = useRouter();
+const tourId = route.params.tourId as string | undefined
 const apiUrl = import.meta.env.VITE_API
 
 

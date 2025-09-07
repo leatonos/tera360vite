@@ -98,10 +98,10 @@ function addCircleAction(){
       />
     </div>
 
-    <!-- Background -->
-    <div class="form-group">
+     <!-- Background Upload -->
+    <div class="form-group upload-group">
       <input type="file" id="texture-selector" @change="handleFileChange" />
-      <!-- <p class="background-preview">{{ props.thisScene.background }}</p> -->
+      <label for="texture-selector" class="cute-upload-btn">Upload Background</label>
     </div>
 
     <!-- Actions -->
@@ -126,16 +126,10 @@ function addCircleAction(){
 .form-group {
   display: flex;
   flex-direction: column;
+  margin: 1rem 0;
 }
 
-label {
-  font-size: 0.9rem;
-  margin-bottom: 0.4rem;
-  color: #444;
-}
-
-input[type="text"],
-input[type="file"] {
+input[type="text"] {
   padding: 0.6rem;
   border-radius: 6px;
   font-size: 0.9rem;
@@ -143,6 +137,33 @@ input[type="file"] {
 
 input[type="text"]:focus {
   outline: none;
+  border-color: #ffb6c1;
+}
+
+/* Hide the native file input */
+#texture-selector {
+  display: none;
+}
+
+/* Cute upload button */
+.cute-upload-btn {
+  display: inline-block;
+  background: black;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 3px;
+  padding: 0.6rem .8rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.cute-upload-btn:hover {
+  background: white;
+  color: black;
+  transform: scale(1.05);
 }
 
 .actions {
@@ -155,19 +176,15 @@ input[type="text"]:focus {
   color: #242424;
   border: none;
   padding: 0.7rem 1.2rem;
-  border-radius: 2px;
+  border-radius: 6px;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
-#texture-selector{
-  display: none;
-}
-
 .btn:hover {
- background: #000000;
+  background: #000000;
   color: #ffffff;
 }
 </style>

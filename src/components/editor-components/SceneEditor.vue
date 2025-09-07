@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useTourStore } from "../../piniaStore/store";
 import type { SceneInfo } from "../../types";
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 //Props
 const props = defineProps<{
@@ -11,10 +11,11 @@ const props = defineProps<{
 //Store
 const store = useTourStore()
 
-const listOfScenes = store.$state.tour.scenes
-const thisSceneId = props.thisScene.id
-const thisSceneIndex = listOfScenes.findIndex((scene)=> scene.id == thisSceneId)
-
+const listOfScenes = computed(() => store.$state.tour.scenes)
+const thisSceneId = computed(() => props.thisScene.id)
+const thisSceneIndex = computed(() =>
+  listOfScenes.value.findIndex(scene => scene.id === thisSceneId.value)
+)
 const sceneIndex = ref(store.tour.scenes.findIndex(scene => scene.id === props.thisScene.id));
 
 const handleFileChange = async (event: Event) => {
@@ -76,7 +77,7 @@ function addSphereAction(){
 */
 
 function addCircleAction(){
-    store.addCircle(thisSceneIndex)
+    store.addCircle(thisSceneIndex.value)
 }
 </script>
 
@@ -84,6 +85,8 @@ function addCircleAction(){
 
 <template>
     <div class="scene-editor">
+        <h3>Editing Scene: {{ thisSceneId }}</h3>
+        <h3>Editing Scene: {{ sceneIndex }}</h3>
         <div>
             <input type="text" id="name" v-model="props.thisScene.name" @input="handleNameChange" placeholder="Enter background link" />
         </div>

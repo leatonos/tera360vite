@@ -24,9 +24,12 @@ const selectedCircle = ref<CircleInfo|null>(null)
 
 
 
-const selectScene = (scene:SceneInfo) =>{
+const selectScene = (scene:SceneInfo, index:number) =>{
     selectedCircle.value = null
     selectedScene.value = scene
+    console.log("Selected scene:", index)
+    console.log("Selected scene:", scene)
+    store.setCurrentSceneIndex(index)
 }
 
 const selectCircle = (circle:CircleInfo) =>{
@@ -68,9 +71,7 @@ const save = async() =>{
 }
 
 const handleNameChange = (value:string) =>{
-
     store.setTourName(value)
-
 }
 
 </script>
@@ -89,8 +90,8 @@ const handleNameChange = (value:string) =>{
         </div>  
       </header>
         <div class="scenes-list">
-            <ul v-for="scene in scenes" :key="scene.id">
-               <li @click="selectScene(scene)">{{ scene.name }}</li>
+            <ul v-for="(scene, sceneIndex) in scenes" :key="scene.id">
+               <li @click="selectScene(scene, sceneIndex)">{{ scene.name }}</li>
                <ul v-for="(circle, idx) in scene.circles" :key="circle.id" class="circles-list">
                  <li @click="selectCircle(circle)">
                    Circle {{ idx + 1 }}
@@ -106,6 +107,9 @@ const handleNameChange = (value:string) =>{
 </template>
 
 <style>
+    h1{
+      color: white;
+    }
     .tour-editor{
         display: flex;
         flex-direction: column;
@@ -114,7 +118,7 @@ const handleNameChange = (value:string) =>{
         background-color: #242424;
     }
     .tour-editor-header{
-      height: 15%;
+      height: 20%;
     }
     ul{
         list-style-type: none;

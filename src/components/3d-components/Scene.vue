@@ -3,7 +3,7 @@ import { TresCanvas } from "@tresjs/core";
 import { CameraControls } from "@tresjs/cientos";
 import { useTexture } from "@tresjs/core";
 import { useTourStore } from "../../piniaStore/store";
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as THREE from "three";
 import type { PerspectiveCamera } from "three";
 //import { TransformControls } from '@tresjs/cientos';
@@ -34,19 +34,27 @@ async function performAction(actionType: string, actionArgs: string){
     console.log("Found scene index: ", sceneIndex);
     if (sceneIndex !== -1) {
       store.setCurrentSceneIndex(sceneIndex);
-      loadingTexture.value = true;
-      console.log("Teleported to: ", store.$state.tour.scenes[sceneIndex].background);
-      const newTextureResult = await useTexture({ map: store.$state.tour.scenes[sceneIndex].background });
-      const newTexture = newTextureResult.map
-      newTexture.mapping = THREE.EquirectangularReflectionMapping;
-      newTexture.colorSpace = THREE.SRGBColorSpace;
-      currentTexture.value = newTexture
-      loadingTexture.value = false;
-
+    }else{
+      // If scene not found, do nothing or handle error
+      console.warn("Scene with ID", actionArgs, "not found.");
     }
   }
 
 }
+
+
+// Watcher: whenever currentSceneIndex changes, update texture
+watch(currentSceneIndex, async (newIndex) => {
+  if (newIndex !== -1) {
+    loadingTexture.value = true;
+    const newTextureResult = await useTexture({ map: store.$state.tour.scenes[newIndex].background });
+    const newTexture = newTextureResult.map
+    newTexture.mapping = THREE.EquirectangularReflectionMapping;
+    newTexture.colorSpace = THREE.SRGBColorSpace;
+    currentTexture.value = newTexture
+    loadingTexture.value = false;
+  }
+});
 
 function updateCamera() {
   if (cameraRef.value) {

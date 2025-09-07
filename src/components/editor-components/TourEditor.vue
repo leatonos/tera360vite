@@ -99,7 +99,7 @@ const handleNameChange = (value:string) =>{
             </ul>
         </div>
          <div class="properties-panel">
-            <SceneEditor v-if="selectedScene" :thisScene="selectedScene" />
+            <SceneEditor v-if="selectedScene" :thisScene="selectedScene" :key="selectedScene.id"/>
             <CircleEditor v-if="selectedCircle" :thisCircle="selectedCircle" :key="selectedCircle.id" />
         </div>
     </div>

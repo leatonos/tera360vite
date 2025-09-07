@@ -11,14 +11,19 @@ const props = defineProps<{
 //Store
 const store = useTourStore()
 
+
+//States
 const listOfScenes = computed(() => store.$state.tour.scenes)
 const thisSceneId = computed(() => props.thisScene.id)
-const thisSceneIndex = computed(() =>
-  listOfScenes.value.findIndex(scene => scene.id === thisSceneId.value)
-)
+const thisSceneIndex = computed(() => listOfScenes.value.findIndex(scene => scene.id === thisSceneId.value))
 const sceneIndex = ref(store.tour.scenes.findIndex(scene => scene.id === props.thisScene.id));
+const uploading = ref(false)
+const uploadText = ref("Upload Background")
+
 
 const handleFileChange = async (event: Event) => {
+  uploading.value = true
+  uploadText.value = "Uploading Image..."
   const target = event.target as HTMLInputElement;
   console.log(target.files);
   if (target.files && target.files[0]) {
@@ -26,7 +31,10 @@ const handleFileChange = async (event: Event) => {
     const imageUrl = await uploadToS3(file, store.$state.tour._id, props.thisScene.id);
     console.log("Uploaded image URL:", imageUrl);
     if (imageUrl) {
+      uploadText.value = "Upload Background"
+      uploading.value = false
       store.setSceneBackground(sceneIndex.value, imageUrl);
+      console.log("Scene background updated in store.");
     }
   }
 };
@@ -100,8 +108,8 @@ function addCircleAction(){
 
      <!-- Background Upload -->
     <div class="form-group upload-group">
-      <input type="file" id="texture-selector" @change="handleFileChange" />
-      <label for="texture-selector" class="cute-upload-btn">Upload Background</label>
+      <input multiple="false" type="file" id="texture-selector" @change="handleFileChange" />
+      <label for="texture-selector" class="cute-upload-btn">{{ uploadText }}</label>
     </div>
 
     <!-- Actions -->

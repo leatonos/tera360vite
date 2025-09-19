@@ -35,6 +35,7 @@ const handleFileChange = async (event: Event) => {
       uploading.value = false
       store.setSceneBackground(sceneIndex.value, imageUrl);
       console.log("Scene background updated in store.");
+      console.log("Current scene data:", store.$state.tour.scenes[sceneIndex.value]);
     }
   }
 };

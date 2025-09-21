@@ -36,6 +36,7 @@ const selectCircle = (circle:CircleInfo) =>{
   console.log("Selected circle:", circle)
     selectedScene.value = null
     selectedCircle.value = circle
+    store.setSelectedCircle(circle)
 }
 
 const save = async() =>{

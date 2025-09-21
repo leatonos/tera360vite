@@ -24,6 +24,13 @@ export const useTourStore = defineStore('tour', () => {
     const cameraPosition = ref({ x: 0, y: 0, z: 0 });
     const cameraDirection = ref({ x: 0, y: 0, z: 0 });
 
+   
+    const selectedCircle = ref<CircleInfo | null>(null);
+
+    const setSelectedCircle = (circle: CircleInfo | null) => {
+        selectedCircle.value = circle;
+    }
+
     const setTour = (newTour: Tour) => {
         tour.value = newTour;
     }
@@ -114,6 +121,8 @@ export const useTourStore = defineStore('tour', () => {
         cameraPosition,
         cameraDirection,
         currentSceneIndex,
+        selectedCircle,
+        setSelectedCircle,
         setTour,
         setCurrentSceneIndex,
         setCameraPosition,

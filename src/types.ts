@@ -21,7 +21,7 @@ export interface CircleInfo {
     scale: number;
     color: string;
     onClickAction: {
-        actionType: "Teleport";
+        actionType: string;
         actionArgs: string;
     }
 }

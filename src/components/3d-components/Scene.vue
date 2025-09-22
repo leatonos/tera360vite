@@ -41,7 +41,7 @@ const selectedMesh = ref<Mesh | null>(null);
 // store all meshes by circle ID
 const meshRefs: Record<string, Mesh | null> = {};
 
-// watch Pinia selection
+// watch circle selection
 watch(selectedCircleId, (newId) => {
   if (newId && meshRefs[newId]) selectedMesh.value = meshRefs[newId];
   else selectedMesh.value = null;
@@ -111,11 +111,11 @@ function updateCamera() {
       :scale="circle.scale"
       :rotation="[Math.PI/2,0,0]"
       @click="handleCircleClick(circle)"
-        :ref="el => { if(el) meshRefs[circle.id] = el as unknown as Mesh }"
+      :ref="el => { if(el) meshRefs[circle.id] = el as unknown as Mesh }"
     >
       <TresCircleGeometry :args="[1,32]" />
       <TresMeshBasicMaterial
-        :color="circle.id === selectedCircleId ? 'yellow' : circle.color"
+        :color="circle.color"
         :side="2"
       />
     </TresMesh>

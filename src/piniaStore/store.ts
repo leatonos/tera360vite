@@ -45,6 +45,7 @@ export const useTourStore = defineStore('tour', () => {
 
     const setCurrentSceneIndex = (index: number) => {
         currentSceneIndex.value = index;
+        selectedCircle.value = null;
     };
 
     const setTourName = (name: string) => {

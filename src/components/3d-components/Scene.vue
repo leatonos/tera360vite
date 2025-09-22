@@ -54,11 +54,25 @@ function handleCircleClick(circle: CircleInfo) {
   store.setCurrentSceneIndex(newIndex)
 }
 
+
+function handleTransformChange() {
+  if (!selectedMesh.value) return;
+
+  const pos = selectedMesh.value.position;
+  const circleId = selectedCircleId.value;
+
+  // Update store with new coordinates
+  if (circleId) {
+    console.log([pos.x, pos.y, pos.z]);
+  }
+}
+
 // ---------------------------
 // Scene changes / texture reload
 // ---------------------------
 watch(currentSceneIndex, async (newIndex) => {
   if (newIndex === -1) return;
+  selectedMesh.value = null;
 
   loadingTexture.value = true;
   visibleCircles.value = [];
@@ -124,6 +138,7 @@ function updateCamera() {
     <TransformControls
       v-if="selectedMesh"
       :object="selectedMesh"
+      @objectChange="handleTransformChange"
       mode="translate"
     />
   </TresCanvas>

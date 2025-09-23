@@ -19,7 +19,9 @@ const currentSceneBackground = computed(
 );
 
 const loadingTexture = ref(true);
-const visibleCircles = ref<Array<any>>([]);
+const visibleCircles = ref<Array<CircleInfo>>([]);
+const allCircles = computed(() => store.$state.tour.scenes[currentSceneIndex.value].circles);
+
 
 let initialTextureResult = await useTexture({ map: currentSceneBackground.value });
 const currentTexture = ref(initialTextureResult.map);
@@ -50,6 +52,7 @@ watch(selectedCircleId, (newId) => {
 // 
 function handleCircleClick(circle: CircleInfo) {
   //finds the index based on scene Id
+  if(selectedCircleId.value === circle.id) return;
   const newIndex = store.$state.tour.scenes.findIndex(scene => scene.id === circle.onClickAction.actionArgs)
   store.setCurrentSceneIndex(newIndex)
 }
@@ -61,11 +64,21 @@ function handleTransformChange() {
   const pos = selectedMesh.value.position;
   const circleId = selectedCircleId.value;
 
-  // Update store with new coordinates
-  if (circleId) {
-    console.log([pos.x, pos.y, pos.z]);
-  }
+ store.editCircle(
+    currentSceneIndex.value,
+    store.$state.tour.scenes[currentSceneIndex.value].circles.findIndex(c => c.id === circleId),
+    {
+      ...store.$state.selectedCircle!,
+      coordinates: [pos.x, pos.y, pos.z]
+    }
+  );
 }
+
+const currentSceneCircles = computed(() => store.$state.tour.scenes[currentSceneIndex.value].circles);
+
+watch(currentSceneCircles, (newCircles) => {
+  visibleCircles.value = newCircles.map(c => ({ ...c }));
+});
 
 // ---------------------------
 // Scene changes / texture reload
@@ -75,7 +88,7 @@ watch(currentSceneIndex, async (newIndex) => {
   selectedMesh.value = null;
 
   loadingTexture.value = true;
-  visibleCircles.value = [];
+  //visibleCircles. value = [];
   await nextTick();
 
   try { currentTexture.value?.dispose?.(); } catch(e){}
@@ -88,7 +101,7 @@ watch(currentSceneIndex, async (newIndex) => {
 
   await nextTick();
 
-  visibleCircles.value = store.$state.tour.scenes[newIndex].circles.map(c => ({ ...c }));
+  //visibleCircles.value = store.$state.tour.scenes[newIndex].circles.map(c => ({ ...c }));
   loadingTexture.value = false;
 });
 
@@ -119,7 +132,7 @@ function updateCamera() {
 
     <!-- Circles -->
     <TresMesh
-      v-for="circle in visibleCircles"
+      v-for="circle in allCircles"
       :key="circle.id"
       :position="circle.coordinates"
       :scale="circle.scale"

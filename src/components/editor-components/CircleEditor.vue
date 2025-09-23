@@ -93,7 +93,7 @@ const deleteCircle = () => {
 
 
 <template>
-  <div class="circle-editor">
+  <div class="editor">
     <h3 class="title">Circle Editor</h3>
     <!-- Color -->
     <div class="form-group-inline">
@@ -178,101 +178,13 @@ const deleteCircle = () => {
       </select>
     </div>
     <button class="delete-btn" @click="deleteCircle">Delete Circle</button>
-
   </div>
 </template>
-
 <style scoped>
-.circle-editor {
-  background: #242424;
-  font-family: sans-serif;
-  color: white;
-}
-
-.title {
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
-  text-align: center;
-  color: #fff;
-}
-
-.delete-btn {
-  background: #ff4d4f;
-  color: white;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 3px;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  width: 100%;
-  font-weight: bold;
-}
-.delete-btn:hover {
-  background: #e04345;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group-inline {
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.form-inline {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.form-inline div {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-label {
-  margin-bottom: 0.3rem;
-  font-weight: 600;
-  color: #fff;
-}
-
-input[type="number"] {
-  padding: 0.4rem;
-  border-radius: 6px;
-  border: 1px solid #555;
-  background: #333;
-  color: white;
-  font-size: 15px;
-  width: 100%;
-}
-
-input[type="color"] {
-  width: 60px;
-  height: 40px;
-  border: none;
-  cursor: pointer;
-  background: transparent;
-}
-
-select {
-  padding: 0.5rem;
-  border: 1px solid #555;
-  border-radius: 6px;
-  background: #333;
-  color: white;
-  font-size: 15px;
-  cursor: pointer;
-}
-select option {
-  background: #242424;
-  color: white;
-}
-</style>
+ .title{
+    color: white;
+    font-size: 1.5em;
+    margin-bottom: 1rem;
+    text-align: center;
+ }
+  </style>

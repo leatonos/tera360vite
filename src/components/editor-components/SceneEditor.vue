@@ -93,9 +93,8 @@ function addCircleAction(){
 
 
 <template>
-  <div class="scene-editor">
+  <div class="editor">
     <h2 class="editor-title">Scene Editor</h2>
-
     <!-- Scene Name -->
     <div class="form-group">
       <input
@@ -122,78 +121,5 @@ function addCircleAction(){
 </template>
 
 <style>
-.scene-editor {
-  max-width: 400px;
-}
-.editor-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  text-align: center;
-  color: white;
-}
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin: 1rem 0;
-}
-
-input[type="text"] {
-  padding: 0.6rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-input[type="text"]:focus {
-  outline: none;
-  border-color: #ffb6c1;
-}
-
-/* Hide the native file input */
-#texture-selector {
-  display: none;
-}
-
-/* Cute upload button */
-.cute-upload-btn {
-  display: inline-block;
-  background: black;
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 3px;
-  padding: 0.6rem .8rem;
-  cursor: pointer;
-  text-align: center;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.cute-upload-btn:hover {
-  background: white;
-  color: black;
-  transform: scale(1.05);
-}
-
-.actions {
-  display: flex;
-  justify-content: center;
-}
-
-.btn {
-  background: white;
-  color: #242424;
-  border: none;
-  padding: 0.7rem 1.2rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.btn:hover {
-  background: #000000;
-  color: #ffffff;
-}
 </style>

@@ -84,16 +84,18 @@ const handleNameChange = (value:string) =>{
            <h1>Tour Editor</h1>
             <input type="text" id="tuor_name" name="tuor_name" v-model="storeState.tour.name"  @change="(e: Event) => handleNameChange((e.target as HTMLInputElement).value)">
             <div>
-              <button @click="save">Save</button>
-              <button @click="addSceneAction">Add new scene</button>
+              <button class="cute-upload-btn save_btn" @click="save">Save</button>
             </div>
         </div>  
       </header>
         <div class="scenes-list">
+            <ul>
+              <li @click="addSceneAction"> + New Scene</li>
+            </ul>
             <ul v-for="(scene, sceneIndex) in scenes" :key="scene.id">
-               <li @click="selectScene(scene, sceneIndex)">{{ scene.name }}</li>
+               <li class="list_item scene_item" @click="selectScene(scene, sceneIndex)">{{ scene.name }}</li>
                <ul v-for="(circle, idx) in scene.circles" :key="circle.id" class="circles-list">
-                 <li @click="selectCircle(circle)">
+                 <li class="list_item circle_item" @click="selectCircle(circle)">
                    Circle {{ idx + 1 }}
                  </li>
                </ul>
@@ -106,7 +108,7 @@ const handleNameChange = (value:string) =>{
     </div>
 </template>
 
-<style>
+<style scoped>
     h1{
       color: white;
       font-size: 2em;
@@ -155,5 +157,22 @@ const handleNameChange = (value:string) =>{
         color: white;
         height: 40%;
         overflow-y: auto;
+    }
+    .save_btn{
+      border: none;
+      margin-top: 10px;
+    }
+
+    .list_item{
+      padding: 2px;
+      border-radius: 2px;
+    }
+
+    .scene_item:hover{
+      background-color: #3a3a3a;
+    }
+
+    .circle_item:hover{
+      background-color: #505050;
     }
 </style>

@@ -88,6 +88,13 @@ function addSphereAction(){
 function addCircleAction(){
     store.addCircle(thisSceneIndex.value)
 }
+
+function deleteSceneAction(){
+    const confirmDelete = confirm("Are you sure you want to delete this scene?");
+    if (confirmDelete) {
+        store.deleteScene(thisSceneIndex.value)
+    }
+}
 </script>
 
 
@@ -116,10 +123,15 @@ function addCircleAction(){
     <div class="actions">
       <!-- <button @click="addSphereAction">Add new sphere</button> -->
       <button class="btn" @click="addCircleAction">Add new circle</button>
+      <button class="red btn" style="" @click="deleteSceneAction">Delete Scene</button>
     </div>
   </div>
 </template>
 
 <style>
 
+.red{
+    background-color: #e74c3c;
+    color: white;
+}
 </style>

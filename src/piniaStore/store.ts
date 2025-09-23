@@ -63,6 +63,16 @@ export const useTourStore = defineStore('tour', () => {
         tour.value.scenes.push(newScene);
     };
 
+    const deleteScene = (sceneIndex: number) => {
+        if (tour.value.scenes.length <= 1) {
+            alert("Cannot delete the last scene.");
+            return;
+        }
+
+        tour.value.scenes.splice(sceneIndex, 1);
+
+    }
+
     const setSceneName =  (sceneIndex: number, name: string) => {
 
         tour.value.scenes[sceneIndex].name = name;
@@ -130,6 +140,7 @@ export const useTourStore = defineStore('tour', () => {
         setCameraDirection,
         setTourName,
         addScene,
+        deleteScene,
         setSceneName,
         addCircle,
         deleteCircle,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { TresCanvas } from "@tresjs/core";
-import { CameraControls, TransformControls } from "@tresjs/cientos";
+import { BaseCameraControls, CameraControls, TransformControls } from "@tresjs/cientos";
 import { useTexture } from "@tresjs/core";
 import { ref, computed, watch, nextTick } from "vue";
 import * as THREE from "three";
@@ -122,7 +122,16 @@ function updateCamera() {
 <template>
   <TresCanvas preset="realistic">
     <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="10" />
-    <CameraControls @end="updateCamera" :reverseOrbit="true" :reversePan="true" />
+    <CameraControls 
+      @end="updateCamera" 
+      :maxDistance="2"
+      minZoom="1"
+      maxZoom="5"
+      :azimuthRotateSpeed="-1"
+      :polarRotateSpeed="-1"
+      :dollyDragInverted="true"
+      :mouse-buttons="{ left: BaseCameraControls.ACTION.ROTATE }"
+      />
 
     <!-- Skybox -->
     <TresMesh :position="[0,0,0]" :scale="6">

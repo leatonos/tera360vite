@@ -61,7 +61,10 @@ const uploadToS3 = async(file: File, tourId: string, sceneId: string) => {
       body: file
     });
 
-    if (!uploadRes.ok) throw new Error("Upload to S3 failed");
+    if (!uploadRes.ok){
+      throw new Error("Upload to S3 failed");
+    } 
+      
 
     console.log("✅ File uploaded:", fileURL);
     return fileURL; // final public S3 link

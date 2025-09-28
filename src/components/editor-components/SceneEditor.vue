@@ -15,9 +15,10 @@ const store = useTourStore()
 //States
 const listOfScenes = computed(() => store.$state.tour.scenes)
 const thisSceneId = computed(() => props.thisScene.id)
-const thisSceneIndex = computed(() => listOfScenes.value.findIndex(scene => scene.id === thisSceneId.value))
+const thisSceneIndex = computed(() => listOfScenes.value.findIndex(scene => scene.id === thisSceneId.value));
 const sceneIndex = ref(store.tour.scenes.findIndex(scene => scene.id === props.thisScene.id));
 const uploading = ref(false)
+const rotation = computed(() => store.$state.tour.scenes[sceneIndex.value]?.rotation || 0);
 const uploadText = ref("Upload Background")
 
 
@@ -88,6 +89,11 @@ function addSphereAction(){
 }
 */
 
+function handleRotation(value:string){
+    const newNumber = parseFloat(value)
+    store.setSceneRotation(sceneIndex.value, newNumber)
+}
+
 function addCircleAction(){
     store.addCircle(thisSceneIndex.value)
 }
@@ -104,7 +110,9 @@ function deleteSceneAction(){
 
 <template>
   <div class="editor">
+   
     <h2 class="editor-title">Scene Editor</h2>
+   
     <!-- Scene Name -->
     <div class="form-group">
       <input
@@ -114,6 +122,14 @@ function deleteSceneAction(){
         @input="handleNameChange"
         placeholder="Enter scene name"
       />
+    </div>
+
+    <!-- Scene Rotation -->
+    <div class="form-group">
+      <label>Scene Rotation: {{ rotation }}</label>
+      <input type="range" id="rotation" name="rotation" min="-180" max="180" step="1" :value="rotation"
+      @change="(e: Event) => handleRotation((e.target as HTMLInputElement).value)"
+      >
     </div>
 
      <!-- Background Upload -->
@@ -128,6 +144,7 @@ function deleteSceneAction(){
       <button class="btn" @click="addCircleAction">Add new circle</button>
       <button class="red btn" style="" @click="deleteSceneAction">Delete Scene</button>
     </div>
+  
   </div>
 </template>
 

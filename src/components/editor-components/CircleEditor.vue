@@ -155,7 +155,6 @@ const deleteCircle = () => {
         />
       </div>
     </div>
-
     <!-- Action -->
     <div class="form-group-inline">
       <label for="action">Action Type:</label>
@@ -163,7 +162,7 @@ const deleteCircle = () => {
         <option value="Teleport">Teleport</option>
       </select>
     </div>
-
+    <!-- Scene Teleport Selection -->
     <div class="form-group-inline">
       <label for="location">Location:</label>
       <select

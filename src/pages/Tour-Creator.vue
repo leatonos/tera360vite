@@ -16,14 +16,14 @@ const router = useRouter();
 const tourId = route.params.tourId as string | undefined
 const apiUrl = import.meta.env.VITE_API
 
-
 const newTour = {
   name: "New tour",
   scenes: [
     {
       id: uuidv4(), // unique per scene
       name: "New scene",
-      background: 'https://pedrobaptista.com/photos360/welder_01.jpg',
+      rotation:0,
+      background: 'https://cdn.aframe.io/360-image-gallery-boilerplate/img/cubes.jpg',
       circles: [],
       spheres: []
     }
@@ -44,7 +44,6 @@ async function getTour(id:string) {
   const response = await fetch(`${apiUrl}/tour/${id}`);
   return await response.json(); 
 }
-
 
 onMounted(async ()=>{
   // if no tourId, create new tour on database
@@ -67,7 +66,6 @@ onMounted(async ()=>{
     loading.value = false;
   }
 })
-
 
 </script>
 

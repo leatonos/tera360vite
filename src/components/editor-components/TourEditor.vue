@@ -6,23 +6,19 @@ import SceneEditor from "./SceneEditor.vue";
 import CircleEditor from "./CircleEditor.vue";
 import type { CircleInfo, SceneInfo } from "../../types";
 
-const apiUrl = import.meta.env.VITE_API
+const apiUrl:string = import.meta.env.VITE_API
 
 //Store
 const store = useTourStore()
 const scenes = store.$state.tour.scenes
-
 const storeState = store.$state
 
 //Actions
 const addSceneAction = store.addScene
 
-
 //State
 const selectedScene = ref<SceneInfo|null>(null)
 const selectedCircle = ref<CircleInfo|null>(null)
-
-
 
 const selectScene = (scene:SceneInfo, index:number) =>{
     selectedCircle.value = null
@@ -102,7 +98,7 @@ const handleNameChange = (value:string) =>{
             </ul>
         </div>
          <div class="properties-panel">
-            <SceneEditor v-if="selectedScene" :thisScene="selectedScene" :key="selectedScene.id"/>
+            <SceneEditor v-if="selectedScene" :thisScene="selectedScene" :key="selectedScene.id" />
             <CircleEditor v-if="selectedCircle" :thisCircle="selectedCircle" :key="selectedCircle.id" />
         </div>
     </div>

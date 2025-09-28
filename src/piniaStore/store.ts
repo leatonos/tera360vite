@@ -57,6 +57,7 @@ export const useTourStore = defineStore('tour', () => {
             id: uuidv4(),
             name: "New scene",
             background: 'https://cdn.aframe.io/360-image-gallery-boilerplate/img/cubes.jpg',
+            rotation: 0,
             circles: [],
             spheres: []
         };
@@ -78,6 +79,10 @@ export const useTourStore = defineStore('tour', () => {
         tour.value.scenes[sceneIndex].name = name;
   
     };
+
+    const setSceneRotation = (sceneIndex: number, rotation: number) => {
+        tour.value.scenes[sceneIndex].rotation = rotation;
+    }
 
     const addCircle = (sceneIndex: number) => {
         const defaultCircle: CircleInfo = {
@@ -110,9 +115,7 @@ export const useTourStore = defineStore('tour', () => {
     };
 
     const deleteCircle = (sceneIndex: number, circleIndex: number) => {
-
         tour.value.scenes[sceneIndex].circles.splice(circleIndex, 1);
-  
       }
 
     const editSphere = (sceneIndex: number, sphereIndex: number, sphereInfo: SphereInfo) => {
@@ -140,6 +143,7 @@ export const useTourStore = defineStore('tour', () => {
         setCameraDirection,
         setTourName,
         addScene,
+        setSceneRotation,
         deleteScene,
         setSceneName,
         addCircle,

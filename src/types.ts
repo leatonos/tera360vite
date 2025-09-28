@@ -4,6 +4,7 @@ export interface SceneInfo {
     id: string; // Unique identifier for the Scene
     name: string;
     background: string;
+    rotation: number;
     circles: CircleInfo[];
     spheres: SphereInfo[];
 }

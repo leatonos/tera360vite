@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { TresCanvas } from "@tresjs/core";
-import { BaseCameraControls, CameraControls, TransformControls } from "@tresjs/cientos";
+import { CameraControls, TransformControls } from "@tresjs/cientos";
 import { useTexture } from "@tresjs/core";
 import { ref, computed, watch, nextTick } from "vue";
 import * as THREE from "three";
@@ -21,7 +21,8 @@ const currentSceneBackground = computed(
 const loadingTexture = ref(true);
 const visibleCircles = ref<Array<CircleInfo>>([]);
 const allCircles = computed(() => store.$state.tour.scenes[currentSceneIndex.value].circles);
-
+const rotationDeg = computed(() => store.$state.tour.scenes[currentSceneIndex.value]?.rotation || 0);
+const rotationRad = computed(() => (rotationDeg.value * Math.PI) / 180)
 
 let initialTextureResult = await useTexture({ map: currentSceneBackground.value });
 const currentTexture = ref(initialTextureResult.map);
@@ -129,12 +130,10 @@ function updateCamera() {
       maxZoom="5"
       :azimuthRotateSpeed="-1"
       :polarRotateSpeed="-1"
-      :dollyDragInverted="true"
-      :mouse-buttons="{ left: BaseCameraControls.ACTION.ROTATE }"
       />
 
     <!-- Skybox -->
-    <TresMesh :position="[0,0,0]" :scale="6">
+    <TresMesh :position="[0,0,0]" :scale="6" :rotation="[0,rotationRad,0]">
       <TresSphereGeometry :args="[1,100,100]" />
       <TresMeshBasicMaterial :map="currentTexture" :side="2" :toneMapped="false" />
     </TresMesh>

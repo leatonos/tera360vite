@@ -19,6 +19,7 @@ const addSceneAction = store.addScene
 //State
 const selectedScene = ref<SceneInfo|null>(null)
 const selectedCircle = ref<CircleInfo|null>(null)
+const savingText = ref("Save")
 
 const selectScene = (scene:SceneInfo, index:number) =>{
     selectedCircle.value = null
@@ -39,7 +40,7 @@ const save = async() =>{
     
   const itemId = store.$state.tour._id
   const updateData = store.$state.tour
-
+  savingText.value = "Saving..."
   console.log("Saving tour with ID:", itemId)
   console.log("Update data:")
   console.log(JSON.stringify(updateData
@@ -57,6 +58,8 @@ const save = async() =>{
 
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`)
+    }else{
+      savingText.value = "Save"
     }
 
     const updatedDoc = await response.json()
@@ -80,7 +83,7 @@ const handleNameChange = (value:string) =>{
            <h1>Tour Editor</h1>
             <input type="text" id="tuor_name" name="tuor_name" v-model="storeState.tour.name"  @change="(e: Event) => handleNameChange((e.target as HTMLInputElement).value)">
             <div>
-              <button class="cute-upload-btn save_btn" @click="save">Save</button>
+              <button class="cute-upload-btn save_btn" @click="save">{{ savingText }}</button>
             </div>
         </div>  
       </header>

@@ -6,7 +6,7 @@ import Scene from '../components/3d-components/Scene.vue';
 import TuorEditor from '../components/editor-components/TourEditor.vue';
 import type { Tour } from '../types';
 import { useTourStore } from "../piniaStore/store";
-
+import teraLogoWhite from '../assets/teraLogoBranco.svg'
 const loading = ref(true)
 const loadingText = ref("")
 
@@ -82,6 +82,9 @@ onMounted(async ()=>{
              <Suspense>
                <Scene/>
              </Suspense>
+             <a href="https://tera.arq.br" target="_blank" rel="noopener">
+              <img id="logoTeraCantinho" :src="teraLogoWhite" />
+            </a>
          </div>
        </template>
   </div>
@@ -104,5 +107,12 @@ onMounted(async ()=>{
   background-color: aquamarine;
   width: 75%;
   height: 100vh;
+}
+#logoTeraCantinho{
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 100px;
+  opacity: 0.7;
 }
 </style>

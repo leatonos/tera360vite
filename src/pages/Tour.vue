@@ -6,6 +6,8 @@ import { onMounted, ref } from 'vue';
 import type { Tour } from '../types';
 import { useTourStore } from '../piniaStore/store';
 
+import teraLogoWhite from '../assets/teraLogoBranco.svg'
+
 const route = useRoute()
 const router = useRouter()
 const store = useTourStore()
@@ -48,6 +50,9 @@ onMounted(async()=>{
         <Suspense>
           <Scene/>
         </Suspense>
+        <a href="https://tera.arq.br" target="_blank" rel="noopener">
+          <img id="logoTeraCantinho" :src="teraLogoWhite" />
+        </a>
       </template>
     </div>
   </div>
@@ -64,5 +69,13 @@ onMounted(async()=>{
 .canvas{
   width: 100%;
   height: 100vh;
+}
+
+#logoTeraCantinho{
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 100px;
+  opacity: 0.7;
 }
 </style>

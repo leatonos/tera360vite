@@ -7,8 +7,7 @@ import type { RouteLocationNormalized } from "vue-router"
 const routes = [
   { path: "/", component: Home },
   { path: "/tour-creator/:tourId?", component: TourCreator },
-  { path: "/tour/:tourId?",
-  component: Tour,
+  { path: "/tour/:tourId?",component: Tour,
   beforeEnter: (to: RouteLocationNormalized) => {
     if (!to.params.tourId) {
       return "/" // redirect to home

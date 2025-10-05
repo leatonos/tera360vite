@@ -20,6 +20,7 @@ const addSceneAction = store.addScene
 const selectedScene = ref<SceneInfo|null>(null)
 const selectedCircle = ref<CircleInfo|null>(null)
 const savingText = ref("Save")
+const selectedCircleIndex = ref<number>(0)
 
 const selectScene = (scene:SceneInfo, index:number) =>{
     selectedCircle.value = null
@@ -29,11 +30,12 @@ const selectScene = (scene:SceneInfo, index:number) =>{
     store.setCurrentSceneIndex(index)
 }
 
-const selectCircle = (circle:CircleInfo) =>{
+const selectCircle = (circle:CircleInfo, index:number) =>{
   console.log("Selected circle:", circle)
     selectedScene.value = null
     selectedCircle.value = circle
     store.setSelectedCircle(circle)
+    selectedCircleIndex.value = index
 }
 
 const save = async() =>{
@@ -94,7 +96,7 @@ const handleNameChange = (value:string) =>{
             <ul v-for="(scene, sceneIndex) in scenes" :key="scene.id">
                <li class="list_item scene_item" @click="selectScene(scene, sceneIndex)">{{ scene.name }}</li>
                <ul v-for="(circle, idx) in scene.circles" :key="circle.id" class="circles-list">
-                 <li class="list_item circle_item" @click="selectCircle(circle)">
+                 <li class="list_item circle_item" @click="selectCircle(circle, idx+1)">
                    Circle {{ idx + 1 }}
                  </li>
                </ul>
@@ -102,7 +104,7 @@ const handleNameChange = (value:string) =>{
         </div>
          <div class="properties-panel">
             <SceneEditor v-if="selectedScene" :thisScene="selectedScene" :key="selectedScene.id" />
-            <CircleEditor v-if="selectedCircle" :thisCircle="selectedCircle" :key="selectedCircle.id" />
+            <CircleEditor v-if="selectedCircle" :thisCircle="selectedCircle" :index="selectedCircleIndex" :key="selectedCircle.id" />
         </div>
     </div>
 </template>

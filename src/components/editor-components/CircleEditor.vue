@@ -7,7 +7,8 @@ import type { CircleInfo } from "../../types";
 
 //Props
 const props = defineProps<{
-    thisCircle:CircleInfo
+    thisCircle:CircleInfo,
+    index:number
 }>()
 
 
@@ -26,6 +27,8 @@ const circleZ = ref(props.thisCircle.coordinates[2])
 
 const listOfCircles = store.tour.scenes[sceneIndex].circles
 const thisCircleIndex = listOfCircles.findIndex((circle)=> circle.id == thisCircleId)
+
+const sceneName = store.tour.scenes[sceneIndex].name
 
 const createNewCircleInfo = (): CircleInfo => {
     return {
@@ -72,11 +75,9 @@ const handleYChange = (value:string) =>{
     store.editCircle(sceneIndex,thisCircleIndex,createNewCircleInfo())
 }
 const handleZChange = (value:string) =>{
-
-    const newNumber = parseFloat(value)
-    
-    circleZ.value = newNumber
-    store.editCircle(sceneIndex,thisCircleIndex,createNewCircleInfo())
+  const newNumber = parseFloat(value)
+  circleZ.value = newNumber
+  store.editCircle(sceneIndex,thisCircleIndex,createNewCircleInfo())
 }
 
 const handleSceneChange = (event: Event) => {
@@ -94,7 +95,7 @@ const deleteCircle = () => {
 
 <template>
   <div class="editor">
-    <h3 class="title">Circle Editor</h3>
+    <h3 class="title">{{ sceneName }} - Circle {{ props.index }}</h3>
     <!-- Color -->
     <div class="form-group-inline">
       <label for="favcolor">Color:</label>

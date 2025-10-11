@@ -15,7 +15,7 @@ const store = useTourStore();
 // ---------------------------
 const currentSceneIndex = computed(() => store.$state.currentSceneIndex);
 const currentSceneBackground = computed(
-  () => store.$state.tour.scenes[currentSceneIndex.value]?.background
+  () => store.$state.tour.scenes[currentSceneIndex.value].background
 );
 
 const loadingTexture = ref(true);
@@ -128,8 +128,8 @@ function updateCamera() {
       :maxDistance="2"
       minZoom="1"
       maxZoom="5"
-      :azimuthRotateSpeed="-1"
-      :polarRotateSpeed="-1"
+      :azimuthRotateSpeed="-0.5"
+      :polarRotateSpeed="-0.5"
       />
 
     <!-- Skybox -->

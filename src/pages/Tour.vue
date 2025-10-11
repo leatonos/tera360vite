@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import Scene from '../components/3d-components/Scene.vue';
+import Scene from '../components/3d-components/SceneB.vue';
 import { useRoute, useRouter } from "vue-router"
 const apiUrl = import.meta.env.VITE_API
 import { onMounted, ref } from 'vue';
 import type { Tour } from '../types';
 import { useTourStore } from '../piniaStore/store';
+import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
+
 
 import teraLogoWhite from '../assets/teraLogoBranco.svg'
 
@@ -44,7 +46,10 @@ onMounted(async()=>{
   <div class="main-container">
     <div class="canvas">
       <template v-if="loading">
-        <p>{{ loadingText }}</p>
+        <div class="loading-screen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background-color: white;">
+          <DotLottieVue style="height: 200px; width: 500px" autoplay src="https://lottie.host/9b888865-03ce-4cce-b1ec-3c0058202c3a/VzYcqq3nGU.lottie" />
+          <div class="loader"></div>
+        </div>
       </template>
       <template v-else>
         <Suspense>
@@ -77,5 +82,28 @@ onMounted(async()=>{
   right: 10px;
   width: 100px;
   opacity: 0.7;
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 8px solid;
+  border-color: #000 #0000;
+  animation:  fadeIn 1s ease forwards 1.5s, /* fade in after 5s delay */
+              l1 1s linear infinite; 
+  opacity: 0;
+}
+@keyframes l1 {
+  to {
+    transform: rotate(.5turn);
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
 }
 </style>

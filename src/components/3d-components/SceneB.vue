@@ -86,7 +86,7 @@ async function handleCircleClick (circle: CircleInfo) {
 
   const newScene = store.$state.tour.scenes[newIndex]
   currentSceneBackground.value = newScene.background
-  //rotationRad.value = (newScene.rotation || 0) * Math.PI / 180
+  rotationRad.value = (newScene.rotation || 0) * Math.PI / 180
 
   //Loads new texture
   await useTexture({ map: currentSceneBackground.value }).then((result) => {

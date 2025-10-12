@@ -37,7 +37,6 @@ onMounted(async() => {
   allCircles.value = store.$state.tour.scenes[currentSceneIndex.value].circles
 });
 
-
 async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetFov: number, speed:number): Promise<void> {
   return new Promise((resolve) => {
     if (!cameraRef.value) return resolve();
@@ -64,6 +63,7 @@ async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetF
     animate();
   });
 }
+
 async function handleCircleClick (circle: CircleInfo) {
   
   //Hide circles while loading new texture
@@ -111,12 +111,11 @@ async function handleCircleClick (circle: CircleInfo) {
 // ---------------------------
 // Selection / TransformControls
 // ---------------------------
-const selectedCircleId = computed(() => store.$state.selectedCircle ? store.$state.selectedCircle.id : null);
-const selectedMesh = ref<Mesh | null>(null);
 
 // store all meshes by circle ID
+const selectedCircleId = computed(() => store.$state.selectedCircle ? store.$state.selectedCircle.id : null);
+const selectedMesh = ref<Mesh | null>(null);
 const meshRefs: Record<string, Mesh | null> = {};
-
 // watch circle selection
 watch(selectedCircleId, (newId) => {
   if (newId && meshRefs[newId]) {
@@ -128,7 +127,9 @@ watch(selectedCircleId, (newId) => {
   }
 });
 
-//watch external scene index changes
+//---------------------------
+// Handle external scene index changes
+//---------------------------
 watch(() => store.$state.currentSceneIndex, async (newIndex) => {
 
   //If same index, do nothing
@@ -156,7 +157,9 @@ watch(() => store.$state.currentSceneIndex, async (newIndex) => {
 
 })
  
-
+// ---------------------------
+// TransformControls change handler
+// ---------------------------
 function handleTransformChange() {
   if (!selectedMesh.value) return;
 

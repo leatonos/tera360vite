@@ -35,13 +35,6 @@ onMounted(async() => {
   loadingTexture.value = false;
   // populate initial circles after texture loads
   allCircles.value = store.$state.tour.scenes[currentSceneIndex.value].circles
-
-   if(cameraRef.value){
-    const cam = cameraRef.value;
-    cam.zoom = 4
-    cam.updateMatrix()
-  }
-
 });
 
 
@@ -106,16 +99,12 @@ async function handleCircleClick (circle: CircleInfo) {
     currentTexture.value = result.map;
     currentTexture.value.mapping = THREE.EquirectangularReflectionMapping;
     currentTexture.value.colorSpace = THREE.SRGBColorSpace;
-    loadingTexture.value = false;
-    isFading.value = false
+    loadingTexture.value,isFading.value = false;
   });
   
   //Updates circles
   allCircles.value = store.$state.tour.scenes[newIndex].circles
   store.setCurrentSceneIndex(newIndex)
-
-
-  //Fade in
 
 }
 
@@ -138,6 +127,34 @@ watch(selectedCircleId, (newId) => {
     cameraSpeed.value = -0.2
   }
 });
+
+//watch external scene index changes
+watch(() => store.$state.currentSceneIndex, async (newIndex) => {
+
+  //If same index, do nothing
+  if(newIndex === currentSceneIndex.value) return;
+
+  //Hide circles while loading new texture
+  loadingTexture.value = true
+  allCircles.value = []
+  //Fade out
+  isFading.value = true
+
+  // Loads new texture
+  await useTexture({ map: store.$state.tour.scenes[newIndex].background }).then((result) => {
+    currentTexture.value = result.map;
+    currentTexture.value.mapping = THREE.EquirectangularReflectionMapping;
+    currentTexture.value.colorSpace = THREE.SRGBColorSpace;
+    rotationRad.value = (store.$state.tour.scenes[newIndex].rotation || 0) * Math.PI / 180
+    loadingTexture.value,isFading.value = false;
+  });
+
+  //Updates circles
+  allCircles.value = store.$state.tour.scenes[newIndex].circles
+  currentSceneIndex.value = newIndex
+
+
+})
  
 
 function handleTransformChange() {

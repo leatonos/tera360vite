@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Scene from '../components/3d-components/SceneB.vue';
+import Scene from '../components/3d-components/Scene.vue';
 import { useRoute, useRouter } from "vue-router"
 const apiUrl = import.meta.env.VITE_API
 import { onMounted, ref } from 'vue';

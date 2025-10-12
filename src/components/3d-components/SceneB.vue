@@ -17,10 +17,12 @@ const rotationRad = ref((store.$state.tour.scenes[0].rotation || 0) * Math.PI / 
 const cameraRef = ref<PerspectiveCamera | null>(null);
 const allCircles = ref<Array<CircleInfo>>([]);
 const currentSceneIndex = ref<number>(0);
-
-const cameraZoom = ref<number>(1);
 const currentTexture = ref(null as THREE.Texture|null);
 const loadingTexture = ref(true);
+const isFading = ref(false)
+
+//canvas element ref
+const canvasElement = ref<HTMLElement|null>(null)
 
 
 //Loads initial texture and Circles
@@ -51,13 +53,16 @@ async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetF
     const cam = cameraRef.value;
     let animationId: number;
 
+    // Animation loop
     const animate = () => {
       cam.fov += (targetFov - cam.fov) * speed;
       cam.updateProjectionMatrix();
 
+      // Continue the animation until the target FOV is reached
       if (Math.abs(cam.fov - targetFov) > 0.1) {
         animationId = requestAnimationFrame(animate);
       } else {
+        // Ensure the final FOV is set precisely
         cam.fov = targetFov;
         cam.updateProjectionMatrix();
         cancelAnimationFrame(animationId);
@@ -73,11 +78,20 @@ async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetF
 
 async function handleCircleClick (circle: CircleInfo) {
   
-  await smoothZoom(cameraRef, 20, 0.08)
-
   //Hide circles while loading new texture
   loadingTexture.value = true
   allCircles.value = []
+  
+  isFading.value = true
+  //Camera zoom in animation
+  await smoothZoom(cameraRef, 20, 0.15)
+
+  //Fade out
+  if(!canvasElement.value){
+    return;
+  }else{
+    canvasElement.value.classList.add("fadeOut")
+  }
   
   //Getting new Scene index and data
   if(selectedCircleId.value === circle.id) return;
@@ -98,11 +112,16 @@ async function handleCircleClick (circle: CircleInfo) {
     currentTexture.value.mapping = THREE.EquirectangularReflectionMapping;
     currentTexture.value.colorSpace = THREE.SRGBColorSpace;
     loadingTexture.value = false;
+    isFading.value = false
   });
   
   //Updates circles
   allCircles.value = store.$state.tour.scenes[newIndex].circles
   store.setCurrentSceneIndex(newIndex)
+
+
+  //Fade in
+
 }
 
 // ---------------------------
@@ -156,7 +175,8 @@ function updateCamera() {
 </script>
 
 <template>
-  <TresCanvas preset="realistic">
+   <div class="canvas-wrapper" ref="canvasElement"  :class="{ fadeOut: isFading }">
+  <TresCanvas preset="realistic" class="scene_canvas">
     <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="2000" :fov="50" />
     <CameraControls 
       @end="updateCamera" 
@@ -168,7 +188,7 @@ function updateCamera() {
     <!-- Skybox -->
     <TresMesh :position="[0,0,0]" :scale="6" :rotation="[0,rotationRad,0]">
       <TresSphereGeometry :args="[1,100,100]" />
-      <TresMeshBasicMaterial :map="currentTexture" :side="2" :toneMapped="false" />
+      <TresMeshBasicMaterial :map="currentTexture" :side="2" :toneMapped="false"/>
     </TresMesh>
 
     <!-- Circles -->
@@ -187,7 +207,6 @@ function updateCamera() {
         :side="2"
       />
     </TresMesh>
-
     <!-- TransformControls attached to selected mesh -->
     <TransformControls
       v-if="selectedMesh"
@@ -196,4 +215,21 @@ function updateCamera() {
       mode="translate"
     />
   </TresCanvas>
+   </div>
 </template>
+
+<style scoped>
+  /* scene canvas fadeout animation */
+.canvas-wrapper {
+  top: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: opacity .6s ease;
+  opacity: 1;
+}
+
+.canvas-wrapper.fadeOut {
+  opacity: 0;
+}
+</style>

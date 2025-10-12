@@ -57,6 +57,7 @@ onMounted(async()=>{
         </Suspense>
         <a href="https://tera.arq.br" target="_blank" rel="noopener">
           <img id="logoTeraCantinho" :src="teraLogoWhite" />
+          <p>v0.81</p>
         </a>
       </template>
     </div>

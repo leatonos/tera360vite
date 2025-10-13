@@ -19,6 +19,7 @@ const currentSceneIndex = ref<number>(0);
 const textures = ref<Record<string, THREE.Texture>>({});
 const currentTexture = ref(null as THREE.Texture|null);
 const loadingTexture = ref(true);
+const loadingProgress = ref(0);
 const isFading = ref(false)
 const cameraSpeed = ref(-0.2)
 
@@ -39,17 +40,25 @@ onMounted(async () => {
 
   const index = store.$state.currentSceneIndex || 0;
   const scene = store.$state.tour.scenes[index];
+  loadingTexture.value = true;
 
+  //Creates a list of all backgrounds to preload them
   const allBackgrounds = store.$state.tour.scenes.map(scene => scene.background);
-  const loadAllTexturesResult = await loadAllTextures(allBackgrounds);
+  
+  // Preload all textures and tracks loading progress
+  const loadAllTexturesResult = await loadAllTextures(allBackgrounds, (percent) => {
+    loadingProgress.value = percent;
+  });
+
   textures.value = loadAllTexturesResult;
+
+  // Sets initial texture
   setSceneTexture(scene.background);
   currentSceneIndex.value = index;
   rotationRad.value = (scene.rotation || 0) * Math.PI / 180;
-
-  loadingTexture.value = true;
-
   allCircles.value = scene.circles;
+  
+  // Finishes loading sequence
   loadingTexture.value = false;
 });
 
@@ -86,19 +95,12 @@ async function handleCircleClick(circle: CircleInfo) {
   if (selectedCircleId.value === circle.id) return;
 
   //Starts loading sequence
-  loadingTexture.value = true;
   allCircles.value = [];
-  isFading.value = true;
-
   // Smooth zoom in
-  await smoothZoom(cameraRef, 20, 0.15);
-  // Fades out canvas
-  if (canvasElement.value) canvasElement.value.classList.add("fadeOut");
+  await smoothZoom(cameraRef, 20, 0.1);
 
-  // Loo
-  const newIndex = store.$state.tour.scenes.findIndex(
-    scene => scene.id === circle.onClickAction.actionArgs
-  );
+  // Looks for the new scene by circle's onClickAction
+  const newIndex = store.$state.tour.scenes.findIndex(scene => scene.id === circle.onClickAction.actionArgs);
   const newScene = store.$state.tour.scenes[newIndex];
 
   currentSceneIndex.value = newIndex;
@@ -113,9 +115,7 @@ async function handleCircleClick(circle: CircleInfo) {
     cameraRef.value.updateProjectionMatrix();
   }
 
-  loadingTexture.value = false;
   isFading.value = false;
-
   allCircles.value = newScene.circles;
   store.setCurrentSceneIndex(newIndex);
 }
@@ -145,7 +145,6 @@ watch(selectedCircleId, (newId) => {
 watch(() => store.$state.currentSceneIndex, async (newIndex) => {
   if (newIndex === currentSceneIndex.value) return;
 
-  loadingTexture.value = true;
   allCircles.value = [];
   isFading.value = true;
 
@@ -154,7 +153,6 @@ watch(() => store.$state.currentSceneIndex, async (newIndex) => {
 
   setSceneTexture(newScene.background);
 
-  loadingTexture.value = false;
   isFading.value = false;
 
   allCircles.value = newScene.circles;
@@ -198,9 +196,9 @@ function updateCamera() {
   
   <div class="canvas-wrapper" ref="canvasElement" :class="{ fadeOut: isFading }">
   <div v-if="loadingTexture" class="loading-screen">
-    <p class="loading-txt">Carregando...</p>
+    <p class="loading-txt">Carregando... {{ loadingProgress }}%</p>
   </div>
-  <TresCanvas preset="realistic">    
+  <TresCanvas preset="realistic" clearColor="#ffffff" :antialias="true">    
     <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="2000" :fov="50" />
     <CameraControls 
       @end="updateCamera" 
@@ -210,12 +208,13 @@ function updateCamera() {
       />
 
     <!-- Skybox -->
-    <TresMesh :position="[0,0,0]" :scale="6" :rotation="[0,rotationRad,0]">
+    <TresMesh color="#ffffff" :position="[0,0,0]" :scale="6" :rotation="[0,rotationRad,0]">
       <TresSphereGeometry :args="[1,100,100]" />
-      <TresMeshBasicMaterial :key="currentSceneBackground" :map="currentTexture" :side="2" :toneMapped="false"/>
+      <TresMeshBasicMaterial :key="currentSceneBackground" color="#ffffff" :map="currentTexture" :side="2" :toneMapped="false"/>
     </TresMesh>
     
     <!-- Circles -->
+    <TresMesh 
     <TresMesh 
       v-for="circle in allCircles"
       :key="circle.id"
@@ -249,7 +248,7 @@ function updateCamera() {
   position: relative;
   width: 100%;
   height: 100%;
-  transition: opacity .6s ease;
+  transition: opacity .5s ease;
   opacity: 1;
 }
 

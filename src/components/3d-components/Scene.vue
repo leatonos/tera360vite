@@ -7,7 +7,6 @@ import * as THREE from "three";
 import type { PerspectiveCamera, Mesh } from "three";
 import { useTourStore } from "../../piniaStore/store";
 import type { CircleInfo } from "../../types";
-import { camera } from "@tresjs/core/dist/src/utils/is.js";
 
 const store = useTourStore();
 
@@ -32,7 +31,6 @@ function setSceneTexture(url: string) {
   if (tex) {
     currentTexture.value = tex;
     currentSceneBackground.value = url;
-    console.log("Texture set from cache:", url);
   }
 }
 
@@ -63,6 +61,7 @@ onMounted(async () => {
   loadingTexture.value = false;
 });
 
+//Animated zoom function
 async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetFov: number, speed:number): Promise<void> {
   return new Promise((resolve) => {
     if (!cameraRef.value) return resolve();
@@ -74,15 +73,20 @@ async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetF
       cam.fov += (targetFov - cam.fov) * speed;
       cam.updateProjectionMatrix();
 
+      // Start fading out when close to target FOV
+      if(cam.fov/targetFov < 1.9 && !isFading.value){
+        isFading.value = true;
+      }
+
       // Continue the animation until the target FOV is reached
-      if (Math.abs(cam.fov - targetFov) > 0.1) {
+      if (Math.abs(cam.fov - targetFov) > 0.2) {
         animationId = requestAnimationFrame(animate);
-      } else {
+      }else{
         // Ensure the final FOV is set precisely
         cam.fov = targetFov;
         cam.updateProjectionMatrix();
         cancelAnimationFrame(animationId);
-        resolve(); // no value needed
+        resolve();
       }
     };
 
@@ -90,6 +94,13 @@ async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetF
   });
 }
 
+// ---------------------------
+// Circle click handler - Scene transition
+// ---------------------------
+/**
+ * 
+ * @param circle - CircleInfo of the clicked circle
+ */
 async function handleCircleClick(circle: CircleInfo) {
 
   //If the clicked circle is already selected, do nothing (Only for editor mode)
@@ -98,7 +109,7 @@ async function handleCircleClick(circle: CircleInfo) {
   //Starts loading sequence
   allCircles.value = [];
   // Smooth zoom in
-  await smoothZoom(cameraRef, 20, 0.1);
+  await smoothZoom(cameraRef, 25, 0.1);
 
   // Looks for the new scene by circle's onClickAction
   const newIndex = store.$state.tour.scenes.findIndex(scene => scene.id === circle.onClickAction.actionArgs);
@@ -110,15 +121,18 @@ async function handleCircleClick(circle: CircleInfo) {
 
   // ✅ change texture
   setSceneTexture(newScene.background);
+  allCircles.value = newScene.circles;
+  store.setCurrentSceneIndex(newIndex);
+
 
   if (cameraRef.value) {
     cameraRef.value.fov = 50;
     cameraRef.value.updateProjectionMatrix();
   }
 
-  isFading.value = false;
-  allCircles.value = newScene.circles;
-  store.setCurrentSceneIndex(newIndex);
+  setTimeout(() => {
+    isFading.value = false;
+  }, 100); 
 }
 
 // ---------------------------

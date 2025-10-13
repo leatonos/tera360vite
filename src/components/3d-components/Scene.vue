@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { TresCanvas } from "@tresjs/core";
 import { CameraControls, TransformControls } from "@tresjs/cientos";
-import { useTexture } from "@tresjs/core";
+import { loadAllTextures } from "../../utilis/loadAllTextures";
 import { ref, computed, watch, onMounted, type Ref } from "vue";
 import * as THREE from "three";
 import type { PerspectiveCamera, Mesh } from "three";
@@ -16,6 +16,7 @@ const rotationRad = ref((store.$state.tour.scenes[0].rotation || 0) * Math.PI / 
 const cameraRef = ref<PerspectiveCamera | null>(null);
 const allCircles = ref<Array<CircleInfo>>([]);
 const currentSceneIndex = ref<number>(0);
+const textures = ref<Record<string, THREE.Texture>>({});
 const currentTexture = ref(null as THREE.Texture|null);
 const loadingTexture = ref(true);
 const isFading = ref(false)
@@ -24,17 +25,32 @@ const cameraSpeed = ref(-0.2)
 //canvas element ref
 const canvasElement = ref<HTMLElement|null>(null)
 
+function setSceneTexture(url: string) {
+  const tex = textures.value[url];
+  if (tex) {
+    currentTexture.value = tex;
+    currentSceneBackground.value = url;
+    console.log("Texture set from cache:", url);
+  }
+}
+
 //Loads initial texture and Circles
-onMounted(async() => {
-  currentSceneIndex.value = store.$state.currentSceneIndex;
-  currentSceneBackground.value = store.$state.tour.scenes[currentSceneIndex.value].background;
-  const initialTextureResult = await useTexture({ map: currentSceneBackground.value });
-  currentTexture.value = initialTextureResult.map;
-  currentTexture.value.mapping = THREE.EquirectangularReflectionMapping;
-  currentTexture.value.colorSpace = THREE.SRGBColorSpace;
+onMounted(async () => {
+
+  const index = store.$state.currentSceneIndex || 0;
+  const scene = store.$state.tour.scenes[index];
+
+  const allBackgrounds = store.$state.tour.scenes.map(scene => scene.background);
+  const loadAllTexturesResult = await loadAllTextures(allBackgrounds);
+  textures.value = loadAllTexturesResult;
+  setSceneTexture(scene.background);
+  currentSceneIndex.value = index;
+  rotationRad.value = (scene.rotation || 0) * Math.PI / 180;
+
+  loadingTexture.value = true;
+
+  allCircles.value = scene.circles;
   loadingTexture.value = false;
-  // populate initial circles after texture loads
-  allCircles.value = store.$state.tour.scenes[currentSceneIndex.value].circles
 });
 
 async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetFov: number, speed:number): Promise<void> {
@@ -64,48 +80,44 @@ async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetF
   });
 }
 
-async function handleCircleClick (circle: CircleInfo) {
-  
-  //Hide circles while loading new texture
-  loadingTexture.value = true
-  allCircles.value = []
-  
-  isFading.value = true
-  //Camera zoom in animation
-  await smoothZoom(cameraRef, 20, 0.15)
+async function handleCircleClick(circle: CircleInfo) {
 
-  //Fade out
-  if(!canvasElement.value){
-    return;
-  }else{
-    canvasElement.value.classList.add("fadeOut")
+  //If the clicked circle is already selected, do nothing (Only for editor mode)
+  if (selectedCircleId.value === circle.id) return;
+
+  //Starts loading sequence
+  loadingTexture.value = true;
+  allCircles.value = [];
+  isFading.value = true;
+
+  // Smooth zoom in
+  await smoothZoom(cameraRef, 20, 0.15);
+  // Fades out canvas
+  if (canvasElement.value) canvasElement.value.classList.add("fadeOut");
+
+  // Loo
+  const newIndex = store.$state.tour.scenes.findIndex(
+    scene => scene.id === circle.onClickAction.actionArgs
+  );
+  const newScene = store.$state.tour.scenes[newIndex];
+
+  currentSceneIndex.value = newIndex;
+  currentSceneBackground.value = newScene.background;
+  rotationRad.value = (newScene.rotation || 0) * Math.PI / 180;
+
+  // ✅ change texture
+  setSceneTexture(newScene.background);
+
+  if (cameraRef.value) {
+    cameraRef.value.fov = 50;
+    cameraRef.value.updateProjectionMatrix();
   }
-  
-  //Getting new Scene index and data
-  if(selectedCircleId.value === circle.id) return;
-  const newIndex = store.$state.tour.scenes.findIndex(scene => scene.id === circle.onClickAction.actionArgs)
-  currentSceneIndex.value = newIndex
 
-  const newScene = store.$state.tour.scenes[newIndex]
-  currentSceneBackground.value = newScene.background
-  rotationRad.value = (newScene.rotation || 0) * Math.PI / 180
+  loadingTexture.value = false;
+  isFading.value = false;
 
-  //Loads new texture
-  await useTexture({ map: currentSceneBackground.value }).then((result) => {
-    if(cameraRef.value) { 
-      cameraRef.value.fov = 50 
-      cameraRef.value.updateProjectionMatrix()
-    }
-    currentTexture.value = result.map;
-    currentTexture.value.mapping = THREE.EquirectangularReflectionMapping;
-    currentTexture.value.colorSpace = THREE.SRGBColorSpace;
-    loadingTexture.value,isFading.value = false;
-  });
-  
-  //Updates circles
-  allCircles.value = store.$state.tour.scenes[newIndex].circles
-  store.setCurrentSceneIndex(newIndex)
-
+  allCircles.value = newScene.circles;
+  store.setCurrentSceneIndex(newIndex);
 }
 
 // ---------------------------
@@ -131,31 +143,23 @@ watch(selectedCircleId, (newId) => {
 // Handle external scene index changes
 //---------------------------
 watch(() => store.$state.currentSceneIndex, async (newIndex) => {
+  if (newIndex === currentSceneIndex.value) return;
 
-  //If same index, do nothing
-  if(newIndex === currentSceneIndex.value) return;
+  loadingTexture.value = true;
+  allCircles.value = [];
+  isFading.value = true;
 
-  //Hide circles while loading new texture
-  loadingTexture.value = true
-  allCircles.value = []
-  //Fade out
-  isFading.value = true
+  const newScene = store.$state.tour.scenes[newIndex];
+  rotationRad.value = (newScene.rotation || 0) * Math.PI / 180;
 
-  // Loads new texture
-  await useTexture({ map: store.$state.tour.scenes[newIndex].background }).then((result) => {
-    currentTexture.value = result.map;
-    currentTexture.value.mapping = THREE.EquirectangularReflectionMapping;
-    currentTexture.value.colorSpace = THREE.SRGBColorSpace;
-    rotationRad.value = (store.$state.tour.scenes[newIndex].rotation || 0) * Math.PI / 180
-    loadingTexture.value,isFading.value = false;
-  });
+  setSceneTexture(newScene.background);
 
-  //Updates circles
-  allCircles.value = store.$state.tour.scenes[newIndex].circles
-  currentSceneIndex.value = newIndex
+  loadingTexture.value = false;
+  isFading.value = false;
 
-
-})
+  allCircles.value = newScene.circles;
+  currentSceneIndex.value = newIndex;
+});
  
 // ---------------------------
 // TransformControls change handler
@@ -191,8 +195,12 @@ function updateCamera() {
 </script>
 
 <template>
-   <div class="canvas-wrapper" ref="canvasElement"  :class="{ fadeOut: isFading }">
-  <TresCanvas preset="realistic" class="scene_canvas">
+  
+  <div class="canvas-wrapper" ref="canvasElement" :class="{ fadeOut: isFading }">
+  <div v-if="loadingTexture" class="loading-screen">
+    <p class="loading-txt">Carregando...</p>
+  </div>
+  <TresCanvas preset="realistic">    
     <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="2000" :fov="50" />
     <CameraControls 
       @end="updateCamera" 
@@ -204,11 +212,11 @@ function updateCamera() {
     <!-- Skybox -->
     <TresMesh :position="[0,0,0]" :scale="6" :rotation="[0,rotationRad,0]">
       <TresSphereGeometry :args="[1,100,100]" />
-      <TresMeshBasicMaterial :map="currentTexture" :side="2" :toneMapped="false"/>
+      <TresMeshBasicMaterial :key="currentSceneBackground" :map="currentTexture" :side="2" :toneMapped="false"/>
     </TresMesh>
-
+    
     <!-- Circles -->
-    <TresMesh
+    <TresMesh 
       v-for="circle in allCircles"
       :key="circle.id"
       :position="circle.coordinates"
@@ -247,5 +255,25 @@ function updateCamera() {
 
 .canvas-wrapper.fadeOut {
   opacity: 0;
+}
+
+.loading-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  opacity: 0.8;
+  z-index: 10;
+  animation: fadeOutLoading 1s ease forwards 1.5s; /* fade out after 1.5s delay */
+} 
+.loading-txt{
+  color: black;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5em;
 }
 </style>

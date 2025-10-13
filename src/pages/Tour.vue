@@ -19,11 +19,9 @@ const loadingText = ref("")
 const tourId = route.params.tourId as string | undefined
 
 async function getTour(id:string) {
-
   console.log("Fetching tour with ID: ", id);
   const response = await fetch(`${apiUrl}/tour/${id}`);
-  return await response.json(); 
-  
+  return await response.json();
 }
 
 

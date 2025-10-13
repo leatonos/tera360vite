@@ -132,10 +132,10 @@ const meshRefs: Record<string, Mesh | null> = {};
 watch(selectedCircleId, (newId) => {
   if (newId && meshRefs[newId]) {
     selectedMesh.value = meshRefs[newId];
-    cameraSpeed.value = 0.2
+    //cameraSpeed.value = 0.2
   }else {
     selectedMesh.value = null;
-    cameraSpeed.value = -0.2
+    //cameraSpeed.value = -0.2
   }
 });
 
@@ -214,8 +214,7 @@ function updateCamera() {
     </TresMesh>
     
     <!-- Circles -->
-    <TresMesh 
-    <TresMesh 
+    <TresMesh
       v-for="circle in allCircles"
       :key="circle.id"
       :position="circle.coordinates"
@@ -235,6 +234,8 @@ function updateCamera() {
       v-if="selectedMesh"
       :object="selectedMesh"
       @objectChange="handleTransformChange"
+      @mouseDown="()=>{cameraSpeed=0.2}"
+      @mouseUp="()=>{cameraSpeed=-0.2}"
       mode="translate"
     />
   </TresCanvas>

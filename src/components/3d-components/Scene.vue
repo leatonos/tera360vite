@@ -7,6 +7,7 @@ import * as THREE from "three";
 import type { PerspectiveCamera, Mesh } from "three";
 import { useTourStore } from "../../piniaStore/store";
 import type { CircleInfo } from "../../types";
+import { camera } from "@tresjs/core/dist/src/utils/is.js";
 
 const store = useTourStore();
 
@@ -234,8 +235,7 @@ function updateCamera() {
       v-if="selectedMesh"
       :object="selectedMesh"
       @objectChange="handleTransformChange"
-      @mouseDown="()=>{cameraSpeed=0.2}"
-      @mouseUp="()=>{cameraSpeed=-0.2}"
+      @dragging="()=>{ cameraSpeed = cameraSpeed * -1}"
       mode="translate"
     />
   </TresCanvas>

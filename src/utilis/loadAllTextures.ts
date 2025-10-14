@@ -18,7 +18,7 @@ export async function loadAllTextures(
   let loadedCount = 0;
 
   // Progress tracking
-  manager.onProgress = (url, itemsLoaded, itemsTotal) => {
+  manager.onProgress = (_url, itemsLoaded, itemsTotal) => {
     loadedCount = itemsLoaded;
     const percent = Math.round((loadedCount / itemsTotal) * 100);
     if (onProgress) onProgress(percent);

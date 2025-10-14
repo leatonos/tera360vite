@@ -79,7 +79,6 @@ li {
 
 .scenes-list {
   padding: 1rem;
-  border: 3px solid rgb(53, 53, 53);
   height: 30%;
   overflow-y: auto;
 }

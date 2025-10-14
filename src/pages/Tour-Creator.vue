@@ -93,7 +93,6 @@ onMounted(async ()=>{
 <style scoped>
 .main-container{
   display: flex;
-  background-color: yellow;
   flex-direction: row;
   width: 100vw;
   height: 100vh;

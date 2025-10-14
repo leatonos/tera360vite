@@ -227,8 +227,5 @@ onMounted(async () => {
 /* Mobile responsive settings */
 @media (max-width: 480px) {
 
- .tuor-navigator-container{
-  
- }
 }
 </style>

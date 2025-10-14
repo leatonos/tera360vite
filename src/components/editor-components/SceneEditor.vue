@@ -104,6 +104,7 @@ function deleteSceneAction(){
         store.deleteScene(thisSceneIndex.value)
     }
 }
+
 </script>
 
 

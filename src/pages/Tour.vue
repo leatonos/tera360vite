@@ -50,6 +50,9 @@ onMounted(async()=>{
         </div>
       </template>
       <template v-else>
+         <div class="tuor-editor">
+           <TuorEditor/>
+         </div>
         <Suspense>
           <Scene/>
         </Suspense>

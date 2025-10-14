@@ -67,6 +67,7 @@ async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetF
     if (!cameraRef.value) return resolve();
     const cam = cameraRef.value;
     let animationId: number;
+    let hasStartedFading = false;
 
     // Animation loop
     const animate = () => {
@@ -74,12 +75,13 @@ async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetF
       cam.updateProjectionMatrix();
 
       // Start fading out when close to target FOV
-      if(cam.fov/targetFov < 1.9 && !isFading.value){
+      if(cam.fov/targetFov < 1.9 && !isFading.value && !hasStartedFading){
         isFading.value = true;
+        hasStartedFading = true;
       }
 
       // Continue the animation until the target FOV is reached
-      if (Math.abs(cam.fov - targetFov) > 0.2) {
+      if (Math.abs(cam.fov - targetFov) > 0.2 ) {
         animationId = requestAnimationFrame(animate);
       }else{
         // Ensure the final FOV is set precisely

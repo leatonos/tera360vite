@@ -101,7 +101,6 @@ onMounted(async () => {
   height: 100%;
   background-color: #242424;
   overflow-y: auto;
-  border-right: 3px solid rgb(53, 53, 53);
   transform: translateX(-100%);
   transition: transform 0.3s ease;
   z-index: 10;
@@ -195,7 +194,6 @@ onMounted(async () => {
     height: 120px;
     transform: translateY(100%);
     border-right: none;
-    border-top: 3px solid rgb(53, 53, 53);
     transition: transform 0.3s ease;
   }
 

@@ -160,10 +160,10 @@ const meshRefs: Record<string, Mesh | null> = {};
 watch(selectedCircleId, (newId) => {
   if (newId && meshRefs[newId]) {
     selectedMesh.value = meshRefs[newId];
-    //cameraSpeed.value = 0.2
+    cameraSpeed.value = 0.2
   }else {
     selectedMesh.value = null;
-    //cameraSpeed.value = -0.2
+    cameraSpeed.value = -0.2
   }
 });
 
@@ -249,7 +249,7 @@ function updateCamera() {
       :scale="circle.scale"
       :rotation="[Math.PI/2,0,0]"
       @click="handleCircleClick(circle)"
-      @pointerDown="()=>if(isTouch)"
+      @pointerDown="handleCircleClick(circle)"
       :ref="el => { if(el) meshRefs[circle.id] = el as unknown as Mesh }"
     >
       <TresCircleGeometry :args="[1,32]" />

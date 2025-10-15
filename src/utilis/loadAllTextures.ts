@@ -48,7 +48,7 @@ export async function loadAllTextures(
   // Wait for all textures to load
   await Promise.all(promises);
   if (onProgress) onProgress(100);
-  console.log("✅ All textures loaded:", Object.keys(textures));
+  //console.log("✅ All textures loaded:", Object.keys(textures));
 
   return textures;
 }

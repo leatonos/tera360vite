@@ -22,6 +22,9 @@ const loadingTexture = ref(true);
 const loadingProgress = ref(0);
 const isFading = ref(false)
 const cameraSpeed = ref(-0.2)
+const isTouch = ref(false);
+
+
 
 //canvas element ref
 const canvasElement = ref<HTMLElement|null>(null)
@@ -59,7 +62,15 @@ onMounted(async () => {
   
   // Finishes loading sequence
   loadingTexture.value = false;
+
+   isTouch.value = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+if(window.innerWidth < 600 || 'ontouchstart' in window || navigator.maxTouchPoints > 0){
+  cameraSpeed.value = -0.4
+ }
+
 });
+
 
 //Animated zoom function
 async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetFov: number, speed:number): Promise<void> {
@@ -238,6 +249,7 @@ function updateCamera() {
       :scale="circle.scale"
       :rotation="[Math.PI/2,0,0]"
       @click="handleCircleClick(circle)"
+      @pointerDown="()=>if(isTouch)"
       :ref="el => { if(el) meshRefs[circle.id] = el as unknown as Mesh }"
     >
       <TresCircleGeometry :args="[1,32]" />

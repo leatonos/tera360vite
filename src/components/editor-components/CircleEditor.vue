@@ -28,6 +28,8 @@ const circleZ = ref(props.thisCircle.coordinates[2])
 const listOfCircles = store.tour.scenes[sceneIndex].circles
 const thisCircleIndex = listOfCircles.findIndex((circle)=> circle.id == thisCircleId)
 
+const thisActionArgument = ref(props.thisCircle.onClickAction.actionArgs)
+
 const sceneName = store.tour.scenes[sceneIndex].name
 
 const createNewCircleInfo = (): CircleInfo => {
@@ -39,7 +41,7 @@ const createNewCircleInfo = (): CircleInfo => {
         color: circleColor.value,
         onClickAction: {
             actionType: "Teleport",
-            actionArgs: ""
+            actionArgs: thisActionArgument.value
         }
     };
 };

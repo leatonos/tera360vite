@@ -191,7 +191,7 @@ onMounted(async () => {
     top: auto;
     bottom: 0;
     width: 100%;
-    height: 120px;
+    height: 220px;
     transform: translateY(100%);
     border-right: none;
     transition: transform 0.3s ease;
@@ -209,7 +209,7 @@ onMounted(async () => {
 
   .arrow-toogler.open {
     transform: translateY(100%);
-    bottom: 150px;
+    bottom: 250px;
     left: calc(50% - 10px);
   }
 

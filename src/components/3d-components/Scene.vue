@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { TresCanvas } from "@tresjs/core";
-import { CameraControls, TransformControls } from "@tresjs/cientos";
+import { CameraControls, TransformControls, Ring } from "@tresjs/cientos";
 import { loadAllTextures } from "../../utilis/loadAllTextures";
-import { ref, computed, watch, onMounted, type Ref } from "vue";
+import { ref, computed, watch, onMounted, type Ref, nextTick } from "vue";
 import * as THREE from "three";
 import type { PerspectiveCamera, Mesh } from "three";
 import { useTourStore } from "../../piniaStore/store";
+import { useCanvasStore } from "../../piniaStore/canvasStore";
 import type { CircleInfo } from "../../types";
 
+// Pinia Stores
 const store = useTourStore();
+const canvasStore = useCanvasStore()
+
 
 // Initial state
 const currentSceneBackground = ref<string>("");
@@ -23,6 +27,7 @@ const loadingProgress = ref(0);
 const isFading = ref(false)
 const cameraSpeed = ref(-0.2)
 const isTouch = ref(false);
+
 
 
 
@@ -68,6 +73,14 @@ onMounted(async () => {
 if(window.innerWidth < 600 || 'ontouchstart' in window || navigator.maxTouchPoints > 0){
   cameraSpeed.value = -0.4
  }
+
+ await nextTick()
+
+ const localCanvasElement = canvasElement.value?.querySelector('canvas') as HTMLCanvasElement | null
+
+   if (localCanvasElement) {
+    canvasStore.setCanvas(localCanvasElement)
+  }
 
 });
 
@@ -160,10 +173,8 @@ const meshRefs: Record<string, Mesh | null> = {};
 watch(selectedCircleId, (newId) => {
   if (newId && meshRefs[newId]) {
     selectedMesh.value = meshRefs[newId];
-    cameraSpeed.value = 0.2
   }else {
     selectedMesh.value = null;
-    cameraSpeed.value = -0.2
   }
 });
 
@@ -226,8 +237,8 @@ function updateCamera() {
   <div v-if="loadingTexture" class="loading-screen">
     <p class="loading-txt">Carregando... {{ loadingProgress }}%</p>
   </div>
-  <TresCanvas preset="realistic" clearColor="#ffffff" :antialias="true">    
-    <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="2000" :fov="50" />
+  <TresCanvas :preserveDrawingBuffer="true" preset="realistic" clearColor="#ffffff" :antialias="true">    
+    <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="10000" :fov="50" />
     <CameraControls 
       @end="updateCamera" 
       :maxDistance="3"
@@ -240,25 +251,25 @@ function updateCamera() {
       <TresSphereGeometry :args="[1,100,100]" />
       <TresMeshBasicMaterial :key="currentSceneBackground" color="#ffffff" :map="currentTexture" :side="2" :toneMapped="false"/>
     </TresMesh>
+
+    
     
     <!-- Circles -->
-    <TresMesh
-      v-for="circle in allCircles"
-      :key="circle.id"
+
+
+    <TresMesh v-for="circle in allCircles" :key="circle.id"
       :position="circle.coordinates"
       :scale="circle.scale"
       :rotation="[Math.PI/2,0,0]"
       @click="handleCircleClick(circle)"
-      @pointerDown="handleCircleClick(circle)"
       :ref="el => { if(el) meshRefs[circle.id] = el as unknown as Mesh }"
     >
-      <TresCircleGeometry :args="[1,32]" />
-      <TresMeshBasicMaterial
-        :color="circle.color"
-        :side="2"
-      />
+    <TresCircleGeometry :args="[1,32]" />
+    <TresMeshBasicMaterial
+      :color="circle.color"
+      :side="2"
+    />
     </TresMesh>
-    <!-- TransformControls attached to selected mesh -->
     <TransformControls
       v-if="selectedMesh"
       :object="selectedMesh"
@@ -266,6 +277,36 @@ function updateCamera() {
       @dragging="()=>{ cameraSpeed = cameraSpeed * -1}"
       mode="translate"
     />
+
+    <!-- Circle Shadow -->
+
+     <TresMesh v-for="circle in allCircles" :key="circle.id + 'Shadow'"
+      :position="[circle.coordinates[0],circle.coordinates[1]-0.03,circle.coordinates[2]]"
+      :scale="circle.scale"
+      :rotation="[Math.PI/2,0,0]"
+    >
+      <TresCircleGeometry :args="[1,32]" />
+      <TresMeshBasicMaterial
+        :transparent="true"
+        :opacity="0.3"
+        :color="[0,0,0]"
+        :side="2"
+      />
+    </TresMesh>
+
+
+    
+    <!-- Ring  -->
+
+      <Ring v-for="circle in allCircles" @click="handleCircleClick(circle)" :rotation="[Math.PI/2,0,0]" :args="[0.15*10*circle.scale, 0.2*10*circle.scale, 32]" :position="circle.coordinates">
+        <TresMeshBasicMaterial :color="circle.color" :side="2" />
+      </Ring>
+    
+      <!-- Ring Shadow -->
+      <Ring v-for="circle in allCircles" :rotation="[Math.PI/2,0,0]" :args="[0.15*10*circle.scale, 0.2*10*circle.scale, 32]" :position="[circle.coordinates[0],circle.coordinates[1]-0.03,circle.coordinates[2]]">
+        <TresMeshBasicMaterial :transparent="true" :opacity="0.3" :color="circle.color" :side="2" />
+      </Ring>
+    
   </TresCanvas>
    </div>
 </template>

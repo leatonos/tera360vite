@@ -9,6 +9,7 @@ const scenes = store.$state.tour.scenes;
 
 // State
 const selectedScene = ref<SceneInfo | null>(null);
+const tourTitle = store.$state.tour.name
 
 const selectScene = (scene: SceneInfo, index: number) => {
   selectedScene.value = scene;
@@ -18,18 +19,14 @@ const selectScene = (scene: SceneInfo, index: number) => {
 
 <template>
   <div class="tour-navigator">
-    <header class="tour-navigator-header"></header>
+    <header class="tour-navigator-header">
+      <h1>{{ tourTitle }}</h1>
+    </header>
     <div class="scenes-list">
-      <ul>
-        <li
-          v-for="(scene, sceneIndex) in scenes"
-          :key="scene.id"
-          class="list_item scene_item"
-          @click="selectScene(scene, sceneIndex)"
-        >
-          {{ scene.name }}
-        </li>
-      </ul>
+        <div v-for="(scene, sceneIndex) in scenes":key="scene.id" class="list_item" @click="selectScene(scene, sceneIndex)">
+          <h3 class="scene-name">{{ scene.name }}</h3>
+          <img class="scene-thumbnail" v-if="scene.thumbnail" :src="scene.thumbnail"></img>
+        </div>
     </div>
   </div>
 </template>
@@ -52,7 +49,7 @@ h1 {
 }
 
 .tour-navigator-header {
-  display: none;
+  padding: 1em;
 }
 
 ul {
@@ -68,40 +65,67 @@ li {
 }
 
 .list_item {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
   padding: 2px;
   border-radius: 2px;
+  cursor: pointer;
+  padding:12px;
+  border-radius:4px;
 }
 
-.scene_item:hover {
+.scene-name{
+  color: white;
+}
+
+.scene-thumbnail{
+  width:120px;
+  border-radius:2px;
+}
+
+.list_item:hover {
   background-color: #3a3a3a;
 }
 
 .scenes-list {
+  flex:1;
   padding: 1rem;
-  height: 30%;
   overflow-y: auto;
 }
 
 /* Tablet responsive settings */
 @media (max-width: 768px) {
-  .scenes-list ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+
+  .tour-navigator{
+    height:auto;
   }
 
-  .scenes-list li {
-    display: inline-block;
-    background-color: #2d2d2d;
-    padding: 4px 8px;
-    border-radius: 4px;
+  .scenes-list {
+    display: flex;
+    flex-direction:row;
+    align-items:center;
+    overflow-y:hidden;
+    overflow-x:auto;
   }
+
+  .list_item{
+    display:flex;
+    margin:0px 10px;
+    padding:0px;
+    flex-direction:column-reverse;
+  }
+
+  .scene-name{
+    margin-top:6px
+  }
+
 }
 
 /* Mobile responsive settings */
 @media (max-width: 480px) {
   .scenes-list ul {
-    justify-content: center;
+   
   }
 }
 </style>

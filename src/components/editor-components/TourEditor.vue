@@ -87,7 +87,7 @@ const handleNameChange = (value:string) =>{
             <div>
               <button class="cute-upload-btn save_btn" @click="save">{{ savingText }}</button>
             </div>
-        </div>  
+        </div>
       </header>
         <div class="scenes-list">
             <ul>

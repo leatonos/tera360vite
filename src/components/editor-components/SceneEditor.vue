@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useCanvasStore } from "../../piniaStore/canvasStore";
 import { useTourStore } from "../../piniaStore/store";
 import type { SceneInfo } from "../../types";
 import { computed, ref } from 'vue';
@@ -10,16 +11,19 @@ const props = defineProps<{
 
 //Store
 const store = useTourStore()
+const canvasStore = useCanvasStore()
 
 
 //States
 const listOfScenes = computed(() => store.$state.tour.scenes)
 const thisSceneId = computed(() => props.thisScene.id)
 const thisSceneIndex = computed(() => listOfScenes.value.findIndex(scene => scene.id === thisSceneId.value));
+const thumbnail = computed(()=>store.$state.tour.scenes[thisSceneIndex.value].thumbnail)
 const sceneIndex = ref(store.tour.scenes.findIndex(scene => scene.id === props.thisScene.id));
 const uploading = ref(false)
 const rotation = computed(() => store.$state.tour.scenes[sceneIndex.value]?.rotation || 0);
 const uploadText = ref("Upload Background")
+const thumbnailBtnText = ref("Create a thumbnail")
 
 
 const handleFileChange = async (event: Event) => {
@@ -56,6 +60,7 @@ const uploadToS3 = async(file: File, tourId: string, sceneId: string) => {
 
     console.log("Received presigned URL:", uploadURL);
     console.log("Uploading file to S3...");  
+    
     // 2. Upload file directly to S3
     const uploadRes = await fetch(uploadURL, {
       method: "PUT",
@@ -66,7 +71,6 @@ const uploadToS3 = async(file: File, tourId: string, sceneId: string) => {
       throw new Error("Upload to S3 failed");
     } 
       
-
     console.log("✅ File uploaded:", fileURL);
     return fileURL; // final public S3 link
 
@@ -76,7 +80,6 @@ const uploadToS3 = async(file: File, tourId: string, sceneId: string) => {
   }
 }
 
-
 const handleNameChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   store.setSceneName(sceneIndex.value, target.value);
@@ -84,9 +87,6 @@ const handleNameChange = (event: Event) => {
 
 //Actions
 /*
-function addSphereAction(){
-  store.addSphere(thisSceneIndex)
-}
 */
 
 function handleRotation(value:string){
@@ -103,6 +103,33 @@ function deleteSceneAction(){
     if (confirmDelete) {
         store.deleteScene(thisSceneIndex.value)
     }
+}
+
+
+async function createThumbnail(){
+
+ const canvas = canvasStore.canvasRef
+ if (!canvas) return console.warn('No canvas found')
+
+ thumbnailBtnText.value='Taking a screenshot...'
+
+ canvas.toBlob( async (blob)=>{
+    if(!blob) return
+
+     const file = new File([blob], `${props.thisScene.id}-thumbnail.png`, {
+      type: 'image/png',
+    })
+    thumbnailBtnText.value='Uploading image...'
+    const imageUrl = await uploadToS3(file,store.$state.tour._id,props.thisScene.id+'-thumbnail')
+
+    thumbnailBtnText.value = "Create a thumbnail"
+
+    if(imageUrl){
+      store.setSceneThumbnail(thisSceneIndex.value,imageUrl)
+    }
+
+ })
+
 }
 
 </script>
@@ -134,16 +161,20 @@ function deleteSceneAction(){
     </div>
 
      <!-- Background Upload -->
-    <div class="form-group upload-group">
+    <div  class="form-group upload-group">
       <input multiple="false" type="file" id="texture-selector" @change="handleFileChange" />
       <label for="texture-selector" class="cute-upload-btn">{{ uploadText }}</label>
     </div>
 
     <!-- Actions -->
     <div class="actions">
-      <!-- <button @click="addSphereAction">Add new sphere</button> -->
       <button class="btn" @click="addCircleAction">Add new circle</button>
+      <button class="btn" @click="createThumbnail">{{ thumbnailBtnText }}</button>
       <button class="red btn" style="" @click="deleteSceneAction">Delete Scene</button>
+    </div>
+    <div class="thumbnail-container">
+      <h3 class="white-text">Thumbnail</h3>
+      <img class="thumbnail" v-if="thumbnail" :src="thumbnail"/>
     </div>
   
   </div>
@@ -154,5 +185,18 @@ function deleteSceneAction(){
 .red{
     background-color: #e74c3c;
     color: white;
+}
+
+.thumbnail-container{
+  margin-top:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  
+}
+
+.thumbnail{
+  width: 40%;
+  height: auto;
 }
 </style>

@@ -258,13 +258,11 @@ function updateCamera() {
     
     
     <!-- Circles -->
-
-
     <TresMesh v-for="circle in allCircles" :key="circle.id"
       :position="circle.coordinates"
       :scale="circle.scale"
       :rotation="[Math.PI/2,0,0]"
-      @pointerdown="handleCircleClick(circle)"
+      @click="handleCircleClick(circle)"
       :ref="el => { if(el) meshRefs[circle.id] = el as unknown as Mesh }"
     >
     <TresCircleGeometry :args="[1,32]" />

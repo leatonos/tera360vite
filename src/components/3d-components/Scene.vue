@@ -283,8 +283,7 @@ function updateCamera() {
     />
 
     <!-- Circle Shadow -->
-
-     <TresMesh v-for="circle in allCircles" :key="circle.id + 'Shadow'"
+    <TresMesh v-for="circle in allCircles" :key="circle.id + 'Shadow'"
       :position="[circle.coordinates[0],circle.coordinates[1]-0.03,circle.coordinates[2]]"
       :scale="circle.scale"
       :rotation="[Math.PI/2,0,0]"
@@ -301,15 +300,14 @@ function updateCamera() {
 
     
     <!-- Ring  -->
-
-      <Ring v-for="circle in allCircles" @click="handleCircleClick(circle)" :rotation="[Math.PI/2,0,0]" :args="[0.15*10*circle.scale, 0.2*10*circle.scale, 32]" :position="circle.coordinates">
+    <Ring v-for="circle in allCircles" @click="handleCircleClick(circle)" :rotation="[Math.PI/2,0,0]" :args="[0.15*10*circle.scale, 0.2*10*circle.scale, 32]" :position="circle.coordinates">
         <TresMeshBasicMaterial  :transparent="true" :opacity="0.8" :color="circle.color" :side="2" />
-      </Ring>
+    </Ring>
     
-      <!-- Ring Shadow -->
-      <Ring v-for="circle in allCircles" :rotation="[Math.PI/2,0,0]" :args="[0.15*10*circle.scale, 0.2*10*circle.scale, 32]" :position="[circle.coordinates[0],circle.coordinates[1]-0.03,circle.coordinates[2]]">
+    <!-- Ring Shadow -->
+    <Ring v-for="circle in allCircles" :rotation="[Math.PI/2,0,0]" :args="[0.15*10*circle.scale, 0.2*10*circle.scale, 32]" :position="[circle.coordinates[0],circle.coordinates[1]-0.03,circle.coordinates[2]]">
         <TresMeshBasicMaterial :transparent="true" :opacity="0.3" :color="circle.color" :side="2" />
-      </Ring>
+    </Ring>
     
   </TresCanvas>
    </div>

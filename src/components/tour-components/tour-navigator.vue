@@ -124,8 +124,6 @@ li {
 
 /* Mobile responsive settings */
 @media (max-width: 480px) {
-  .scenes-list ul {
-   
-  }
+ 
 }
 </style>

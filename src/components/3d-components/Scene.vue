@@ -45,6 +45,9 @@ function setSceneTexture(url: string) {
 //Loads initial texture and Circles
 onMounted(async () => {
 
+  document.addEventListener("gesturestart", (e) => e.preventDefault());
+  document.addEventListener("dblclick", (e) => e.preventDefault());
+
   const index = store.$state.currentSceneIndex || 0;
   const scene = store.$state.tour.scenes[index];
   loadingTexture.value = true;
@@ -261,11 +264,13 @@ function updateCamera() {
       :position="circle.coordinates"
       :scale="circle.scale"
       :rotation="[Math.PI/2,0,0]"
-      @click="handleCircleClick(circle)"
+      @pointerdown="handleCircleClick(circle)"
       :ref="el => { if(el) meshRefs[circle.id] = el as unknown as Mesh }"
     >
     <TresCircleGeometry :args="[1,32]" />
     <TresMeshBasicMaterial
+      :transparent="true"
+      :opacity="0.8"
       :color="circle.color"
       :side="2"
     />
@@ -299,7 +304,7 @@ function updateCamera() {
     <!-- Ring  -->
 
       <Ring v-for="circle in allCircles" @click="handleCircleClick(circle)" :rotation="[Math.PI/2,0,0]" :args="[0.15*10*circle.scale, 0.2*10*circle.scale, 32]" :position="circle.coordinates">
-        <TresMeshBasicMaterial :color="circle.color" :side="2" />
+        <TresMeshBasicMaterial  :transparent="true" :opacity="0.8" :color="circle.color" :side="2" />
       </Ring>
     
       <!-- Ring Shadow -->

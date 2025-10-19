@@ -263,6 +263,7 @@ function updateCamera() {
       :scale="circle.scale"
       :rotation="[Math.PI/2,0,0]"
       @click="handleCircleClick(circle)"
+      @touchstart="handleCircleClick(circle)"
       :ref="el => { if(el) meshRefs[circle.id] = el as unknown as Mesh }"
     >
     <TresCircleGeometry :args="[1,32]" />

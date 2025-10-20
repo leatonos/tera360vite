@@ -263,7 +263,6 @@ function updateCamera() {
       :scale="circle.scale"
       :rotation="[Math.PI/2,0,0]"
       @click="handleCircleClick(circle)"
-      @touchstart="handleCircleClick(circle)"
       :ref="el => { if(el) meshRefs[circle.id] = el as unknown as Mesh }"
     >
     <TresCircleGeometry :args="[1,32]" />
@@ -305,7 +304,7 @@ function updateCamera() {
     </Ring>
     
     <!-- Ring Shadow -->
-    <Ring v-for="circle in allCircles" :rotation="[Math.PI/2,0,0]" :args="[0.15*10*circle.scale, 0.2*10*circle.scale, 32]" :position="[circle.coordinates[0],circle.coordinates[1]-0.03,circle.coordinates[2]]">
+    <Ring v-f or="circle in allCircles" :rotation="[Math.PI/2,0,0]" :args="[0.15*10*circle.scale, 0.2*10*circle.scale, 32]" :position="[circle.coordinates[0],circle.coordinates[1]-0.03,circle.coordinates[2]]">
         <TresMeshBasicMaterial :transparent="true" :opacity="0.3" :color="circle.color" :side="2" />
     </Ring>
     

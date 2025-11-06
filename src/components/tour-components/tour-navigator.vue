@@ -88,10 +88,25 @@ li {
   background-color: #3a3a3a;
 }
 
+
+
 .scenes-list {
   flex:1;
   padding: 1rem;
   overflow-y: auto;
+}
+
+.scenes-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scenes-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scenes-list::-webkit-scrollbar-thumb {
+  background: #cfcfcf;
+  border-radius: 20px;
 }
 
 /* Tablet responsive settings */

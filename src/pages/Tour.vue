@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import Scene from '../components/3d-components/Scene.vue';
 import { useRoute, useRouter } from "vue-router";
-const apiUrl = import.meta.env.VITE_API;
 import { onMounted, ref } from 'vue';
 import type { Tour } from '../types';
 import { useTourStore } from '../piniaStore/store';
-import { DotLottieVue } from '@lottiefiles/dotlottie-vue';
+import LoadingAnimation from '../components/tour-components/loading.vue';
 
 import teraLogoWhite from '../assets/teraLogoBranco.svg';
 import TourNavigator from '../components/tour-components/tour-navigator.vue';
 
+const apiUrl = import.meta.env.VITE_API;
 const route = useRoute();
 const router = useRouter();
 const store = useTourStore();
@@ -33,6 +33,7 @@ function toggleNavigator() {
   arrowText.value = isOpen.value ? "<" : ">";
 }
 
+
 onMounted(async () => {
   if (!tourId) {
     router.replace({ path: `/` });
@@ -45,19 +46,13 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
 </script>
 
 <template>
   <div class="main-container">
     <template v-if="loading">
-      <div class="loading-screen">
-        <DotLottieVue
-          style="height: 200px; width: 500px"
-          autoplay
-          src="https://lottie.host/9b888865-03ce-4cce-b1ec-3c0058202c3a/VzYcqq3nGU.lottie"
-        />
-        <div class="loader"></div>
-      </div>
+      <LoadingAnimation />
     </template>
     <template v-else>
       <!-- Sidebar -->
@@ -151,12 +146,14 @@ onMounted(async () => {
 }
 
 .loading-screen {
+  position: absolute;
   background-color: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  width: 100%;
 }
 
 /* Loader animation */

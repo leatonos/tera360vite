@@ -2,6 +2,7 @@
 import { TresCanvas } from "@tresjs/core";
 import { CameraControls, TransformControls, Ring } from "@tresjs/cientos";
 import { loadAllTextures } from "../../utilis/loadAllTextures";
+import LoadingAnimation from "../tour-components/loading.vue";
 import { ref, computed, watch, onMounted, type Ref, nextTick } from "vue";
 import * as THREE from "three";
 import type { PerspectiveCamera, Mesh } from "three";
@@ -42,6 +43,7 @@ function setSceneTexture(url: string) {
   }
 }
 
+
 //Loads initial texture and Circles
 onMounted(async () => {
 
@@ -73,13 +75,13 @@ onMounted(async () => {
 
    isTouch.value = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-if(window.innerWidth < 600 || 'ontouchstart' in window || navigator.maxTouchPoints > 0){
-  cameraSpeed.value = -0.4
- }
+  if(window.innerWidth < 600 || 'ontouchstart' in window || navigator.maxTouchPoints > 0){
+    cameraSpeed.value = -0.4
+  }
 
- await nextTick()
+  await nextTick()
 
- const localCanvasElement = canvasElement.value?.querySelector('canvas') as HTMLCanvasElement | null
+  const localCanvasElement = canvasElement.value?.querySelector('canvas') as HTMLCanvasElement | null
 
    if (localCanvasElement) {
     canvasStore.setCanvas(localCanvasElement)
@@ -239,6 +241,7 @@ function updateCamera() {
   <div class="canvas-wrapper" ref="canvasElement" :class="{ fadeOut: isFading }">
     <div v-if="loadingTexture" class="loading-screen">
       <p class="loading-txt">Carregando... {{ loadingProgress }}%</p>
+      <LoadingAnimation :loadingProgress="loadingProgress"/>
     </div>
     <TresCanvas :preserveDrawingBuffer="true" preset="realistic" clearColor="#ffffff" :antialias="true">    
       <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="10000" :fov="50" />
@@ -254,8 +257,6 @@ function updateCamera() {
         <TresSphereGeometry :args="[1,100,100]" />
         <TresMeshBasicMaterial :key="currentSceneBackground" color="#ffffff" :map="currentTexture" :side="2" :toneMapped="false"/>
       </TresMesh>
-
-      
       
       <!-- Circles -->
       <TresMesh v-for="circle in allCircles" :key="circle.id"
@@ -313,7 +314,7 @@ function updateCamera() {
 </template>
 
 <style scoped>
-  /* scene canvas fadeout animation */
+/* scene canvas fadeout animation */
 .canvas-wrapper {
   top: 0;
   position: relative;
@@ -335,7 +336,7 @@ function updateCamera() {
   height: 100%;
   background-color: white;
   opacity: 0.8;
-  z-index: 10;
+  z-index: 999;
   animation: fadeOutLoading 1s ease forwards 1.5s; /* fade out after 1.5s delay */
 } 
 .loading-txt{

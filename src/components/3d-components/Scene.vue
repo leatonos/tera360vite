@@ -240,7 +240,6 @@ function updateCamera() {
   
   <div class="canvas-wrapper" ref="canvasElement" :class="{ fadeOut: isFading }">
     <div v-if="loadingTexture" class="loading-screen">
-      <p class="loading-txt">Carregando... {{ loadingProgress }}%</p>
       <LoadingAnimation :loadingProgress="loadingProgress"/>
     </div>
     <TresCanvas :preserveDrawingBuffer="true" preset="realistic" clearColor="#ffffff" :antialias="true">    

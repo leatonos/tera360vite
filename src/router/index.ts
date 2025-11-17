@@ -2,10 +2,12 @@ import { createRouter, createWebHistory } from "vue-router"
 import Home from "../pages/Home.vue"
 import TourCreator from "../pages/Tour-Creator.vue"
 import Tour from "../pages/Tour.vue"
+import Admin from "../pages/Admin.vue"
 import type { RouteLocationNormalized } from "vue-router"
 
 const routes = [
   { path: "/", component: Home },
+  { path: "/admin", component: Admin },
   { path: "/tour-creator/:tourId?", component: TourCreator },
   { path: "/tour/:tourId?",component: Tour,
   beforeEnter: (to: RouteLocationNormalized) => {

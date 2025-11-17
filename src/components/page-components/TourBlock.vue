@@ -6,7 +6,7 @@ const props = defineProps<{
     thisTour:Tour
 }>()
 
-const link = `/tour-creator/${props.thisTour._id}`
+const link = `/tour/${props.thisTour._id}`
 
 </script>
 

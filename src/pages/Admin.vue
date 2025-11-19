@@ -33,8 +33,9 @@ const loginAction = async (event: Event) => {
         const response = await fetch(`${apiUrl}/login`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/json"
             },
+            credentials: "include",
             body: raw,
         });
 
@@ -52,6 +53,25 @@ const loginAction = async (event: Event) => {
     }
 };
 
+const validateSession = async () => {
+  try {
+    const res = await fetch(`${apiUrl}/check-auth`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      method: "GET",
+      credentials: "include"    // <-- THIS sends the HttpOnly cookie
+    });
+
+    const data = await res.json();
+
+    console.log("Session is valid:", data.authenticated);
+    return data.authenticated === true;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+}
 
 </script>
 
@@ -66,10 +86,11 @@ const loginAction = async (event: Event) => {
                     <input type="text" class="form-input" id="username" name="username" v-model="formUser" required />
                 </div>
                 <div class="field">
-                    <label for="password">Password:</label>
+                    <label class="white-text" for="password">Password:</label>
                     <input type="password" class="form-input" id="password" name="password" v-model="formPass" required />
                 </div>
                 <button class="submit_btn" type="submit">Login</button>
+                <button :onclick="validateSession" class="submit_btn" type="button">Check Auth</button>
             </form>
         </div>
     </div>

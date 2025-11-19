@@ -154,7 +154,7 @@ async function createThumbnail(){
 
     <!-- Scene Rotation -->
     <div class="form-group">
-      <label>Scene Rotation: {{ rotation }}</label>
+      <label class="white-text">Scene Rotation: {{ rotation }}</label>
       <input type="range" id="rotation" name="rotation" min="-180" max="180" step="1" :value="rotation"
       @change="(e: Event) => handleRotation((e.target as HTMLInputElement).value)"
       >

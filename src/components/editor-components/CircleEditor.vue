@@ -100,7 +100,7 @@ const deleteCircle = () => {
     <h3 class="title">{{ sceneName }} - Circle {{ props.index }}</h3>
     <!-- Color -->
     <div class="form-group-inline">
-      <label for="favcolor">Color:</label>
+      <label class="white-text" for="favcolor">Color:</label>
       <input
         type="color"
         id="favcolor"
@@ -108,7 +108,7 @@ const deleteCircle = () => {
         @change="(e: Event) => handleColorChange((e.target as HTMLInputElement).value)"
       />
       <!-- Size -->
-      <label for="size">Size:</label>
+      <label class="white-text" for="size">Size:</label>
       <input
         type="number"
         id="size"
@@ -122,7 +122,7 @@ const deleteCircle = () => {
     <!-- Coordinates -->
     <div class="form-group-inline">
       <div class="form-group-inline">
-        <label for="x">X:</label>
+        <label class="white-text" for="x">X:</label>
         <input
           type="number"
           id="x"
@@ -134,7 +134,7 @@ const deleteCircle = () => {
         />
       </div>
       <div class="form-group-inline">
-        <label for="y">Y:</label>
+        <label class="white-text" for="y">Y:</label>
         <input
           type="number"
           id="y"
@@ -146,7 +146,7 @@ const deleteCircle = () => {
         />
       </div>
       <div class="form-group-inline">
-        <label for="z">Z:</label>
+        <label class="white-text" for="z">Z:</label>
         <input
           type="number"
           id="z"
@@ -160,14 +160,14 @@ const deleteCircle = () => {
     </div>
     <!-- Action -->
     <div class="form-group-inline">
-      <label for="action">Action Type:</label>
+      <label class="white-text" for="action">Action Type:</label>
       <select id="action" v-model="props.thisCircle.onClickAction.actionType">
         <option value="Teleport">Teleport</option>
       </select>
     </div>
     <!-- Scene Teleport Selection -->
     <div class="form-group-inline">
-      <label for="location">Location:</label>
+      <label class="white-text" for="location">Location:</label>
       <select
         id="location"
         v-model="store.tour.scenes[sceneIndex].circles[thisCircleIndex].onClickAction.actionArgs"

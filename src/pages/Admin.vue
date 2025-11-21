@@ -13,6 +13,7 @@ const allTours = ref<Tour[]>([])
 const formUser = ref("")
 const formPass = ref("")
 const authenticated = ref(false)
+const selectedImage = ref<number>(0)
 
 const selectedTour = ref<Tour | null>(null)
 
@@ -71,7 +72,7 @@ const validateSession = async () => {
           "Content-Type": "application/json",
         },
       method: "POST",
-      credentials: "include"    // <-- THIS sends the HttpOnly cookie
+      credentials: "include"
     });
 
     const data = await res.json();
@@ -83,7 +84,10 @@ const validateSession = async () => {
     return false;
   }
 }
-      
+
+const changeImage = (index: number) => {
+    selectedImage.value = index;
+}
 
 </script>
 
@@ -104,25 +108,26 @@ const validateSession = async () => {
                        </div>
                     </div>
                 </div>
-
             </div>
             <div class="tour-preview">
                 <h1>Admin Dashboard</h1>
                 <h2>Select a tour</h2>
                 <div v-if="selectedTour">
                     <h3>{{ selectedTour.name }}</h3>
-                    <p>Total Scenes: {{ selectedTour.scenes.length }}</p>
                     <div class="tour-intro">
                         <div class="tour-info">
                             <h3>{{ selectedTour.name }}</h3>
+                            <a :href="`/tour-creator/${selectedTour._id}`" class="btn-link">Edit Tour</a>
+                            <a :href="`/tour/${selectedTour._id}`" class="btn-link">Preview Tour</a>
+                            <a class="btn-link red">Delete Tour</a>
                         </div>
-                        <div class="tour-gallery">
-                            <img :src="selectedTour.scenes[0].thumbnail || 'https://placehold.co/300x200?text=No+image'" alt="Tour Main Image" class="tour-main-image" />
+                        <div class="tour-hero-image">
+                            <img :src="selectedTour.scenes[selectedImage].thumbnail || 'https://placehold.co/300x200?text=No+image'" alt="Tour Main Image" class="tour-main-image" />
                         </div>
                     </div>
-                    <div class="scenes-list">
-                        <div v-for="scene in selectedTour.scenes" :key="scene.id" class="scene-item">
-                            <img :src="scene.thumbnail || 'https://placehold.co/150x100?text=No+image'" alt="Scene Thumbnail" class="scene-thumbnail" />
+                    <div class="scenes-gallery">
+                        <div v-for="scene, index in selectedTour.scenes" :key="scene.id" class="scene-item">
+                            <img @click="changeImage(index)" :src="scene.thumbnail || 'https://placehold.co/150x100?text=No+image'" alt="Scene Thumbnail" class="scene-thumbnail" />
                             <h3>{{ scene.name }}</h3>
                         </div>
                     </div>
@@ -202,15 +207,15 @@ p,h1,h2,h3,a,li {
 }
 
 .submit_btn{
-        display: block;
-        text-align: center;
-        width: 100%;
-        background-color: #242424;
-        color: white;
-        font-weight: bold;
-        border: 2px solid black;
-        padding: .5rem;
-        border-radius: 3px;
+    display: block;
+    text-align: center;
+    width: 100%;
+    background-color: #242424;
+    color: white;
+    font-weight: bold;
+    border: 2px solid black;
+    padding: .5rem;
+    border-radius: 3px;
 }
 
 
@@ -242,6 +247,11 @@ p,h1,h2,h3,a,li {
     border-radius: 5px;
 }
 
+.scene-thumbnail{
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
 .tour-list{
     display: flex;
     flex-direction: row;
@@ -267,7 +277,7 @@ p,h1,h2,h3,a,li {
     width: 30%;
 }
 
-.tour-gallery{
+.tour-hero-image{
     width: 70%;
     margin-top: 1rem;
 }
@@ -277,17 +287,45 @@ p,h1,h2,h3,a,li {
     border-radius: 5px;
 }
 
-.scenes-list{
+.scenes-gallery{
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
     gap: 1rem;
     margin-top: 1rem;
+    width: 100%;
+    overflow-x: auto;
 }
 
 .scene-item{
     width: 150px;
+    
 }
+
+
+.btn-link{
+    background-color: #242424;
+    color: white;
+    display: block;
+    padding: .9rem;
+    margin: 20px;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 5px;
+}
+
+.red{
+    background-color: #e74c3c;
+    color: white;
+}
+
+.red:hover{
+    color: black;
+}
+
 
 
 </style>

@@ -43,11 +43,19 @@ const save = async() =>{
   const itemId = store.$state.tour._id
   const updateData = store.$state.tour
   savingText.value = "Saving..."
-  console.log("Saving tour with ID:", itemId)
-  console.log("Update data:")
-  console.log(JSON.stringify(updateData
 
-  ))
+
+
+  // Get username from localStorage
+  const username = localStorage.getItem("username")
+
+  // Add it into the data you send
+  const payload = {
+    ...updateData,
+    user_name: username
+  }
+
+
 
   try {
     const response = await fetch(`${apiUrl}/update/${itemId}`, {
@@ -55,7 +63,8 @@ const save = async() =>{
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(updateData),
+      body: JSON.stringify(payload),
+      credentials: "include"
     })
 
     if (!response.ok) {

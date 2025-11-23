@@ -10,12 +10,15 @@ console.log("API URL:", apiUrl)
 const isLoading = ref(true)
 const allTours = ref<Tour[]>([])
 
+//Login form states
 const formUser = ref("")
 const formPass = ref("")
+
+//Dashboard states
 const authenticated = ref(false)
 const selectedImage = ref<number>(0)
-
 const selectedTour = ref<Tour | null>(null)
+const userName = localStorage.getItem("username")
 
 onMounted( async()=>{
     
@@ -29,12 +32,10 @@ onMounted( async()=>{
 })
 
 const loginAction = async (event: Event) => {
+    
     event.preventDefault();
 
-    const raw = JSON.stringify({
-    "user_name": formUser.value,
-    "password": formPass.value
-    });
+    const raw = JSON.stringify({"user_name": formUser.value,"password": formPass.value});
 
     try {
         const response = await fetch(`${apiUrl}/login`, {
@@ -64,7 +65,11 @@ const loginAction = async (event: Event) => {
 
 const validateSession = async () => {
 
-  const userName = localStorage.getItem("username");
+    if(!userName){
+        console.log("No username found in localStorage.");
+        return false;
+    }
+
   try {
     const res = await fetch(`${apiUrl}/check-auth`, {
         body: JSON.stringify({ username: userName }),
@@ -89,6 +94,30 @@ const changeImage = (index: number) => {
     selectedImage.value = index;
 }
 
+const deleteTour = async(tourId:string) =>{
+    try {
+        const response = await fetch(`${apiUrl}/delete/${tourId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ user_name: userName }),
+            credentials: "include"
+        });
+
+        if (response.ok) {
+            console.log("Tour deleted successfully");
+            // Remove the deleted tour from the allTours array
+            allTours.value = allTours.value.filter(tour => tour._id !== tourId);
+            selectedTour.value = null;
+        } else {
+            console.error("Failed to delete tour");
+        }
+    } catch (error) {
+        console.error("Error during tour deletion:", error);
+    }
+}
+
 </script>
 
 <template>
@@ -101,33 +130,30 @@ const changeImage = (index: number) => {
                 </div>
                 <div v-else>
                    <div class="tour-list">
-                       <div v-for="tour in allTours" :key="tour._id" class="tour-item" @click="selectedTour = tour">
-                            <img :src="tour.scenes[0].thumbnail || 'https://placehold.co/150x100?text=No+image'" alt="Tour Thumbnail" class="tour-thumbnail" />
+                       <div v-for="tour in allTours" :key="tour._id" class="tour-item" @click="selectedTour=tour">
+                            <img :src="tour.scenes[0].thumbnail || 'https://placehold.co/150x100?text=No+thumbnail'" alt="Tour Thumbnail" class="tour-thumbnail" />
                             <h3>{{ tour.name }}</h3>
-                            <p>Scenes: {{ tour.scenes.length }}</p>
                        </div>
                     </div>
                 </div>
             </div>
             <div class="tour-preview">
                 <h1>Admin Dashboard</h1>
-                <h2>Select a tour</h2>
                 <div v-if="selectedTour">
-                    <h3>{{ selectedTour.name }}</h3>
                     <div class="tour-intro">
                         <div class="tour-info">
                             <h3>{{ selectedTour.name }}</h3>
                             <a :href="`/tour-creator/${selectedTour._id}`" class="btn-link">Edit Tour</a>
                             <a :href="`/tour/${selectedTour._id}`" class="btn-link">Preview Tour</a>
-                            <a class="btn-link red">Delete Tour</a>
+                            <a @click="deleteTour(selectedTour._id)" class="btn-link red">Delete Tour</a>
                         </div>
-                        <div class="tour-hero-image">
+                        <div class="tour-hero-image-container">
                             <img :src="selectedTour.scenes[selectedImage].thumbnail || 'https://placehold.co/300x200?text=No+image'" alt="Tour Main Image" class="tour-main-image" />
                         </div>
                     </div>
                     <div class="scenes-gallery">
                         <div v-for="scene, index in selectedTour.scenes" :key="scene.id" class="scene-item">
-                            <img @click="changeImage(index)" :src="scene.thumbnail || 'https://placehold.co/150x100?text=No+image'" alt="Scene Thumbnail" class="scene-thumbnail" />
+                            <img @click="changeImage(index)" :src="scene.thumbnail || 'https://placehold.co/150x100?text=No+Thumbnail'" alt="Scene Thumbnail" class="scene-thumbnail" />
                             <h3>{{ scene.name }}</h3>
                         </div>
                     </div>
@@ -157,7 +183,7 @@ const changeImage = (index: number) => {
     </template>
 </template>
 
-<style>
+<style scoped>
 
 h1{
     font-size: 2rem;
@@ -277,9 +303,8 @@ p,h1,h2,h3,a,li {
     width: 30%;
 }
 
-.tour-hero-image{
+.tour-hero-image-container{
     width: 70%;
-    margin-top: 1rem;
 }
 
 .tour-main-image{
@@ -290,31 +315,28 @@ p,h1,h2,h3,a,li {
 .scenes-gallery{
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: center;
     flex-wrap: nowrap;
     gap: 1rem;
-    margin-top: 1rem;
     width: 100%;
     overflow-x: auto;
 }
 
 .scene-item{
-    width: 150px;
-    
+    width: 150px;    
 }
-
 
 .btn-link{
     background-color: #242424;
     color: white;
+    width: 80%;
     display: block;
-    padding: .9rem;
+    padding: .6rem;
     margin: 20px;
     font-family: 'Montserrat', sans-serif;
     cursor: pointer;
     font-weight: 600;
     border-radius: 5px;
+    border: none;
 }
 
 .red{

@@ -16,6 +16,8 @@ const router = useRouter();
 const tourId = route.params.tourId as string | undefined
 const apiUrl = import.meta.env.VITE_API
 
+const username = localStorage.getItem("username")
+
 const newTour = {
   name: "New tour",
   scenes: [
@@ -27,14 +29,24 @@ const newTour = {
       circles: [],
       spheres: []
     }
-  ]
+  ],
+  user_name: username
 };
 
 async function createNewTour() {
+
+  
+  if(!username) {
+    console.error("No username found in localStorage. Cannot create tour.");
+    loadingText.value = "Error: User not authenticated."
+    return;
+  }
+
   const response = await fetch(`${apiUrl}/create-tour`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newTour)
+    body: JSON.stringify(newTour),
+    credentials: "include"
   });
   return await response.json();
 }

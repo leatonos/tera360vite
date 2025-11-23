@@ -8,7 +8,7 @@ import type { RouteLocationNormalized } from "vue-router"
 
 const routes = [
   { path: "/", component: Home },
-  { path: "/admin", component: Admin, meta: { requiresAuth: true } },
+  { path: "/admin", component: Admin },
   { path: "/tour-creator/:tourId?", component: TourCreator, meta: { requiresAuth: true } },
   { path: "/tour/:tourId?",component: Tour,
   beforeEnter: (to: RouteLocationNormalized) => {

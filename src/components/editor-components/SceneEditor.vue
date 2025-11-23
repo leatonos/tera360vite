@@ -180,7 +180,7 @@ async function createThumbnail(){
   </div>
 </template>
 
-<style>
+<style scoped>
 
 .red{
     background-color: #e74c3c;

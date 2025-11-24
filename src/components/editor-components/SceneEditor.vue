@@ -94,8 +94,8 @@ function handleRotation(value:string){
     store.setSceneRotation(sceneIndex.value, newNumber)
 }
 
-function addCircleAction(){
-    store.addCircle(thisSceneIndex.value)
+function addCircleAction(selectedSceneIndex:number){
+    store.addCircle(selectedSceneIndex)
 }
 
 function deleteSceneAction(){
@@ -119,8 +119,42 @@ async function createThumbnail(){
      const file = new File([blob], `${props.thisScene.id}-thumbnail.png`, {
       type: 'image/png',
     })
+
+    
+
+    //Delete old thumbnail if exists
+    if(props.thisScene.thumbnail){
+
+      const thumbnailUrl = props.thisScene.thumbnail
+      const prefix = "https://tera-tuors.s3.amazonaws.com/";
+      const AWS_key = thumbnailUrl.slice(prefix.length)
+
+      thumbnailBtnText.value='Deleting old thumbnail...'
+      
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API}/delete-image`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({ user_name: localStorage.getItem('username'), key: AWS_key })
+        });
+
+        if (response.ok) {
+            console.log("Old thumbnail deleted successfully");
+        } else {
+            console.error("Failed to delete old thumbnail");
+        }
+    } catch (error) {
+        console.error("Error deleting old thumbnail:", error);
+    }
+    }
     thumbnailBtnText.value='Uploading image...'
-    const imageUrl = await uploadToS3(file,store.$state.tour._id,props.thisScene.id+'-thumbnail')
+
+    const randomString = Math.random().toString(36).substring(2, 8)
+
+    const imageUrl = await uploadToS3(file,store.$state.tour._id,props.thisScene.id+`-${randomString}-thumbnail`)
 
     thumbnailBtnText.value = "Create a thumbnail"
 
@@ -168,9 +202,9 @@ async function createThumbnail(){
 
     <!-- Actions -->
     <div class="actions">
-      <button class="btn" @click="addCircleAction">Add new circle</button>
+      <button class="btn" @click="addCircleAction(thisSceneIndex)">Add new circle</button>
       <button class="btn" @click="createThumbnail">{{ thumbnailBtnText }}</button>
-      <button class="red btn" style="" @click="deleteSceneAction">Delete Scene</button>
+      <button class="red btn" @click="deleteSceneAction">Delete Scene</button>
     </div>
     <div class="thumbnail-container">
       <h3 class="white-text">Thumbnail</h3>

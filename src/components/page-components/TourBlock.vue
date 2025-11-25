@@ -8,30 +8,43 @@ const props = defineProps<{
 
 const link = `/tour/${props.thisTour._id}`
 
+const thumbnailUrl = props.thisTour.scenes[0]?.thumbnail || 'https://placehold.co/150x100?text=No+thumbnail';
+
 </script>
 
 <template>
-    <div class="tour-block">
-        <a :href="link">
-            <h3>{{ thisTour.name }}</h3>
-        </a>
+    <div class="tour-block" :style="{ backgroundImage: `url(${thumbnailUrl})` }">
+        <div class="tour-block-overlay">
+            <a class="black_text" :href="link">
+                <h3 class="">{{ thisTour.name }}</h3>
+            </a>
+        </div>
     </div>
 </template>
 
-<style>
-    a{
-        text-decoration: none;
+<style scoped>
+    .black_text{
         color: black;
-    }
-    h2{
-        color :black;
+        text-decoration: none;
     }
     .tour-block{
-        display: block;
-        text-align: center;
-        width: 100px;
-        border: 2px solid black;
-        padding: 1rem;
-        border-radius: 3px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        width: calc(33% - 10px);
+        height: 20vh;
+        border-radius: 5px;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .tour-block-overlay{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.3);
+        height: 30%;
+        padding-left: 10px;
+       
     }
 </style>

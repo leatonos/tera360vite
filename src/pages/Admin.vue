@@ -154,7 +154,7 @@ const deleteTour = async(tourId:string) =>{
                     <div class="scenes-gallery">
                         <div v-for="scene, index in selectedTour.scenes" :key="scene.id" class="scene-item">
                             <img @click="changeImage(index)" :src="scene.thumbnail || 'https://placehold.co/150x100?text=No+Thumbnail'" alt="Scene Thumbnail" class="scene-thumbnail" />
-                            <h3>{{ scene.name }}</h3>
+                            <h3 ckass="white-text">{{ scene.name }}</h3>
                         </div>
                     </div>
                 </div>
@@ -236,7 +236,6 @@ p,h1,h2,h3,a,li {
     display: block;
     text-align: center;
     width: 100%;
-    background-color: #242424;
     color: white;
     font-weight: bold;
     border: 2px solid black;
@@ -252,13 +251,18 @@ p,h1,h2,h3,a,li {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    width: 100vw;
+    width: 100%;
+    height: calc(100vh - 100px);
+    
 }
 
 .tours-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     width: 40%;
+    height:100%;
     overflow-y: auto;
-    border-right: 2px solid #ccc;
     padding: 1rem;
 }
 
@@ -281,6 +285,7 @@ p,h1,h2,h3,a,li {
 .tour-list{
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 1rem;
 }
 
@@ -343,6 +348,8 @@ p,h1,h2,h3,a,li {
     background-color: #e74c3c;
     color: white;
 }
+
+
 
 .red:hover{
     color: black;

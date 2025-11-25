@@ -176,7 +176,6 @@ const deleteTour = async(tourId:string) =>{
                     <input type="password" class="form-input" id="password" name="password" v-model="formPass" required />
                 </div>
                 <button class="submit_btn" type="submit">Login</button>
-                <button :onclick="validateSession" class="submit_btn" type="button">Check Auth</button>
             </form>
         </div>
     </div>
@@ -196,6 +195,7 @@ h1{
     align-items: center;
     justify-content: center;
     width: 100vw;
+    height: calc(100vh - 100px);
 }
 
 .field{
@@ -233,6 +233,7 @@ p,h1,h2,h3,a,li {
 }
 
 .submit_btn{
+    background-color: #242424;
     display: block;
     text-align: center;
     width: 100%;

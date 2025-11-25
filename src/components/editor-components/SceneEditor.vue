@@ -117,7 +117,7 @@ async function createThumbnail(){
     if(!blob) return
 
      const file = new File([blob], `${props.thisScene.id}-thumbnail.png`, {
-      type: 'image/png',
+       type: "image/jpeg",
     })
 
     
@@ -162,7 +162,7 @@ async function createThumbnail(){
       store.setSceneThumbnail(thisSceneIndex.value,imageUrl)
     }
 
- })
+ }, 'image/jpeg', 0.7);
 
 }
 

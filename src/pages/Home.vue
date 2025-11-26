@@ -86,6 +86,9 @@ const selectScene = (scene: SceneInfo) =>{
                         <h4 class="white-text">{{ scene.name }}</h4>
                     </div> 
                 </div>
+                <div class="tour-options">
+                    <a :href="`/tour/${selectedTour._id}`" class="btn-link">Ver Tour</a>
+                </div>
             </div>
             <div v-else class="tour_not_selected">
                 <p>Selecione um tour</p>
@@ -219,6 +222,25 @@ main{
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     padding: 3.2px;
+}
+
+.tour-options{
+    margin-top: 20px;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.btn-link{
+    
+    background-color: #242424;
+    color: white;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 10px;
 }
 
 /* Medium devices (tablets) */

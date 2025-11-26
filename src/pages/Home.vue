@@ -77,7 +77,7 @@ const selectScene = (scene: SceneInfo) =>{
                 </div>
             </div>
             <div v-if="selectedTour" class="tour-preview-container">
-                 <h3>{{ selectedTour.name }}</h3>
+                <h3>{{ selectedTour.name }}</h3>
                 <div class="tour-hero-image-container">
                     <img :src="previewImageUrl()" alt="Tour Main Image" class="tour-main-image" />
                 </div>
@@ -233,7 +233,6 @@ main{
 }
 
 .btn-link{
-    
     background-color: #242424;
     color: white;
     font-weight: bold;
@@ -244,7 +243,29 @@ main{
 }
 
 /* Medium devices (tablets) */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
+    main{
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .tour-selection-container{
+        width: 100%;
+    }
+    
+    .tour-preview-container, .tour_not_selected{
+        display: none;
+    }
+
+    header{
+       padding-top: 10px;
+    }
+}
+
+
+/* Small devices (phones) */
+@media (max-width: 576px) {
+  /* styles for smartphones */
 }
 
 </style>

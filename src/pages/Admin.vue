@@ -96,7 +96,7 @@ const changeImage = (index: number) => {
 
 const deleteTour = async(tourId:string) =>{
     try {
-        const response = await fetch(`${apiUrl}/delete/${tourId}`, {
+        const response = await fetch(`${apiUrl}/delete-tour/${tourId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json"

@@ -12,7 +12,7 @@ const props = defineProps<{
 <template>
   <div class="loading-screen">
     <DotLottieVue
-      style="height: 200px; width: 500px"
+      style="width: 100%"
       autoplay
       src="https://lottie.host/9b888865-03ce-4cce-b1ec-3c0058202c3a/VzYcqq3nGU.lottie"
     />

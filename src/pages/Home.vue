@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
 import { onMounted, ref } from 'vue'
 import type { SceneInfo, Tour } from '../types'
 import TourBlock from '../components/page-components/TourBlock.vue'
+import { getCountry } from '../utilis/getCountry'
+import { englishTranslations, portugueseTranslations } from '../utilis/getCountry'
 
 const apiUrl = import.meta.env.VITE_API
 
@@ -14,12 +15,26 @@ const allTours = ref<Tour[]>([])
 const selectedTour = ref<Tour|null>(null)
 const selectedScene = ref<SceneInfo|null>(null)
 
+const language = ref(englishTranslations)
+
 onMounted( async()=>{
     const allToursAPIRequest = await fetch(`${apiUrl}/all-tours`);
     const allToursAPIResponse = await allToursAPIRequest.json();
     console.log("All tours fetched from API:", allToursAPIResponse);
     allTours.value = allToursAPIResponse.tours
     isLoading.value = false
+
+    const userCountry = await getCountry();
+
+   
+
+    if(userCountry.country_name === "Brazil"){
+        language.value = portugueseTranslations
+    }
+    else{
+        language.value = englishTranslations
+    }
+
 })
 
 const previewImageUrl = () =>{
@@ -56,19 +71,18 @@ const selectScene = (scene: SceneInfo) =>{
         <header>
             <div class="logo-container">
                 <a href="https://tera.arq.br" target="_blank" rel="noopener noreferrer">
-                    <DotLottieVue class="animated-logo" autoplay src="https://lottie.host/9b888865-03ce-4cce-b1ec-3c0058202c3a/VzYcqq3nGU.lottie" />
+                    <img class="animated-logo" src="../assets/teraLogoBranco.svg" />
                 </a>
             </div>
             <div class="header-title">
-                <h1>Tera360</h1>
-                <h2>Tours virtuais renderizados pela Tera arquitura</h2>
+                <h1 class="white-text">Tera360</h1>
             </div>
         </header>
         <main>
             <div class="tour-selection-container">
                 <h3 style="margin-bottom: 10px;">Explore 360° virtual tours</h3>
                 <div v-if="isLoading">
-                    <p>Loading tours...</p>
+                    <p>{{language.Loading}}</p>
                 </div>
                 <div v-else>
                     <div class="tour-list">
@@ -83,17 +97,20 @@ const selectScene = (scene: SceneInfo) =>{
                 </div>
                 <div class="tour-images-gallery">
                     <div @click="selectScene(scene)" v-for="scene in selectedTour.scenes" class="scene-item" :style="getBg(scene)" :key="scene.id">
-                        <h4 class="white-text">{{ scene.name }}</h4>
+                        <h4 class="white-text gray-bg">{{ scene.name }}</h4>
                     </div> 
                 </div>
                 <div class="tour-options">
-                    <a :href="`/tour/${selectedTour._id}`" class="btn-link">Ver Tour</a>
+                    <a :href="`/tour/${selectedTour._id}`" class="btn-link">{{ language['See tour'] }}</a>
                 </div>
             </div>
             <div v-else class="tour_not_selected">
                 <p>Selecione um tour</p>
             </div>
         </main>
+        <footer>
+            <p style="text-align: center; padding: 10px 0px; color: white;">{{ language.Copyright }}</p>
+        </footer>
     </div>
 </template>
 
@@ -106,12 +123,21 @@ const selectScene = (scene: SceneInfo) =>{
 }
 
 header{
+    padding: 15px 0px;
     width: 100%;
+    background-color: #242424;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: left;
     gap: 2rem;
+}
+
+footer{
+    width: 100%;
+    background-color: #242424;
+    color: white;
+    margin-top: auto;
 }
 
 .logo-container{
@@ -153,8 +179,9 @@ main{
 
 .tour-selection-container{
     padding: 2rem;
+   
     width: 55%;
-    max-height: calc(100vh - 130px);
+    height: calc(100vh - 80px);
     overflow: auto;
     box-sizing: border-box;
 }
@@ -167,8 +194,9 @@ main{
 }
 
 .tour-preview-container{
-    padding: 0rem 3rem;
+    padding: 2rem 3rem;
     width: 45%;
+    max-width: 800px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -193,6 +221,8 @@ main{
 
 .tour-main-image{
     width: 100%;
+    max-width: 750px;
+    height: 500px;
     border-radius: 5px;
 }
 
@@ -219,9 +249,12 @@ main{
 }
 
 .white-text{
-    background-color: rgba(0, 0, 0, 0.5);
     color: white;
     padding: 3.2px;
+}
+
+.gray-bg{
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
 .tour-options{

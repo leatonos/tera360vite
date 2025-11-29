@@ -34,7 +34,7 @@ const changeImage = (index:number) =>{
         <div class="tour-block" :style="{ backgroundImage: `url(${thumbnailUrl})` }">
             <div class="tour-block-overlay">
                 <a class="black_text" :href="link">
-                    <h3 class="">{{ thisTour.name }}</h3>
+                    <h3 class="tour-title">{{ thisTour.name }}</h3>
                 </a>
             </div>
         </div>
@@ -55,6 +55,7 @@ const changeImage = (index:number) =>{
         flex-direction: column;
     }
     .black_text{
+        text-decoration: none;
         position: relative;
         color: black;
     }
@@ -76,13 +77,19 @@ const changeImage = (index:number) =>{
         display: flex;
         flex-direction: column;
         justify-content: center;
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: rgba(0, 0, 0, 0.6);
         height: 30%;
         padding-left: 10px;        
     }
 
     .tour_btn{
         display: none;
+    }
+
+    .tour-title{
+        color: white;
+        margin: 0;
+        text-decoration: none;
     }
 
     /* Medium devices (tablets) */

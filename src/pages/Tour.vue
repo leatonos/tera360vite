@@ -51,8 +51,6 @@ function toggleNavigator() {
   arrowText.value = isOpen.value ? "<" : ">";
 }
 
-const screenToggleIcon = ref(FullscreenIcon);
-
 onMounted(async () => {
   if (!tourId) {
     router.replace({ path: `/` });

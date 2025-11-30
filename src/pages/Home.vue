@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import type { SceneInfo, Tour } from '../types'
 import TourBlock from '../components/page-components/TourBlock.vue'
-import { getCountry } from '../utilis/getCountry'
+import { getCountry, type Translation } from '../utilis/getCountry'
 import { englishTranslations, portugueseTranslations } from '../utilis/getCountry'
 
 const apiUrl = import.meta.env.VITE_API
@@ -15,7 +15,7 @@ const allTours = ref<Tour[]>([])
 const selectedTour = ref<Tour|null>(null)
 const selectedScene = ref<SceneInfo|null>(null)
 
-const language = ref(englishTranslations)
+const language = ref<Translation>(englishTranslations)
 
 onMounted( async()=>{
     const allToursAPIRequest = await fetch(`${apiUrl}/all-tours`);
@@ -25,8 +25,6 @@ onMounted( async()=>{
     isLoading.value = false
 
     const userCountry = await getCountry();
-
-   
 
     if(userCountry.country_name === "Brazil"){
         language.value = portugueseTranslations
@@ -80,13 +78,13 @@ const selectScene = (scene: SceneInfo) =>{
         </header>
         <main>
             <div class="tour-selection-container">
-                <h3 style="margin-bottom: 10px;">Explore 360° virtual tours</h3>
+                <h3 style="margin-bottom: 10px;">{{ language["Explore 360° virtual tours"] }}</h3>
                 <div v-if="isLoading">
                     <p>{{language.Loading}}</p>
                 </div>
                 <div v-else>
                     <div class="tour-list">
-                        <TourBlock v-for="tour in allTours" @click="selectTour(tour)" :key="tour._id" :thisTour="tour" />
+                        <TourBlock v-for="tour in allTours" @click="selectTour(tour)" :key="tour._id" :thisTour="tour" :language="language" />
                     </div>
                 </div>
             </div>
@@ -222,7 +220,6 @@ main{
 .tour-main-image{
     width: 100%;
     max-width: 750px;
-    height: 500px;
     border-radius: 5px;
 }
 

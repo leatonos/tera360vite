@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { Tour } from '../../types';
 import { computed, ref } from 'vue';
+import type { Translation } from '../../utilis/getCountry';
 
 //Props
 const props = defineProps<{
-    thisTour:Tour
+    thisTour:Tour,
+    language: Translation
 }>()
 
 const selectedImageIndex = ref(0);
@@ -43,7 +45,7 @@ const changeImage = (index:number) =>{
             :style="{ backgroundImage: `url(${scene.thumbnail || 'https://placehold.co/100x70?text=No+thumbnail'})` }">
             </div>
         </div>
-        <a class="tour_btn" :href="link">Ver tour</a>
+        <a class="tour_btn" :href="link">{{ language["See tour"] }}</a>
     </div>
 </template>
 

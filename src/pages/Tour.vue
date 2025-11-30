@@ -8,6 +8,8 @@ import LoadingAnimation from '../components/tour-components/loading.vue';
 
 import teraLogoWhite from '../assets/teraLogoBranco.svg';
 import TourNavigator from '../components/tour-components/tour-navigator.vue';
+import FullscreenIcon from '../assets/fullscreen.svg';
+import ReverseFullscreenIcon from '../assets/fullscreen_reverse.svg';
 
 const apiUrl = import.meta.env.VITE_API;
 const route = useRoute();
@@ -15,12 +17,28 @@ const router = useRouter();
 const store = useTourStore();
 const loading = ref(true);
 const loadingText = ref("");
+const cornerIcon = ref(FullscreenIcon);
 const navigator = ref<HTMLElement | null>(null);
 
 const arrowText = ref("<");
 const isOpen = ref(true);
-
 const tourId = route.params.tourId as string | undefined;
+const isFullscreen = ref(false);
+
+const box = ref<HTMLElement | null>(null);
+
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    box.value?.requestFullscreen();
+    isFullscreen.value = true;
+    cornerIcon.value = ReverseFullscreenIcon;
+  } else {
+    document.exitFullscreen();
+    cornerIcon.value = FullscreenIcon;
+    isFullscreen.value = false;
+  }
+}
 
 async function getTour(id: string) {
   console.log("Fetching tour with ID: ", id);
@@ -33,6 +51,7 @@ function toggleNavigator() {
   arrowText.value = isOpen.value ? "<" : ">";
 }
 
+const screenToggleIcon = ref(FullscreenIcon);
 
 onMounted(async () => {
   if (!tourId) {
@@ -50,7 +69,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="main-container">
+  <div ref="box" class="main-container">
     <template v-if="loading">
       <LoadingAnimation />
     </template>
@@ -71,8 +90,11 @@ onMounted(async () => {
           <Scene />
         </Suspense>
         <a href="https://tera.arq.br" target="_blank" rel="noopener">
-          <img id="logoTeraCantinho" :src="teraLogoWhite" />
+          <img id="icone-superior" :src="teraLogoWhite" />
         </a>
+        <button class="fullscreen_btn" id="icone-inferior" @click="toggleFullscreen">
+          <img style="width: 100%;" :src="cornerIcon" />
+        </button>
       </div>
     </template>
   </div>
@@ -136,11 +158,30 @@ onMounted(async () => {
   position: relative;
 }
 
-#logoTeraCantinho {
+#icone-inferior {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 80px;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+.fullscreen_btn{
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 8px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+#icone-superior {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 150px;
   height: auto;
   z-index: 10;
 }
@@ -219,10 +260,22 @@ onMounted(async () => {
     width: 100%;
     height: calc(100vh - 120px);
   }
+
+  #icone-inferior {
+    bottom: 240px;
+    right: 20px;
+  }
+  #icone-superior {
+    top: 20px;
+    left: 20px;
+    width: 60px;
+  }
 }
 
 /* Mobile responsive settings */
 @media (max-width: 480px) {
+
+
 
 }
 </style>

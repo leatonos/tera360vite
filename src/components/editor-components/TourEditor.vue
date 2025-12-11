@@ -99,7 +99,6 @@ const test = () =>{
             <input type="text" id="tuor_name" name="tuor_name" v-model="storeState.tour.name"  @change="(e: Event) => handleNameChange((e.target as HTMLInputElement).value)">
             <div>
               <button class="cute-upload-btn save_btn" @click="save">{{ savingText }}</button>
-              <button class="cute-upload-btn save_btn" @click="test">test</button>
             </div>
         </div>
       </header>

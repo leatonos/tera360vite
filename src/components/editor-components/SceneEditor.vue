@@ -2,6 +2,8 @@
 import { useCanvasStore } from "../../piniaStore/canvasStore";
 import { useTourStore } from "../../piniaStore/store";
 import type { SceneInfo } from "../../types";
+import imageCompression from "browser-image-compression";
+
 import { computed, ref } from 'vue';
 
 //Props
@@ -49,12 +51,26 @@ const deleteImage = async(awsKey:string) => {
 }
 }
 
+const compressedImage = async (file: File): Promise<File> => {
+  const options = {
+    maxSizeMB: 3,
+    maxWidthOrHeight: 6000,
+    useWebWorker: true
+  };
+  try {
+    const compressedFile = await imageCompression(file, options);
+    return compressedFile;
+  } catch (error) {
+    console.error("Error compressing image:", error);
+    return file; // Return original file if compression fails
+  }
+};
+
 const handleFileChange = async (event: Event) => {
   uploading.value = true
   
   const target = event.target as HTMLInputElement;
-  console.log(target.files);
-
+  
   const currentBackground = props.thisScene.background;
   const standardBackground = "https://cdn.aframe.io/360-image-gallery-boilerplate/img/cubes.jpg";
 
@@ -75,8 +91,9 @@ const handleFileChange = async (event: Event) => {
 
   if (target.files && target.files[0]) {
     const file = target.files[0];
+    const compressedFile = await compressedImage(file);
     const randomString = Math.random().toString(36).substring(2, 8)
-    const imageUrl = await uploadToS3(file, store.$state.tour._id, `${props.thisScene.id}-${randomString}`);
+    const imageUrl = await uploadToS3(compressedFile, store.$state.tour._id, `${props.thisScene.id}-${randomString}`);
     console.log("Uploaded image URL:", imageUrl);
     if (imageUrl) {
       uploadText.value = "Upload Background"

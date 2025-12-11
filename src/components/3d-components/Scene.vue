@@ -35,10 +35,22 @@ const isTouch = ref(false);
 //canvas element ref
 const canvasElement = ref<HTMLElement|null>(null)
 
-function setSceneTexture(url: string) {
+async function setSceneTexture(url: string) {
   const tex = textures.value[url];
   if (tex) {
     currentTexture.value = tex;
+    currentSceneBackground.value = url;
+  }else{
+    console.log("Texture not found for URL:", url);
+    console.log("loading new texture...");
+    loadingTexture.value = true;
+    const loadingTextureResult = await loadAllTextures([url], (percent) => {
+      loadingProgress.value = percent;
+    });
+    textures.value[url] = loadingTextureResult[url];
+    console.log(textures);
+    loadingTexture.value = false;
+    currentTexture.value = loadingTextureResult[url];
     currentSceneBackground.value = url;
   }
 }
@@ -201,6 +213,18 @@ watch(() => store.$state.currentSceneIndex, async (newIndex) => {
 
   allCircles.value = newScene.circles;
   currentSceneIndex.value = newIndex;
+});
+
+//---------------------------
+// Handle changes in the background of the current scene
+//---------------------------
+watch(() => store.$state.tour.scenes[currentSceneIndex.value]?.background, (newBackground) => {
+
+  console.log("Background change detected:", newBackground);
+
+  if (newBackground && newBackground !== currentSceneBackground.value) {
+    setSceneTexture(newBackground);
+  }
 });
  
 // ---------------------------

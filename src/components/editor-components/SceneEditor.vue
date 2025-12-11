@@ -25,15 +25,58 @@ const rotation = computed(() => store.$state.tour.scenes[sceneIndex.value]?.rota
 const uploadText = ref("Upload Background")
 const thumbnailBtnText = ref("Create a thumbnail")
 
+const deleteImage = async(awsKey:string) => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API}/delete-image`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({ user_name: localStorage.getItem('username'), key: awsKey })
+    });
+
+    console.log("Delete image response:", response);
+
+    if (response.ok) {
+        console.log("Old background deleted successfully");
+    } else {
+      console.log(response)
+        console.error("Failed to delete old background");
+    }
+} catch (error) {
+    console.error("Error deleting old background:", error);
+}
+}
 
 const handleFileChange = async (event: Event) => {
   uploading.value = true
-  uploadText.value = "Uploading Image..."
+  
   const target = event.target as HTMLInputElement;
   console.log(target.files);
+
+  const currentBackground = props.thisScene.background;
+  const standardBackground = "https://cdn.aframe.io/360-image-gallery-boilerplate/img/cubes.jpg";
+
+  console.log(currentBackground != standardBackground);
+
+  if (currentBackground != standardBackground){
+    //Delete old background from S3
+      uploadText.value = "Deleting old background..."
+      const prefix = "https://tera-tuors.s3.amazonaws.com/";
+      const AWS_key = currentBackground.slice(prefix.length)
+
+      uploadText.value='Deleting old background...'
+      await deleteImage(AWS_key)
+
+  }
+
+  uploadText.value = "Uploading Image..."
+
   if (target.files && target.files[0]) {
     const file = target.files[0];
-    const imageUrl = await uploadToS3(file, store.$state.tour._id, props.thisScene.id);
+    const randomString = Math.random().toString(36).substring(2, 8)
+    const imageUrl = await uploadToS3(file, store.$state.tour._id, `${props.thisScene.id}-${randomString}`);
     console.log("Uploaded image URL:", imageUrl);
     if (imageUrl) {
       uploadText.value = "Upload Background"
@@ -44,6 +87,7 @@ const handleFileChange = async (event: Event) => {
     }
   }
 };
+
 
 const uploadToS3 = async(file: File, tourId: string, sceneId: string) => {
   try {
@@ -120,8 +164,6 @@ async function createThumbnail(){
        type: "image/jpeg",
     })
 
-    
-
     //Delete old thumbnail if exists
     if(props.thisScene.thumbnail){
 
@@ -130,30 +172,15 @@ async function createThumbnail(){
       const AWS_key = thumbnailUrl.slice(prefix.length)
 
       thumbnailBtnText.value='Deleting old thumbnail...'
-      
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API}/delete-image`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include",
-            body: JSON.stringify({ user_name: localStorage.getItem('username'), key: AWS_key })
-        });
+      await deleteImage(AWS_key)
+    }
 
-        if (response.ok) {
-            console.log("Old thumbnail deleted successfully");
-        } else {
-            console.error("Failed to delete old thumbnail");
-        }
-    } catch (error) {
-        console.error("Error deleting old thumbnail:", error);
-    }
-    }
+
     thumbnailBtnText.value='Uploading image...'
 
     const randomString = Math.random().toString(36).substring(2, 8)
 
+    //Upload new thumbnail
     const imageUrl = await uploadToS3(file,store.$state.tour._id,props.thisScene.id+`-${randomString}-thumbnail`)
 
     thumbnailBtnText.value = "Create a thumbnail"

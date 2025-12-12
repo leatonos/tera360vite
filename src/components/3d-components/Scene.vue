@@ -216,6 +216,17 @@ watch(() => store.$state.currentSceneIndex, async (newIndex) => {
 });
 
 //---------------------------
+// Handle rotation changes 
+//---------------------------
+watch(() => store.$state.tour.scenes[currentSceneIndex.value]?.rotation, (newRotation) => {
+  
+  if (newRotation !== undefined) {
+    rotationRad.value = newRotation * Math.PI / 180;
+  }
+});
+
+
+//---------------------------
 // Handle changes in the background of the current scene
 //---------------------------
 watch(() => store.$state.tour.scenes[currentSceneIndex.value]?.background, (newBackground) => {

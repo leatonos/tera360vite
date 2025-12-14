@@ -85,10 +85,6 @@ const handleNameChange = (value:string) =>{
     store.setTourName(value)
 }
 
-const test = () =>{
-  console.table(store.$state.tour.scenes);
-}
-
 </script>
 
 <template>

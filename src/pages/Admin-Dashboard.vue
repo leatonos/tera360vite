@@ -1,10 +1,8 @@
 <script setup lang="ts">
-
-import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
 import { onMounted, ref } from 'vue'
 import type { Tour } from '../types'
-import { useRouter } from 'vue-router'
-const router = useRouter();
+import HeaderVue from '../components/page-components/Header.vue'
+import TourBlock from '../components/page-components/TourBlock.vue'
 
 const apiUrl = import.meta.env.VITE_API
 console.log("API URL:", apiUrl)
@@ -12,12 +10,11 @@ console.log("API URL:", apiUrl)
 const isLoading = ref(true)
 const allTours = ref<Tour[]>([])
 
-//Login form states
-const formUser = ref("")
-const formPass = ref("")
 
 //Dashboard states
 const authenticated = ref(false)
+const selectedImage = ref<number>(0)
+const selectedTour = ref<Tour | null>(null)
 const userName = localStorage.getItem("username")
 
 onMounted( async()=>{
@@ -29,41 +26,7 @@ onMounted( async()=>{
     isLoading.value = false
    
     authenticated.value = await validateSession()
-
 })
-
-const loginAction = async (event: Event) => {
-    
-    event.preventDefault();
-
-    const raw = JSON.stringify({"user_name": formUser.value,"password": formPass.value});
-
-    try {
-        const response = await fetch(`${apiUrl}/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include",
-            body: raw,
-        });
-
-        if (response.ok) {
-            console.log("Login successful");
-            const data = await response.json();
-            console.log("Response data:", data);
-            localStorage.setItem("username", formUser.value);
-            authenticated.value = true;
-            // Redirect to admin dashboard or perform other actions
-            router.push("/admin-dashboard");
-        } else {
-            console.error("Login failed");
-            // Handle login failure (e.g., show error message)
-        }
-    } catch (error) {
-        console.error("Error during login:", error);
-    }
-};
 
 const validateSession = async () => {
 
@@ -81,7 +44,9 @@ const validateSession = async () => {
       method: "POST",
       credentials: "include"
     });
+
     const data = await res.json();
+
     console.log("Session is valid:", data.authenticated);
     return data.authenticated === true;
   } catch (err) {
@@ -90,28 +55,70 @@ const validateSession = async () => {
   }
 }
 
+const changeImage = (index: number) => {
+    selectedImage.value = index;
+}
 
+const deleteTour = async(tourId:string) =>{
+    try {
+        const response = await fetch(`${apiUrl}/delete-tour/${tourId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ user_name: userName }),
+            credentials: "include"
+        });
+
+        if (response.ok) {
+            console.log("Tour deleted successfully");
+            // Remove the deleted tour from the allTours array
+            allTours.value = allTours.value.filter(tour => tour._id !== tourId);
+            selectedTour.value = null;
+        } else {
+            console.error("Failed to delete tour");
+        }
+    } catch (error) {
+        console.error("Error during tour deletion:", error);
+    }
+}
 
 </script>
 
 <template>
-    <div class="login-page">
-        <DotLottieVue class="animation" autoplay src="https://lottie.host/9b888865-03ce-4cce-b1ec-3c0058202c3a/VzYcqq3nGU.lottie" />
-        <div class="box">
-            <h1>Admin login</h1>
-            <form class="login-form" v-on:submit="loginAction">
-                <div class="field">
-                    <label for="username">Username:</label>
-                    <input type="text" class="form-input" id="username" name="username" v-model="formUser" required />
+    <template v-if="authenticated">
+        <HeaderVue title="Admin DashBoard" :isAdmin=true />
+        <main class="admin-dashboard">
+            <div class='tours-container'>
+                <div v-if="isLoading">
+                    <p>Loading tours...</p>
                 </div>
-                <div class="field">
-                    <label class="white-text" for="password">Password:</label>
-                    <input type="password" class="form-input" id="password" name="password" v-model="formPass" required />
+                <div v-else>
+                   <div class="tour-list">
+                        <TourBlock v-for="tour in allTours" @click="selectedTour=tour" :key="tour._id" :thisTour="tour" :language="{ 'See tour': 'See tour' }" />
+                    </div>
                 </div>
-                <button class="submit_btn" type="submit">Login</button>
-            </form>
-        </div>
-    </div>
+            </div>
+            <div class="tour-preview">
+                <div v-if="selectedTour">
+                    <div class="tour-hero-image-container">
+                        <img :src="selectedTour.scenes[selectedImage].thumbnail || 'https://placehold.co/300x200?text=No+image'" alt="Tour Main Image" class="tour-main-image" />
+                    </div>
+                    <div class="scenes-gallery">
+                        <div v-for="scene, index in selectedTour.scenes" :key="scene.id" class="scene-item">
+                            <img @click="changeImage(index)" :src="scene.thumbnail || 'https://placehold.co/150x100?text=No+Thumbnail'" alt="Scene Thumbnail" class="scene-thumbnail" />
+                            <h3 ckass="white-text">{{ scene.name }}</h3>
+                        </div>
+                    </div>
+                    <div class="tour-options">
+                        <a :href="`/tour/${selectedTour._id}`" class="btn-link">Preview Tour</a>
+                        <a :href="`/tour-creator/${selectedTour._id}`" class="btn-link">Edit Tour</a>
+                        <button @click="deleteTour(selectedTour._id)" class="btn-link">Delete Tour</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </template>
 </template>
 
 <style scoped>
@@ -185,8 +192,6 @@ p,h1,h2,h3,a,li {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: calc(100vh - 100px);
-    
 }
 
 .tours-container{
@@ -194,15 +199,19 @@ p,h1,h2,h3,a,li {
     flex-direction: column;
     justify-content: center;
     box-sizing: border-box;
-    width: 40%;
+    width: 50%;
     height:100%;
     overflow-y: auto;
     padding: 2.5rem;
 }
 
 .tour-preview{
+    display: flex;
+    flex-direction: column;
     width: 60%;
+    overflow-y: auto;
     padding: 1rem;
+    height: calc(100vh - 100px);
 }
 
 .tour-thumbnail, .scene-thumbnail{
@@ -224,37 +233,8 @@ p,h1,h2,h3,a,li {
     gap: 1rem;
 }
 
-.tour-item{
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 5px;
-    text-align: center;
-}
-
-.create-new-tour{
-    text-decoration: none;
-    color: black;
-}
-
-.tour-intro{
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    gap: 1rem;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.tour-info{
-    display: flex;
-    flex-direction: column;
-    width: 30%;
-    box-sizing: border-box;
-    align-items: center;
-}
-
 .tour-hero-image-container{
-    width: 70%;
+    width: 100%;
 }
 
 .tour-main-image{
@@ -275,18 +255,23 @@ p,h1,h2,h3,a,li {
     width: 150px;    
 }
 
+.tour-options{
+    display: flex;
+    justify-content: end;
+    gap: 4px;
+}
+
 .btn-link{
+    display: block;
     background-color: #242424;
     color: white;
-    width: 100%;
-    display: block;
     padding: .6rem;
     margin:10px 0;
     text-decoration: none;
     font-family: 'Montserrat', sans-serif;
     cursor: pointer;
     font-weight: 600;
-    border-radius: 5px;
+    border-radius: 7px;
     border: none;
 }
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Tour } from '../../types';
 import { computed, ref } from 'vue';
-import type { Translation } from '../../utilis/getCountry';
+import type {Translation}  from '../../utilis/getCountry';
 
 //Props
 const props = defineProps<{
@@ -20,8 +20,6 @@ const thumbnailUrl = computed(() => {
     "https://placehold.co/150x100?text=No+thumbnail"
   );
 });
-
-
 
 const changeImage = (index:number) =>{
     selectedImageIndex.value = index;
@@ -53,7 +51,8 @@ const changeImage = (index:number) =>{
 
     .tour-block-container{
         display: flex;
-        width: calc(33% - 10px);
+        flex-wrap: wrap;
+        width: calc(50% - 10px);
         flex-direction: column;
     }
     .black_text{
@@ -69,7 +68,7 @@ const changeImage = (index:number) =>{
         flex-direction: column;
         justify-content: flex-end;
         width: 100%;
-        height: 20vh;
+        height: 25vh;
         border-radius: 5px;
         background-size: cover;
         background-position: center;
@@ -80,8 +79,10 @@ const changeImage = (index:number) =>{
         flex-direction: column;
         justify-content: center;
         background-color: rgba(0, 0, 0, 0.6);
-        height: 30%;
-        padding-left: 10px;        
+        height: 20%;
+        padding-left: 10px;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
     }
 
     .tour_btn{
@@ -101,6 +102,7 @@ const changeImage = (index:number) =>{
         }
         .tour-gallery-small{
             display: flex;
+            width: 100%;
             height: 60px;
             gap: 5px;
             margin-top: 5px;

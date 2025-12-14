@@ -3,12 +3,14 @@ import Home from "../pages/Home.vue"
 import TourCreator from "../pages/Tour-Creator.vue"
 import Tour from "../pages/Tour.vue"
 import Admin from "../pages/Admin.vue"
+import AdminDashboard from "../pages/Admin-Dashboard.vue"
 import type { RouteLocationNormalized } from "vue-router"
-
+const apiUrl = import.meta.env.VITE_API
 
 const routes = [
   { path: "/", component: Home },
-  { path: "/admin", component: Admin },
+  { path: "/admin", component: Admin, beforeEnter: async () => { if(await isAuthenticated()) { return "/admin-dashboard" } return true }},
+  { path: "/admin-dashboard", component: AdminDashboard, meta: { requiresAuth: true } },
   { path: "/tour-creator/:tourId?", component: TourCreator, meta: { requiresAuth: true } },
   { path: "/tour/:tourId?",component: Tour,
   beforeEnter: (to: RouteLocationNormalized) => {
@@ -27,37 +29,45 @@ const router = createRouter({
   routes,
 })
 
-/**
- router.beforeEach(async (to, from, next) => {
+
+ router.beforeEach(async (to, _from, next) => {
   if (!to.meta.requiresAuth) {
     return next()
   }
 
+  const authTest = await isAuthenticated()
+  
+  if (authTest) {
+    return next()
+  }else{
+    return next("/")
+  }
+
+})
+
+
+async function isAuthenticated(): Promise<boolean> {
   try {
-    const res = await fetch("https://YOUR_API_DOMAIN/check-auth", {
+    const res = await fetch(`${apiUrl}/check-auth`, {
       method: "POST",
-      credentials: "include", // IMPORTANT → sends cookies
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: localStorage.getItem("username") // or however you're storing it
-      })
+        username: localStorage.getItem("username"),
+      }),
     })
 
-    if (res.ok) {
-      const data = await res.json()
-      if (data.authenticated) return next()
-    }
+    if (!res.ok) return false
 
-    // Not authenticated?
-    next("/") // redirect to home or login page
-  } catch (err) {
-    next("/") // fallback
+    const data = await res.json()
+    return data.authenticated === true
+  } catch {
+    return false
   }
-})
+}
 
- */
 
 
 export default router

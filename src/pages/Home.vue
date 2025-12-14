@@ -4,6 +4,7 @@ import type { SceneInfo, Tour } from '../types'
 import TourBlock from '../components/page-components/TourBlock.vue'
 import { getCountry, type Translation } from '../utilis/getCountry'
 import { englishTranslations, portugueseTranslations } from '../utilis/getCountry'
+import HeaderVue from '../components/page-components/Header.vue'
 
 const apiUrl = import.meta.env.VITE_API
 
@@ -66,16 +67,7 @@ const selectScene = (scene: SceneInfo) =>{
 
 <template>
     <div class="home-page">
-        <header>
-            <div class="logo-container">
-                <a href="https://tera.arq.br" target="_blank" rel="noopener noreferrer">
-                    <img class="animated-logo" src="../assets/teraLogoBranco.svg" />
-                </a>
-            </div>
-            <div class="header-title">
-                <h1 class="white-text">Tera360</h1>
-            </div>
-        </header>
+        <HeaderVue title="Tour 360" />
         <main>
             <div class="tour-selection-container">
                 <h3 style="margin-bottom: 10px;">{{ language["Explore 360° virtual tours"] }}</h3>
@@ -89,7 +81,6 @@ const selectScene = (scene: SceneInfo) =>{
                 </div>
             </div>
             <div v-if="selectedTour" class="tour-preview-container">
-                <h3>{{ selectedTour.name }}</h3>
                 <div class="tour-hero-image-container">
                     <img :src="previewImageUrl()" alt="Tour Main Image" class="tour-main-image" />
                 </div>
@@ -117,18 +108,9 @@ const selectScene = (scene: SceneInfo) =>{
 .home-page {
     display: flex;
     flex-direction: column;
+    height: calc(100vh);
+    overflow-y: hidden;
     width: 100%;
-}
-
-header{
-    padding: 15px 0px;
-    width: 100%;
-    background-color: #242424;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: left;
-    gap: 2rem;
 }
 
 footer{
@@ -142,9 +124,7 @@ footer{
     width: 120px;
     margin-left: 1rem;
 }
-.header-title{
-   padding-left: 40px;
-}
+
 
 .header-subtitle{
     font-size: .8em;
@@ -163,22 +143,17 @@ h2{
 h3,h4,p{
     color: #242424;
 }
-.animated-logo{
-    width: 100%;
-    margin-left: 1rem;
-}
+
 
 main{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
     gap: 1rem;
 }
 
 .tour-selection-container{
     padding: 2rem;
-   
-    width: 55%;
+    width: 50%;
     height: calc(100vh - 80px);
     overflow: auto;
     box-sizing: border-box;
@@ -192,16 +167,14 @@ main{
 }
 
 .tour-preview-container{
-    padding: 2rem 3rem;
-    width: 45%;
-    max-width: 800px;
     display: flex;
+    padding: 1rem;
+    width: 50%;
+    height: 100%;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
     gap: 1rem;
-    box-sizing: border-box;
-    height: calc(100hv - 60px);
+    justify-content: center;
+    overflow-y: auto;
 }
 
 .tour_not_selected{
@@ -214,12 +187,17 @@ main{
 }
 
 .tour-hero-image-container{
+    display: flex;
+    justify-content: center;
     width: 100%;
+    height: calc(65% - 3rem);
+    box-sizing: border-box;
 }
 
 .tour-main-image{
     width: 100%;
-    max-width: 750px;
+    height: 100%;
+    object-fit:cover;
     border-radius: 5px;
 }
 
@@ -228,6 +206,7 @@ main{
     gap: 1rem;
     flex-wrap: nowrap;
     width: 100%;
+    height: 20%;
     overflow-x: auto;
     box-sizing: border-box;
 }
@@ -236,8 +215,8 @@ main{
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    width: 150px;
-    height: 80px;
+    width: 25%;
+    height: 100%;
     border-radius: 1px;
     background-size: cover;
     background-position: center;
@@ -255,7 +234,6 @@ main{
 }
 
 .tour-options{
-    margin-top: 20px;
     display: flex;
     width: 100%;
     flex-direction: row;
@@ -263,14 +241,17 @@ main{
 }
 
 .btn-link{
+    display: block;
     background-color: #242424;
     color: white;
     font-weight: bold;
     padding: 10px 15px;
     border-radius: 5px;
     text-decoration: none;
-    margin-top: 10px;
+    max-height:fit-content;
 }
+
+
 
 /* Medium devices (tablets) */
 @media (max-width: 992px) {

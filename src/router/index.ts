@@ -4,11 +4,13 @@ import TourCreator from "../pages/Tour-Creator.vue"
 import Tour from "../pages/Tour.vue"
 import Admin from "../pages/Admin.vue"
 import AdminDashboard from "../pages/Admin-Dashboard.vue"
+import IframeTest from "../pages/TestIframe.vue"
 import type { RouteLocationNormalized } from "vue-router"
 const apiUrl = import.meta.env.VITE_API
 
 const routes = [
   { path: "/", component: Home },
+  { path: "/iframe-test", component: IframeTest },
   { path: "/admin", component: Admin, beforeEnter: async () => { if(await isAuthenticated()) { return "/admin-dashboard" } return true }},
   { path: "/admin-dashboard", component: AdminDashboard, meta: { requiresAuth: true } },
   { path: "/tour-creator/:tourId?", component: TourCreator, meta: { requiresAuth: true } },

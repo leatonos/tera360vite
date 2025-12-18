@@ -350,6 +350,7 @@ function updateCamera() {
 <style scoped>
 /* scene canvas fadeout animation */
 .canvas-wrapper {
+  display: block;
   top: 0;
   position: relative;
   width: 100%;

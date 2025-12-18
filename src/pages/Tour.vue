@@ -18,12 +18,12 @@ const store = useTourStore();
 const loading = ref(true);
 const loadingText = ref("");
 const cornerIcon = ref(FullscreenIcon);
-const navigator = ref<HTMLElement | null>(null);
 
 const arrowText = ref("<");
 const isOpen = ref(true);
 const tourId = route.params.tourId as string | undefined;
 const isFullscreen = ref(false);
+const sceneKey = ref(0)
 
 const box = ref<HTMLElement | null>(null);
 
@@ -38,6 +38,9 @@ function toggleFullscreen() {
     cornerIcon.value = FullscreenIcon;
     isFullscreen.value = false;
   }
+
+   // Force Scene remount
+  sceneKey.value++
 }
 
 async function getTour(id: string) {
@@ -45,6 +48,18 @@ async function getTour(id: string) {
   const response = await fetch(`${apiUrl}/tour/${id}`);
   return await response.json();
 }
+
+
+onMounted(() => {
+  document.addEventListener("fullscreenchange", () => {
+    isFullscreen.value = !!document.fullscreenElement
+    cornerIcon.value = isFullscreen.value
+      ? ReverseFullscreenIcon
+      : FullscreenIcon
+
+    sceneKey.value++
+  })
+})
 
 function toggleNavigator() {
   isOpen.value = !isOpen.value;
@@ -85,7 +100,7 @@ onMounted(async () => {
       <!-- Canvas -->
       <div class="canvas">
         <Suspense>
-          <Scene />
+          <Scene :key="sceneKey" />
         </Suspense>
         <a href="https://tera.arq.br" target="_blank" rel="noopener">
           <img id="icone-superior" :src="teraLogoWhite" />
@@ -105,6 +120,7 @@ onMounted(async () => {
   flex-direction: row;
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
 }
 
 /* Sidebar */
@@ -152,12 +168,13 @@ onMounted(async () => {
 /* Canvas */
 .canvas {
   flex-grow: 1;
+  width: 100%;
   height: 100vh;
   position: relative;
 }
 
 #icone-inferior {
-  position: absolute;
+  position: fixed;
   bottom: 20px;
   right: 20px;
   z-index: 10;
@@ -176,7 +193,7 @@ onMounted(async () => {
 }
 
 #icone-superior {
-  position: absolute;
+  position: fixed;
   top: 20px;
   right: 20px;
   width: 150px;

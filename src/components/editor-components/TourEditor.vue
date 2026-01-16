@@ -5,6 +5,7 @@ import { useTourStore } from "../../piniaStore/store";
 import SceneEditor from "./SceneEditor.vue";
 import CircleEditor from "./CircleEditor.vue";
 import type { CircleInfo, SceneInfo } from "../../types";
+import { storeToRefs } from "pinia";
 
 const apiUrl:string = import.meta.env.VITE_API
 
@@ -13,6 +14,8 @@ const store = useTourStore()
 const scenes = store.$state.tour.scenes
 const storeState = store.$state
 
+const { tourState, tour } = storeToRefs(store);
+
 //Actions
 const addSceneAction = store.addScene
 
@@ -20,13 +23,12 @@ const addSceneAction = store.addScene
 const selectedScene = ref<SceneInfo|null>(null)
 const selectedCircle = ref<CircleInfo|null>(null)
 const savingText = ref("Save")
+const previewViewText = ref("Preview 3D View")
 const selectedCircleIndex = ref<number>(0)
 
 const selectScene = (scene:SceneInfo, index:number) =>{
     selectedCircle.value = null
     selectedScene.value = scene
-    console.log("Selected scene:", index)
-    console.log("Selected scene:", scene)
     store.setCurrentSceneIndex(index)
 }
 
@@ -44,8 +46,6 @@ const save = async() =>{
   const updateData = store.$state.tour
   savingText.value = "Saving..."
 
-
-
   // Get username from localStorage
   const username = localStorage.getItem("username")
 
@@ -54,8 +54,6 @@ const save = async() =>{
     ...updateData,
     user_name: username
   }
-
-
 
   try {
     const response = await fetch(`${apiUrl}/update/${itemId}`, {
@@ -81,8 +79,22 @@ const save = async() =>{
     
 }
 
+const toogleView = () =>{
+   if(tourState.value == "360Tour"){
+    store.setTourState("3DView")
+    previewViewText.value = "Preview 360 Tour"
+  }else{
+    store.setTourState("360Tour")
+    previewViewText.value = "Preview 3D View"
+  }
+}
+
 const handleNameChange = (value:string) =>{
     store.setTourName(value)
+}
+
+const handleLinkChange = (value:string) =>{
+  store.setIframeLink(value)
 }
 
 </script>
@@ -90,13 +102,16 @@ const handleNameChange = (value:string) =>{
 <template>
     <div class="tour-editor">
       <header class="tour-editor-header">
-        <div>
            <h1>Tour Editor</h1>
+            <label for="tuor_name">Tour name:</label>
             <input type="text" id="tuor_name" name="tuor_name" v-model="storeState.tour.name"  @change="(e: Event) => handleNameChange((e.target as HTMLInputElement).value)">
+            <br/> 
+            <label for="iframe_link">Iframe link:</label>
+            <input type="text" id="iframe_link" name="iframe_link" v-model="storeState.tour.iframeLink"  @change="(e: Event) => handleLinkChange((e.target as HTMLInputElement).value)">
             <div>
               <button class="cute-upload-btn save_btn" @click="save">{{ savingText }}</button>
+              <button v-if="tour.iframeLink" class="cute-upload-btn save_btn" @click="toogleView">{{ previewViewText }}</button>
             </div>
-        </div>
       </header>
         <div class="scenes-list">
             <ul>
@@ -122,6 +137,7 @@ const handleNameChange = (value:string) =>{
     h1{
       color: white;
       font-size: 2em;
+      margin-bottom: 15px;
     }
     .tour-editor{
         display: flex;
@@ -136,8 +152,10 @@ const handleNameChange = (value:string) =>{
       align-items: center;
       justify-content: center;
       height: 30%;
-      padding: 0px;
-      max-height: 150px;
+      padding: 9px;
+    }
+    .tour-editor-wrapper{
+      padding: 10px;
     }
     ul{
         list-style-type: none;
@@ -170,7 +188,7 @@ const handleNameChange = (value:string) =>{
     }
     .save_btn{
       border: none;
-      margin-top: 10px;
+      margin: 10px 10px 0px 10px;
     }
 
     .list_item{

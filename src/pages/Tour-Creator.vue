@@ -7,6 +7,8 @@ import TuorEditor from '../components/editor-components/TourEditor.vue';
 import type { Tour } from '../types';
 import { useTourStore } from "../piniaStore/store";
 import teraLogoWhite from '../assets/teraLogoBranco.svg'
+import SketchfabViewer from '../components/3d-components/SketchfabViewer.vue'
+import { storeToRefs } from 'pinia';
 const loading = ref(true)
 const loadingText = ref("")
 
@@ -15,6 +17,9 @@ const route = useRoute();
 const router = useRouter();
 const tourId = route.params.tourId as string | undefined
 const apiUrl = import.meta.env.VITE_API
+
+
+const { tourState, tour } = storeToRefs(store);
 
 const username = localStorage.getItem("username")
 
@@ -30,7 +35,8 @@ const newTour = {
       spheres: []
     }
   ],
-  user_name: username
+  user_name: username,
+  
 };
 
 async function createNewTour() {
@@ -91,11 +97,12 @@ onMounted(async ()=>{
            <TuorEditor/>
          </div>
          <div class="canvas">
-             <Suspense>
-               <Scene/>
-             </Suspense>
+              <Suspense>
+                <Scene v-if="tourState == '360Tour'"/>
+                <SketchfabViewer v-else-if="tourState == '3DView'" :link="tour.iframeLink" />
+              </Suspense>
              <a href="https://tera.arq.br" target="_blank" rel="noopener">
-              <img id="logoTeraCantinho" :src="teraLogoWhite" />
+              <img class="logoTeraCantinho" :src="teraLogoWhite" />
             </a>
          </div>
        </template>
@@ -119,7 +126,7 @@ onMounted(async ()=>{
   width: 75%;
   height: 100vh;
 }
-#logoTeraCantinho{
+.logoTeraCantinho{
   position: absolute;
   bottom: 10px;
   right: 10px;

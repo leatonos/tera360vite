@@ -5,11 +5,14 @@ import { onMounted, ref } from 'vue';
 import type { Tour } from '../types';
 import { useTourStore } from '../piniaStore/store';
 import LoadingAnimation from '../components/tour-components/loading.vue';
+import SketchfabViewer from '../components/3d-components/SketchfabViewer.vue';
 
 import teraLogoWhite from '../assets/teraLogoBranco.svg';
 import TourNavigator from '../components/tour-components/tour-navigator.vue';
 import FullscreenIcon from '../assets/fullscreen.svg';
 import ReverseFullscreenIcon from '../assets/fullscreen_reverse.svg';
+import PanIcon from '../assets/3d.svg'; 
+import TourThreeSix from '../assets/360-view.svg'
 
 const apiUrl = import.meta.env.VITE_API;
 const route = useRoute();
@@ -18,15 +21,19 @@ const store = useTourStore();
 const loading = ref(true);
 const loadingText = ref("");
 const cornerIcon = ref(FullscreenIcon);
+const leftCornerIcon = ref(PanIcon)
 
 const arrowText = ref("<");
 const isOpen = ref(true);
 const tourId = route.params.tourId as string | undefined;
 const isFullscreen = ref(false);
 const sceneKey = ref(0)
+import { storeToRefs } from "pinia";
+
 
 const box = ref<HTMLElement | null>(null);
 
+const { tourState, tour } = storeToRefs(store);
 
 function toggleFullscreen() {
   if (!document.fullscreenElement) {
@@ -41,6 +48,16 @@ function toggleFullscreen() {
 
    // Force Scene remount
   sceneKey.value++
+}
+
+function toogleTourView(){
+  if(tourState.value == "360Tour"){
+    store.setTourState("3DView")
+    leftCornerIcon.value = TourThreeSix
+  }else{
+    store.setTourState("360Tour")
+    leftCornerIcon.value = PanIcon
+  }
 }
 
 async function getTour(id: string) {
@@ -88,7 +105,7 @@ onMounted(async () => {
     </template>
     <template v-else>
       <!-- Sidebar -->
-      <div class="tuor-navigator-container" :class="{ open: isOpen }" ref="navigator">
+      <div class="tour-navigator-container" :class="{ open: isOpen }" ref="navigator">
         <TourNavigator />
       </div>
       <!-- Arrow toggle -->
@@ -99,14 +116,20 @@ onMounted(async () => {
       </div>
       <!-- Canvas -->
       <div class="canvas">
-        <Suspense>
-          <Scene :key="sceneKey" />
+          <Suspense>
+            <Scene v-if="tourState === '360Tour'" :key="sceneKey" />
+            <SketchfabViewer v-else-if="tourState === '3DView'" :link="tour.iframeLink" />
         </Suspense>
         <a href="https://tera.arq.br" target="_blank" rel="noopener">
           <img id="icone-superior" :src="teraLogoWhite" />
         </a>
-        <button class="fullscreen_btn" id="icone-inferior" @click="toggleFullscreen">
+        <!-- FullScreen Button -->
+        <button class="circularBtn icone-inferior-direito" :class="{ open: isOpen }" @click="toggleFullscreen">
           <img style="width: 100%;" :src="cornerIcon" />
+        </button>
+        <!-- 3D View/360 Tour toogle Button -->
+         <button  v-if="tour.iframeLink" class="circularBtn icone-inferior-esquerdo" :class="{ open: isOpen }" @click="toogleTourView">
+          <img style="width: 100%;" :src="leftCornerIcon" />
         </button>
       </div>
     </template>
@@ -124,7 +147,7 @@ onMounted(async () => {
 }
 
 /* Sidebar */
-.tuor-navigator-container {
+.tour-navigator-container {
   position: absolute;
   left: 0;
   top: 0;
@@ -137,7 +160,7 @@ onMounted(async () => {
   z-index: 10;
 }
 
-.tuor-navigator-container.open {
+.tour-navigator-container.open {
   transform: translateX(0);
 }
 
@@ -173,14 +196,26 @@ onMounted(async () => {
   position: relative;
 }
 
-#icone-inferior {
+.icone-inferior-direito {
   position: fixed;
   bottom: 20px;
   right: 20px;
   z-index: 10;
 }
 
-.fullscreen_btn{
+.icone-inferior-esquerdo {
+  position: fixed;
+  bottom: 20px;
+  z-index: 10;
+  left: 20px;
+  transition: left 0.3s ease;
+}
+
+.icone-inferior-esquerdo.open{
+  left: 320px;
+}
+
+.circularBtn{
   width: 40px;
   height: 40px;
   background-color: white;
@@ -239,7 +274,7 @@ onMounted(async () => {
     flex-direction: column-reverse;
   }
 
-  .tuor-navigator-container {
+  .tour-navigator-container {
     position: absolute;
     top: auto;
     bottom: 0;
@@ -250,7 +285,7 @@ onMounted(async () => {
     transition: transform 0.3s ease;
   }
 
-  .tuor-navigator-container.open {
+  .tour-navigator-container.open {
     transform: translateY(0);
   }
 
@@ -276,10 +311,28 @@ onMounted(async () => {
     height: calc(100vh - 120px);
   }
 
-  #icone-inferior {
+  .icone-inferior-direito {
+    bottom: 20px;
+    right: 20px;
+    transition: bottom 0.3s ease;
+  }
+
+  .icone-inferior-direito.open {
     bottom: 240px;
     right: 20px;
   }
+
+  .icone-inferior-esquerdo {
+    bottom: 20px;
+    left: 20px;
+    transition: bottom 0.3s ease;
+  }
+
+  .icone-inferior-esquerdo.open{
+    left: 20px;
+    bottom: 240px;
+  }
+
   #icone-superior {
     top: 20px;
     left: 20px;

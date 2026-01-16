@@ -1,20 +1,34 @@
 <script setup lang="ts">
 
+defineProps<{link: string | undefined }>()
+
 </script>
 
 <template>
-    <div class="sketchfab-embed-wrapper"> 
-        <iframe title="90s Retro Office Pack" 
-            frameborder="0" 
-            allowfullscreen mozallowfullscreen="true" 
-            webkitallowfullscreen="true" 
-            allow="autoplay; fullscreen; xr-spatial-tracking" 
-            xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share 
-            src="https://sketchfab.com/models/dadca97505214b9481d35e22c48e18df/embed">
-        </iframe> 
-    </div>
+  <div class="sketchfab">
+    <iframe
+      title=""
+      frameborder="0"
+      allowfullscreen
+      width="99.9%"
+      height="99.59%"
+      mozallowfullscreen="true"
+      webkitallowfullscreen="true"
+      allow="autoplay; fullscreen; xr-spatial-tracking"
+      xr-spatial-tracking
+      execution-while-out-of-viewport
+      execution-while-not-rendered
+      web-share
+      :src="link"
+    />
+  </div>
 </template>
 
 <style scoped>
 
+.sketchfab{
+    width: 100%;
+    height: 100%;
+}
+ 
 </style>

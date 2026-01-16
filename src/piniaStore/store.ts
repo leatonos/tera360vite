@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
-import type { CircleInfo, SceneInfo, SphereInfo, Tour } from '../types';
+import type { CircleInfo, SceneInfo, SphereInfo, Tour, ViewType } from '../types';
 
 export const useTourStore = defineStore('tour', () => {
     
@@ -17,7 +17,14 @@ export const useTourStore = defineStore('tour', () => {
                 spheres: [] as SphereInfo[]
             }
         ] as SceneInfo[],
+        iframeLink:''
     });
+
+    const tourState = ref<ViewType>('360Tour')
+
+    const setTourState = (newState:ViewType) => {
+        tourState.value = newState
+    }
 
     const currentSceneIndex = ref(0);
 
@@ -51,6 +58,10 @@ export const useTourStore = defineStore('tour', () => {
     const setTourName = (name: string) => {
         tour.value.name = name;
     };
+
+    const setIframeLink = (link:string) => {
+        tour.value.iframeLink = link
+    }
 
     const addScene = () => {
         const newScene: SceneInfo = {
@@ -147,6 +158,7 @@ export const useTourStore = defineStore('tour', () => {
         setCameraPosition,
         setCameraDirection,
         setTourName,
+        setIframeLink,
         addScene,
         setSceneRotation,
         deleteScene,
@@ -158,6 +170,8 @@ export const useTourStore = defineStore('tour', () => {
         editSphere,
         setSceneBackground,
         setSceneThumbnail,
-        setCircleActionArgs
+        setCircleActionArgs,
+        tourState,
+        setTourState
     };
 });

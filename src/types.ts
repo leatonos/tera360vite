@@ -14,7 +14,10 @@ export interface Tour {
     _id: string; // Unique identifier for the Tour
     name: string;
     scenes: SceneInfo[];
+    iframeLink: string;
 }
+
+export type ViewType = "360Tour" | "3DView"
 
 export interface CircleInfo {
     id: string; // Unique identifier for the Circle

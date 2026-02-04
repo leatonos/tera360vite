@@ -287,7 +287,7 @@ function updateCamera() {
         />
 
       <!-- Skybox -->
-      <TresMesh color="#ffffff" :position="[0,0,0]" :scale="6" :rotation="[0,rotationRad,0]">
+      <TresMesh color="#ffffff" :position="[0,0,0]" :scale="[-6, 6, 6]" :rotation="[0,rotationRad,0]">
         <TresSphereGeometry :args="[1,100,100]" />
         <TresMeshBasicMaterial :key="currentSceneBackground" color="#ffffff" :map="currentTexture" :side="2" :toneMapped="false"/>
       </TresMesh>

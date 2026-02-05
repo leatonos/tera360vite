@@ -137,13 +137,10 @@ async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetF
   });
 }
 
-// ---------------------------
-// Circle click handler - Scene transition
-// ---------------------------
 /**
- * 
+ * Circle click handler - Scene transition
  * @param circle - CircleInfo of the clicked circle
- */
+ **/
 async function handleCircleClick(circle: CircleInfo) {
 
   //If the clicked circle is already selected, do nothing (Only for editor mode)
@@ -329,10 +326,7 @@ function updateCamera() {
           :color="[0,0,0]"
           :side="2"
         />
-      </TresMesh>
-
-
-      
+      </TresMesh>      
       <!-- Ring  -->
       <Ring v-for="circle in allCircles" @click="handleCircleClick(circle)" :rotation="[Math.PI/2,0,0]" :args="[0.15*10*circle.scale, 0.2*10*circle.scale, 32]" :position="circle.coordinates">
           <TresMeshBasicMaterial  :transparent="true" :opacity="0.8" :color="circle.color" :side="2" />

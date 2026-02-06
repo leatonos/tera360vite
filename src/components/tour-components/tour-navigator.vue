@@ -77,6 +77,7 @@ li {
 
 .scene-name{
   color: white;
+  text-align: center;
 }
 
 .scene-thumbnail{

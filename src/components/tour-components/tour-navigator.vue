@@ -24,7 +24,9 @@ const selectScene = (scene: SceneInfo, index: number) => {
     </header>
     <div class="scenes-list">
         <div v-for="(scene, sceneIndex) in scenes":key="scene.id" class="list_item" @click="selectScene(scene, sceneIndex)">
-          <h3 class="scene-name">{{ scene.name }}</h3>
+          <div class="text_container">
+            <h3 class="scene-name">{{ scene.name }}</h3>
+          </div>
           <img class="scene-thumbnail" v-if="scene.thumbnail" :src="scene.thumbnail"></img>
         </div>
     </div>
@@ -75,13 +77,19 @@ li {
   border-radius:4px;
 }
 
+.text_container{
+  display: flex;
+  width: 50%;
+  justify-content: center;
+}
+
 .scene-name{
   color: white;
   text-align: center;
 }
 
 .scene-thumbnail{
-  width:120px;
+  width:50%;
   border-radius:2px;
 }
 

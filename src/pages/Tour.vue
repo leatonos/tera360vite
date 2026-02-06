@@ -151,7 +151,7 @@ onMounted(async () => {
   position: absolute;
   left: 0;
   top: 0;
-  width: 300px;
+  width: 360px;
   height: 100%;
   background-color: #242424;
   overflow-y: auto;

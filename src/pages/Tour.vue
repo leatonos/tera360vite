@@ -175,7 +175,7 @@ onMounted(async () => {
 }
 
 .arrow-toogler.open {
-  left: 300px;
+  left: 350px;
 }
 
 .arrow_btn {

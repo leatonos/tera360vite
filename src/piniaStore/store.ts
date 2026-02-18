@@ -100,8 +100,8 @@ export const useTourStore = defineStore('tour', () => {
         const defaultCircle: CircleInfo = {
             id: uuidv4(),
             sceneIndex: sceneIndex,
-            coordinates: [0, -0.5, -1],
-            scale: 0.2,
+            coordinates: [-15, -3, -8],
+            scale: 0.5,
             color: '#000000',
             onClickAction: {
                 actionType: "Teleport",

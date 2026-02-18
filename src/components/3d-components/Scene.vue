@@ -30,7 +30,24 @@ const cameraSpeed = ref(-0.2)
 const isTouch = ref(false);
 
 
-
+// ---------------------------
+// Handle changes in circles of current scene
+// ---------------------------
+/*
+watch(
+  
+  () => store.$state.tour.scenes[currentSceneIndex.value]?.circles,
+  (newCircles) => {
+    console.log("I am changing")
+    if (newCircles) {
+      // force reactivity update with new reference
+      allCircles.value = [...newCircles];
+      console.log(allCircles.value[0])
+    }
+  },
+  { deep: true }
+);
+*/
 
 //canvas element ref
 const canvasElement = ref<HTMLElement|null>(null)
@@ -305,6 +322,8 @@ function updateCamera() {
         :side="2"
       />
       </TresMesh>
+
+      <!-- Circle Transform Arrows -->
       <TransformControls
         v-if="selectedMesh"
         :object="selectedMesh"

@@ -123,7 +123,9 @@ export const useTourStore = defineStore('tour', () => {
     };
 
     const editCircle = (sceneIndex: number, circleIndex: number, newCircleInfo: CircleInfo) => {
+        console.log('Circle Edited')
         tour.value.scenes[sceneIndex].circles[circleIndex] = newCircleInfo;
+        selectedCircle.value = newCircleInfo
     };
 
     const deleteCircle = (sceneIndex: number, circleIndex: number) => {

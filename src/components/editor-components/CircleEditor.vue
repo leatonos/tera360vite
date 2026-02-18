@@ -1,9 +1,7 @@
 <script setup lang="ts">
 
-import { ref } from "vue";
 import { useTourStore } from "../../piniaStore/store";
 import type { CircleInfo } from "../../types";
-
 
 //Props
 const props = defineProps<{
@@ -18,75 +16,62 @@ const store = useTourStore()
 const sceneIndex = props.thisCircle.sceneIndex
 const thisCircleId = props.thisCircle.id
 
-const circleSize = ref(props.thisCircle.scale)
-const circleColor = ref(props.thisCircle.color)
-
-const circleX = ref(props.thisCircle.coordinates[0])
-const circleY = ref(props.thisCircle.coordinates[1])
-const circleZ = ref(props.thisCircle.coordinates[2])
+const circleSize = props.thisCircle.scale
+const circleColor = props.thisCircle.color
 
 const listOfCircles = store.tour.scenes[sceneIndex].circles
 const thisCircleIndex = listOfCircles.findIndex((circle)=> circle.id == thisCircleId)
 
-const thisActionArgument = ref(props.thisCircle.onClickAction.actionArgs)
-
 const sceneName = store.tour.scenes[sceneIndex].name
 
-const createNewCircleInfo = (): CircleInfo => {
-    return {
-        id: thisCircleId,
-        sceneIndex: sceneIndex,
-        coordinates: [circleX.value, circleY.value, circleZ.value] as [number, number, number],
-        scale: circleSize.value,
-        color: circleColor.value,
-        onClickAction: {
-            actionType: "Teleport",
-            actionArgs: thisActionArgument.value
-        }
-    };
-};
-
 //Actions
-
-const handleColorChange = (value:string) =>{
-    
-    circleColor.value = value
-    store.editCircle(sceneIndex,thisCircleIndex,createNewCircleInfo())
+const handleColorChange = (value: string) => {
+  store.tour.scenes[sceneIndex]
+    .circles[thisCircleIndex]
+    .color = value
 }
 
-const handleSizeChange = (value:string) =>{
-
-    const newNumber = parseFloat(value)
-    
-    circleSize.value = newNumber
-    store.editCircle(sceneIndex,thisCircleIndex,createNewCircleInfo())
-
-}
-
-const handleXChange = (value:string) =>{
-    const newNumber = parseFloat(value)
-
-    circleX.value = newNumber
-    store.editCircle(sceneIndex,thisCircleIndex,createNewCircleInfo())
-}
-const handleYChange = (value:string) =>{
-    
-    const newNumber = parseFloat(value)
-
-    circleY.value = newNumber
-    store.editCircle(sceneIndex,thisCircleIndex,createNewCircleInfo())
-}
-const handleZChange = (value:string) =>{
+const handleSizeChange = (value: string) => {
   const newNumber = parseFloat(value)
-  circleZ.value = newNumber
-  store.editCircle(sceneIndex,thisCircleIndex,createNewCircleInfo())
+
+  store.tour.scenes[sceneIndex]
+    .circles[thisCircleIndex]
+    .scale = newNumber
+}
+
+const handleXChange = (value: string) => {
+  const newNumber = parseFloat(value)
+
+  store.tour.scenes[sceneIndex]
+    .circles[thisCircleIndex]
+    .coordinates[0] = newNumber
+}
+
+const handleYChange = (value: string) => {
+  const newNumber = parseFloat(value)
+
+  store.tour.scenes[sceneIndex]
+    .circles[thisCircleIndex]
+    .coordinates[1] = newNumber
+}
+
+
+const handleZChange = (value: string) => {
+  const newNumber = parseFloat(value)
+
+  store.tour.scenes[sceneIndex]
+    .circles[thisCircleIndex]
+    .coordinates[2] = newNumber
 }
 
 const handleSceneChange = (event: Event) => {
-    const target = event.target as HTMLSelectElement;
-    console.log("Scene change: ", target.value);
-    store.setCircleActionArgs(sceneIndex, thisCircleIndex, target.value);
-};
+  const target = event.target as HTMLSelectElement
+
+  store.tour.scenes[sceneIndex]
+    .circles[thisCircleIndex]
+    .onClickAction.actionArgs = target.value
+}
+
 
 const deleteCircle = () => {
     store.deleteCircle(sceneIndex, thisCircleIndex);
@@ -129,7 +114,7 @@ const deleteCircle = () => {
           min="-35"
           max="35"
           step=".1"
-          v-model="circleX"
+          v-model="props.thisCircle.coordinates[0]"
           @change="(e: Event) => handleXChange((e.target as HTMLInputElement).value)"
         />
       </div>
@@ -141,7 +126,7 @@ const deleteCircle = () => {
           min="-4.3"
           max="5"
           step=".1"
-          v-model="circleY"
+          v-model="props.thisCircle.coordinates[1]"
           @change="(e: Event) => handleYChange((e.target as HTMLInputElement).value)"
         />
       </div>
@@ -153,7 +138,7 @@ const deleteCircle = () => {
           min="-5"
           max="5"
           step=".1"
-          v-model="circleZ"
+          v-model="props.thisCircle.coordinates[2]"
           @change="(e: Event) => handleZChange((e.target as HTMLInputElement).value)"
         />
       </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useTourStore } from "../../piniaStore/store";
 import SceneEditor from "./SceneEditor.vue";
 import CircleEditor from "./CircleEditor.vue";
@@ -16,26 +16,25 @@ const storeState = store.$state
 
 const { tourState, tour } = storeToRefs(store);
 
+
 //Actions
 const addSceneAction = store.addScene
 
 //State
 const selectedScene = ref<SceneInfo|null>(null)
-const selectedCircle = ref<CircleInfo|null>(null)
 const savingText = ref("Save")
+const selectedCircle = computed(() => store.$state.selectedCircle)
 const previewViewText = ref("Preview 3D View")
 const selectedCircleIndex = ref<number>(0)
 
 const selectScene = (scene:SceneInfo, index:number) =>{
-    selectedCircle.value = null
+    store.setSelectedCircle(null)
     selectedScene.value = scene
     store.setCurrentSceneIndex(index)
 }
 
 const selectCircle = (circle:CircleInfo, index:number) =>{
-  console.log("Selected circle:", circle)
     selectedScene.value = null
-    selectedCircle.value = circle
     store.setSelectedCircle(circle)
     selectedCircleIndex.value = index
 }
@@ -127,6 +126,7 @@ const handleLinkChange = (value:string) =>{
             </ul>
         </div>
          <div class="properties-panel">
+          
             <SceneEditor v-if="selectedScene" :thisScene="selectedScene" :key="selectedScene.id" />
             <CircleEditor v-if="selectedCircle" :thisCircle="selectedCircle" :index="selectedCircleIndex" :key="selectedCircle.id" />
         </div>

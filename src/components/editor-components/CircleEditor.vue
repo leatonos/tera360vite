@@ -126,8 +126,8 @@ const deleteCircle = () => {
         <input
           type="number"
           id="x"
-          min="-5"
-          max="5"
+          min="-35"
+          max="35"
           step=".1"
           v-model="circleX"
           @change="(e: Event) => handleXChange((e.target as HTMLInputElement).value)"

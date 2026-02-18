@@ -34,83 +34,82 @@ const selectScene = (scene: SceneInfo, index: number) => {
 </template>
 
 <style scoped>
-h1 {
-  color: white;
-  font-size: 2em;
-}
+
+/* ------------------ */
+/* Base (Mobile First) */
+/* ------------------ */
 
 .tour-navigator {
   display: flex;
-  position: relative;
   flex-direction: column;
   width: 100%;
-  height: 100vh;
-  text-align: center;
-  justify-items: center;
+  height: 100%; /* safer than 100vh on mobile */
   background-color: #242424;
 }
 
 .tour-navigator-header {
-  padding: 1em;
+  padding: 1rem;
+  padding-bottom:0px;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
+h1 {
+  color: white;
+  font-size: 1.6rem;
   margin: 0;
 }
 
-li {
-  text-align: left;
-  color: white;
-  cursor: pointer;
-}
-
-.list_item {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding: 2px;
-  border-radius: 2px;
-  cursor: pointer;
-  padding:12px;
-  border-radius:4px;
-}
-
-.text_container{
+.scenes-list {
+  flex: 1;
+  padding: 1rem;
   display: flex;
-  width: 50%;
-  justify-content: center;
+  flex-direction: row;       /* horizontal */
+  gap: 1rem;
+  overflow-x: auto;          /* enable sideways scroll */
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
-.scene-name{
-  color: white;
-  text-align: center;
-}
+/* Scene Card */
+.list_item {
+  flex: 0 0 45%;             /* card takes 85% of screen width */
+  max-width: 320px;          /* prevents huge cards on large phones */
 
-.scene-thumbnail{
-  width:50%;
-  border-radius:2px;
+  display: flex;
+  flex-direction: column;
+
+  background: #2f2f2f;
+  border-radius: 8px;
+  overflow: hidden;
+
+  scroll-snap-align: start;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .list_item:hover {
   background-color: #3a3a3a;
+  transform: translateY(-2px);
 }
 
-
-
-.scenes-list {
-  flex:1;
-  padding: 1rem;
-  overflow-y: auto;
+.scene-thumbnail {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
 }
 
+.text_container {
+  padding: 0.75rem 1rem;
+}
+
+.scene-name {
+  color: white;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Scrollbar styling */
 .scenes-list::-webkit-scrollbar {
   width: 6px;
-}
-
-.scenes-list::-webkit-scrollbar-track {
-  background: transparent;
 }
 
 .scenes-list::-webkit-scrollbar-thumb {
@@ -118,36 +117,63 @@ li {
   border-radius: 20px;
 }
 
-/* Tablet responsive settings */
-@media (max-width: 768px) {
+/* ------------------ */
+/* Tablet (≥ 768px) */
+/* ------------------ */
 
-  .tour-navigator{
-    height:auto;
-  }
+@media (min-width: 768px) {
 
   .scenes-list {
-    display: flex;
-    flex-direction:row;
-    align-items:center;
-    overflow-y:hidden;
-    overflow-x:auto;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    gap: 1rem;
   }
 
-  .list_item{
-    display:flex;
-    margin:0px 10px;
-    padding:0px;
-    flex-direction:column-reverse;
-  }
-
-  .scene-name{
-    margin-top:6px
-  }
-
+  .tour-navigator-header {
+  padding: 1rem;
+  padding-bottom:1rem;
 }
 
-/* Mobile responsive settings */
-@media (max-width: 480px) {
- 
+  .list_item {
+    min-width: 280px;
+    flex-shrink: 0;
+  }
+
+  .scene-thumbnail {
+    height: 160px;
+  }
 }
+
+/* ------------------ */
+/* Desktop (≥ 1024px) */
+/* ------------------ */
+
+@media (min-width: 1024px) {
+
+  .scenes-list {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .list_item {
+    flex: auto;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .scene-thumbnail {
+    width: 50%;
+    height: 120px;
+  }
+
+  .text_container {
+    width: 50%;
+  }
+
+  .scene-name {
+    font-size: 1.1rem;
+  }
+}
+
 </style>

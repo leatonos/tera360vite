@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { DotLottieVue } from '@lottiefiles/dotlottie-vue';
-import { defineProps } from 'vue';
 
 const props = defineProps<{
   loadingProgress?: number | null;

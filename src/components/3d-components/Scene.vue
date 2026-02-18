@@ -120,77 +120,90 @@ onMounted(async () => {
 
 
 //Animated zoom function
-async function smoothZoom(cameraRef: Ref<THREE.PerspectiveCamera | null>,targetFov: number, speed:number): Promise<void> {
+async function smoothZoom(
+  cameraRef: Ref<THREE.PerspectiveCamera | null>,
+  targetFov: number,
+  duration = 400
+): Promise<void> {
   return new Promise((resolve) => {
     if (!cameraRef.value) return resolve();
-    const cam = cameraRef.value;
-    let animationId: number;
-    let hasStartedFading = false;
 
-    // Animation loop
-    const animate = () => {
-      cam.fov += (targetFov - cam.fov) * speed;
+    const cam = cameraRef.value;
+    const startFov = cam.fov;
+    const startTime = performance.now();
+
+    function animate(time: number) {
+      const elapsed = time - startTime;
+      const t = Math.min(elapsed / duration, 1);
+
+      // easeInOut
+      const eased = t < 0.5
+        ? 2 * t * t
+        : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+      cam.fov = startFov + (targetFov - startFov) * eased;
       cam.updateProjectionMatrix();
 
-      // Start fading out when close to target FOV
-      if(cam.fov/targetFov < 1.9 && !isFading.value && !hasStartedFading){
-        isFading.value = true;
-        hasStartedFading = true;
-      }
-
-      // Continue the animation until the target FOV is reached
-      if (Math.abs(cam.fov - targetFov) > 0.2 ) {
-        animationId = requestAnimationFrame(animate);
-      }else{
-        // Ensure the final FOV is set precisely
-        cam.fov = targetFov;
-        cam.updateProjectionMatrix();
-        cancelAnimationFrame(animationId);
+      if (t < 1) {
+        requestAnimationFrame(animate);
+      } else {
         resolve();
       }
-    };
+    }
 
-    animate();
+    requestAnimationFrame(animate);
   });
 }
+
 
 /**
  * Circle click handler - Scene transition
  * @param circle - CircleInfo of the clicked circle
  **/
 async function handleCircleClick(circle: CircleInfo) {
-
-  //If the clicked circle is already selected, do nothing (Only for editor mode)
   if (selectedCircleId.value === circle.id) return;
+  if (isFading.value) return;
 
-  //Starts loading sequence
-  allCircles.value = [];
-  // Smooth zoom in
-  await smoothZoom(cameraRef, 25, 0.1);
+  isFading.value = true;
 
-  // Looks for the new scene by circle's onClickAction
-  const newIndex = store.$state.tour.scenes.findIndex(scene => scene.id === circle.onClickAction.actionArgs);
+  await smoothZoom(cameraRef, 25, 400);
+
+  const newIndex = store.$state.tour.scenes.findIndex(
+    scene => scene.id === circle.onClickAction?.actionArgs
+  );
+
+  if (newIndex === -1) {
+    console.warn("Scene not found for id:", circle.onClickAction?.actionArgs);
+    isFading.value = false;
+    return;
+  }
+
   const newScene = store.$state.tour.scenes[newIndex];
 
+  if (!newScene) {
+    console.warn("newScene is undefined");
+    isFading.value = false;
+    return;
+  }
+
   currentSceneIndex.value = newIndex;
-  currentSceneBackground.value = newScene.background;
+
   rotationRad.value = (newScene.rotation || 0) * Math.PI / 180;
 
-  // ✅ change texture
-  setSceneTexture(newScene.background);
+  await setSceneTexture(newScene.background);
+
   allCircles.value = newScene.circles;
   store.setCurrentSceneIndex(newIndex);
-
 
   if (cameraRef.value) {
     cameraRef.value.fov = 50;
     cameraRef.value.updateProjectionMatrix();
   }
 
-  setTimeout(() => {
-    isFading.value = false;
-  }, 100); 
+  isFading.value = false;
 }
+
+
 
 // ---------------------------
 // Selection / TransformControls
@@ -243,15 +256,22 @@ watch(() => store.$state.tour.scenes[currentSceneIndex.value]?.rotation, (newRot
 //---------------------------
 // Handle changes in the background of the current scene
 //---------------------------
-watch(() => store.$state.tour.scenes[currentSceneIndex.value]?.background, (newBackground) => {
+watch(
+  () => {
+    const scene = store.$state.tour.scenes[currentSceneIndex.value];
+    return scene ? scene.background : null;
+  },
+  (newBackground) => {
+    if (!newBackground) return;
 
-  console.log("Background change detected:", newBackground);
+    console.log("Background change detected:", newBackground);
 
-  if (newBackground && newBackground !== currentSceneBackground.value) {
-    setSceneTexture(newBackground);
+    if (newBackground !== currentSceneBackground.value) {
+      setSceneTexture(newBackground);
+    }
   }
-});
- 
+);
+
 // ---------------------------
 // TransformControls change handler
 // ---------------------------
@@ -328,7 +348,7 @@ function updateCamera() {
         v-if="selectedMesh"
         :object="selectedMesh"
         @objectChange="handleTransformChange"
-        @dragging="()=>{ cameraSpeed = cameraSpeed * -1}"
+        @dragging="(e)=>{ cameraSpeed = e ? 0 : -0.2 }"
         mode="translate"
       />
 

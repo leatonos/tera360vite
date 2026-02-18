@@ -100,7 +100,7 @@ export const useTourStore = defineStore('tour', () => {
         const defaultCircle: CircleInfo = {
             id: uuidv4(),
             sceneIndex: sceneIndex,
-            coordinates: [-15, -3, -8],
+            coordinates: [-2, -14, -23],
             scale: 0.5,
             color: '#000000',
             onClickAction: {

@@ -53,8 +53,8 @@ const deleteImage = async(awsKey:string) => {
 
 const compressedImage = async (file: File): Promise<File> => {
   const options = {
-    maxSizeMB: 1.5,
-    maxWidthOrHeight: 6000,
+    maxSizeMB: 3.5,
+    maxWidthOrHeight: 8000,
     useWebWorker: true
   };
   try {

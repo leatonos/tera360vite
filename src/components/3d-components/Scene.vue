@@ -312,7 +312,7 @@ function updateCamera() {
       <LoadingAnimation :loadingProgress="loadingProgress"/>
     </div>
     <TresCanvas :preserveDrawingBuffer="true" preset="realistic" clearColor="#ffffff" :antialias="true">    
-      <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="10000" :fov="50" />
+      <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="10000" :fov="30" />
       <CameraControls 
         @end="updateCamera" 
         :maxDistance="3"

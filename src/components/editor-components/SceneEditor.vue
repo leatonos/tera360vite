@@ -46,10 +46,8 @@ const deleteImage = async(awsKey:string) => {
       console.log(response)
         console.error("Failed to delete old background");
     }
-} catch (error) {
-    console.error("Error deleting old background:", error);
-}
-}
+} catch (error) {console.error("Error deleting old background:", error);
+}}
 
 const compressedImage = async (file: File): Promise<File> => {
   const options = {
@@ -105,7 +103,6 @@ const handleFileChange = async (event: Event) => {
   }
 };
 
-
 const uploadToS3 = async(file: File, tourId: string, sceneId: string) => {
   try {
     // 1. Ask backend for presigned URL
@@ -146,10 +143,6 @@ const handleNameChange = (event: Event) => {
   store.setSceneName(sceneIndex.value, target.value);
 };
 
-//Actions
-/*
-*/
-
 function handleRotation(value:string){
     const newNumber = parseFloat(value)
     store.setSceneRotation(sceneIndex.value, newNumber)
@@ -165,7 +158,6 @@ function deleteSceneAction(){
         store.deleteScene(thisSceneIndex.value)
     }
 }
-
 
 async function createThumbnail(){
 

@@ -29,6 +29,8 @@ const isFading = ref(false)
 const cameraSpeed = ref(-0.2)
 const isTouch = ref(false);
 
+const cameraFOV = ref(80)
+
 
 // ---------------------------
 // Handle changes in circles of current scene
@@ -137,9 +139,7 @@ async function smoothZoom(
       const t = Math.min(elapsed / duration, 1);
 
       // easeInOut
-      const eased = t < 0.5
-        ? 2 * t * t
-        : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      const eased = t < 0.4 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 
       cam.fov = startFov + (targetFov - startFov) * eased;
       cam.updateProjectionMatrix();
@@ -196,7 +196,7 @@ async function handleCircleClick(circle: CircleInfo) {
   store.setCurrentSceneIndex(newIndex);
 
   if (cameraRef.value) {
-    cameraRef.value.fov = 50;
+    cameraRef.value.fov = cameraFOV.value;
     cameraRef.value.updateProjectionMatrix();
   }
 
@@ -312,7 +312,9 @@ function updateCamera() {
       <LoadingAnimation :loadingProgress="loadingProgress"/>
     </div>
     <TresCanvas :preserveDrawingBuffer="true" preset="realistic" clearColor="#ffffff" :antialias="true">    
-      <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="10000" :fov="30" />
+      <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="10000
+      
+      " :fov="cameraFOV" />
       <CameraControls 
         @end="updateCamera" 
         :maxDistance="3"

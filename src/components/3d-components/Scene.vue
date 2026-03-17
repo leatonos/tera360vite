@@ -89,11 +89,15 @@ onMounted(async () => {
   const allBackgrounds = store.$state.tour.scenes.map(scene => scene.background);
   
   // Preload all textures and tracks loading progress
+  try {
   const loadAllTexturesResult = await loadAllTextures(allBackgrounds, (percent) => {
     loadingProgress.value = percent;
   });
-
-  textures.value = loadAllTexturesResult;
+    textures.value = loadAllTexturesResult;
+  } catch (err) {
+    // show an error state to the user if needed
+    console.error("Failed to load textures after retries:", err);
+  }
 
   // Sets initial texture
   setSceneTexture(scene.background);

@@ -27,6 +27,10 @@ const rotation = computed(() => store.$state.tour.scenes[sceneIndex.value]?.rota
 const uploadText = ref("Upload Background")
 const thumbnailBtnText = ref("Create a thumbnail")
 
+//Image compressor states
+const maxImageSize = ref(3.5)
+const maxPixels = ref(8000)
+
 const deleteImage = async(awsKey:string) => {
   try {
     const response = await fetch(`${import.meta.env.VITE_API}/delete-image`, {
@@ -51,8 +55,8 @@ const deleteImage = async(awsKey:string) => {
 
 const compressedImage = async (file: File): Promise<File> => {
   const options = {
-    maxSizeMB: 3.5,
-    maxWidthOrHeight: 8000,
+    maxSizeMB: maxImageSize.value,
+    maxWidthOrHeight: maxPixels.value,
     useWebWorker: true
   };
   try {
@@ -76,7 +80,7 @@ const handleFileChange = async (event: Event) => {
 
   if (currentBackground != standardBackground){
     //Delete old background from S3
-      uploadText.value = "Deleting old background..."
+      uploadText.value = "Deleting old background...";
       const prefix = "https://tera-tuors.s3.amazonaws.com/";
       const AWS_key = currentBackground.slice(prefix.length)
 
@@ -210,7 +214,6 @@ async function createThumbnail(){
   <div class="editor">
    
     <h2 class="editor-title">Scene Editor</h2>
-   
     <!-- Scene Name -->
     <div class="form-group">
       <input
@@ -232,6 +235,10 @@ async function createThumbnail(){
 
      <!-- Background Upload -->
     <div  class="form-group upload-group">
+      <label for="imageMaxSize">Image Max Size:</label>
+      <input id="imageMaxSize" type="number" v-model.number="maxImageSize" />
+      <label for="imageMaxRes">Image Max Resolution:</label>
+      <input type="number" v-model.number="maxPixels" />
       <input multiple="false" type="file" id="texture-selector" @change="handleFileChange" />
       <label for="texture-selector" class="cute-upload-btn">{{ uploadText }}</label>
     </div>

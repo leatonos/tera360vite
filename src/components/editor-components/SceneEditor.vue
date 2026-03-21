@@ -61,9 +61,14 @@ const compressedImage = async (file: File): Promise<File> => {
   };
   try {
     const compressedFile = await imageCompression(file, options);
+    console.log('Compression sucessful')
+    console.log('File Size: ')
+    console.log(file.size)
     return compressedFile;
   } catch (error) {
     console.error("Error compressing image:", error);
+    console.log('File Size: ')
+    console.log(file.size)
     return file; // Return original file if compression fails
   }
 };
@@ -75,8 +80,6 @@ const handleFileChange = async (event: Event) => {
   
   const currentBackground = props.thisScene.background;
   const standardBackground = "https://cdn.aframe.io/360-image-gallery-boilerplate/img/cubes.jpg";
-
-  console.log(currentBackground != standardBackground);
 
   if (currentBackground != standardBackground){
     //Delete old background from S3

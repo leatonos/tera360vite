@@ -113,8 +113,8 @@ onMounted(async ()=>{
 .main-container{
   display: flex;
   flex-direction: row;
-  width: 100vw;
-  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
 }
 .tuor-editor{
   background-color: white;

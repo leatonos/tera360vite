@@ -53,23 +53,27 @@ const deleteImage = async(awsKey:string) => {
 } catch (error) {console.error("Error deleting old background:", error);
 }}
 
+const bytesToMB = (bytes: number) => bytes / (1024 * 1024);
+
 const compressedImage = async (file: File): Promise<File> => {
   const options = {
     maxSizeMB: maxImageSize.value,
     maxWidthOrHeight: maxPixels.value,
     useWebWorker: true
   };
+
   try {
     const compressedFile = await imageCompression(file, options);
-    console.log('Compression sucessful')
-    console.log('File Size: ')
-    console.log(file.size)
+
+    console.log('Compression successful');
+    console.log('Original size (MB):', bytesToMB(file.size).toFixed(2));
+    console.log('Compressed size (MB):', bytesToMB(compressedFile.size).toFixed(2));
+
     return compressedFile;
   } catch (error) {
     console.error("Error compressing image:", error);
-    console.log('File Size: ')
-    console.log(file.size)
-    return file; // Return original file if compression fails
+    console.log('Original size (MB):', bytesToMB(file.size).toFixed(2));
+    return file;
   }
 };
 
@@ -211,8 +215,6 @@ async function createThumbnail(){
 
 </script>
 
-
-
 <template>
   <div class="editor">
    
@@ -235,8 +237,7 @@ async function createThumbnail(){
       @change="(e: Event) => handleRotation((e.target as HTMLInputElement).value)"
       >
     </div>
-
-     <!-- Background Upload -->
+    <!-- Background Upload -->
     <div  class="form-group upload-group">
       <label for="imageMaxSize">Image Max Size:</label>
       <input id="imageMaxSize" type="number" v-model.number="maxImageSize" />
@@ -245,7 +246,6 @@ async function createThumbnail(){
       <input multiple="false" type="file" id="texture-selector" @change="handleFileChange" />
       <label for="texture-selector" class="cute-upload-btn">{{ uploadText }}</label>
     </div>
-
     <!-- Actions -->
     <div class="actions">
       <button class="btn" @click="addCircleAction(thisSceneIndex)">Add new circle</button>
@@ -256,7 +256,6 @@ async function createThumbnail(){
       <h3 class="white-text">Thumbnail</h3>
       <img class="thumbnail" v-if="thumbnail" :src="thumbnail"/>
     </div>
-  
   </div>
 </template>
 

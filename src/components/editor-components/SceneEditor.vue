@@ -108,6 +108,7 @@ const handleFileChange = async (event: Event) => {
       uploadText.value = "Upload Background"
       uploading.value = false
       store.setSceneBackground(sceneIndex.value, imageUrl);
+      store.setBackgroundSize(sceneIndex.value, compressedFile.size);
       console.log("Scene background updated in store.");
       console.log("Current scene data:", store.$state.tour.scenes[sceneIndex.value]);
     }
@@ -239,6 +240,7 @@ async function createThumbnail(){
     </div>
     <!-- Background Upload -->
     <div  class="form-group upload-group">
+      <h3>Current Image Size: {{ props.thisScene.backGroundSize }}</h3>
       <label for="imageMaxSize">Image Max Size:</label>
       <input id="imageMaxSize" type="number" v-model.number="maxImageSize" />
       <label for="imageMaxRes">Image Max Resolution:</label>

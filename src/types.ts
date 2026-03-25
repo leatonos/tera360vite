@@ -4,11 +4,12 @@ export interface SceneInfo {
     id: string; // Unique identifier for the Scene
     name: string;
     background: string;
+    backGroundSize?:number;
     thumbnail?: string | null;
     rotation: number;
     circles: CircleInfo[];
     spheres: SphereInfo[];
-}
+} 
 
 export interface Tour {
     _id: string; // Unique identifier for the Tour

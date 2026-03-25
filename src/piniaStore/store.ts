@@ -140,6 +140,10 @@ export const useTourStore = defineStore('tour', () => {
         tour.value.scenes[sceneIndex].background = background;
     };
 
+    const setBackgroundSize = (sceneIndex: number, size: number) =>{
+        tour.value.scenes[sceneIndex].backGroundSize = size
+    }
+
     const setSceneThumbnail = (sceneIndex: number, thumbnail: string) => {
         tour.value.scenes[sceneIndex].thumbnail = thumbnail;
     };
@@ -171,6 +175,7 @@ export const useTourStore = defineStore('tour', () => {
         editCircle,
         editSphere,
         setSceneBackground,
+        setBackgroundSize,
         setSceneThumbnail,
         setCircleActionArgs,
         tourState,

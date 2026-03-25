@@ -214,6 +214,10 @@ async function createThumbnail(){
 
 }
 
+function bytesToMB(bytes, decimals = 2) {
+  return parseFloat((bytes / (1024 * 1024)).toFixed(decimals));
+}
+
 </script>
 
 <template>
@@ -240,7 +244,7 @@ async function createThumbnail(){
     </div>
     <!-- Background Upload -->
     <div  class="form-group upload-group">
-      <h3>Current Image Size: {{ props.thisScene.backGroundSize }}</h3>
+      <h3>Current Image Size: {{ bytesToMB(props.thisScene.backGroundSize) }}</h3>
       <label for="imageMaxSize">Image Max Size:</label>
       <input id="imageMaxSize" type="number" v-model.number="maxImageSize" />
       <label for="imageMaxRes">Image Max Resolution:</label>

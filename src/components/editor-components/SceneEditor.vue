@@ -53,7 +53,9 @@ const deleteImage = async(awsKey:string) => {
 } catch (error) {console.error("Error deleting old background:", error);
 }}
 
-const bytesToMB = (bytes: number) => bytes / (1024 * 1024);
+function bytesToMB(bytes?: number, decimals = 2): number {
+  return parseFloat(((bytes ?? 0) / (1024 ** 2)).toFixed(decimals));
+}
 
 const compressedImage = async (file: File): Promise<File> => {
   const options = {
@@ -214,9 +216,7 @@ async function createThumbnail(){
 
 }
 
-function bytesToMB(bytes, decimals = 2) {
-  return parseFloat((bytes / (1024 * 1024)).toFixed(decimals));
-}
+
 
 </script>
 

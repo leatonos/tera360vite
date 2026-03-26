@@ -94,7 +94,7 @@ h1 {
 
 .scene-thumbnail {
   width: 100%;
-  height: 180px;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -144,7 +144,7 @@ h1 {
   }
 
   .scene-thumbnail {
-    height: 160px;
+    height: 100%;
   }
 }
 
@@ -167,7 +167,7 @@ h1 {
 
   .scene-thumbnail {
     width: 50%;
-    height: 120px;
+    height: 100%;
   }
 
   .text_container {

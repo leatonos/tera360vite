@@ -75,6 +75,7 @@ h1 {
   flex: 0 0 45%;             /* card takes 85% of screen width */
   max-width: 320px;          /* prevents huge cards on large phones */
   max-height: 90px;
+
   display: flex;
   flex-direction: column;
 
@@ -138,6 +139,7 @@ h1 {
   .list_item {
     min-width: 280px;
     flex-shrink: 0;
+    max-height: 100%;
   }
 
   .scene-thumbnail {

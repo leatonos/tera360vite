@@ -140,7 +140,6 @@ h1 {
     min-width: 280px;
     flex-shrink: 0;
     max-height: none;
-    min-height: 100%;
   }
 
   .scene-thumbnail {
@@ -167,7 +166,6 @@ h1 {
 
   .scene-thumbnail {
     width: 50%;
-    height: 100%;
   }
 
   .text_container {

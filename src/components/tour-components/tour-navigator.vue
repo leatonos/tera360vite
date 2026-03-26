@@ -43,7 +43,7 @@ const selectScene = (scene: SceneInfo, index: number) => {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%; /* safer than 100vh on mobile */
+  height: 100%;
   background-color: #242424;
 }
 
@@ -59,7 +59,7 @@ h1 {
 }
 
 .scenes-list {
-  flex: 1;
+  flex: 0 1 100%;       
   padding: 1rem;
   display: flex;
   flex-direction: row;       /* horizontal */
@@ -72,10 +72,9 @@ h1 {
 
 /* Scene Card */
 .list_item {
-  flex: 0 0 45%;             /* card takes 85% of screen width */
-  max-width: 320px;          /* prevents huge cards on large phones */
-  max-height: 90px;
-
+  flex: 0 0 100%;             /* card takes 85% of screen width */
+  max-width: 160px;          /* prevents huge cards on large phones */
+ 
   display: flex;
   flex-direction: column;
 
@@ -85,6 +84,7 @@ h1 {
 
   scroll-snap-align: start;
   transition: transform 0.2s ease, background 0.2s ease;
+  cursor: pointer;
 }
 
 .list_item:hover {
@@ -94,7 +94,7 @@ h1 {
 
 .scene-thumbnail {
   width: 100%;
-  height: 100%;
+  height: 500px;
   object-fit: cover;
 }
 
@@ -132,14 +132,14 @@ h1 {
   }
 
   .tour-navigator-header {
-  padding: 1rem;
-  padding-bottom:1rem;
-}
+    padding: 1rem;
+    padding-bottom:1rem;
+  }
 
   .list_item {
     min-width: 280px;
+    max-width: 320px;
     flex-shrink: 0;
-    max-height: none;
   }
 
   .scene-thumbnail {
@@ -154,27 +154,130 @@ h1 {
 @media (min-width: 1024px) {
 
   .scenes-list {
+     flex: 1 1 100%;
     flex-direction: column;
-    overflow-y: auto;
+    gap: 0.75rem;
   }
 
   .list_item {
-    flex: auto;
+    flex: 1 1 100%;
     flex-direction: row;
-    align-items: center;
+    align-items: stretch;
+    min-height: 120px;
+    max-height: 140px;
+    margin-bottom: 0;
+  }
+
+  .list_item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
   .scene-thumbnail {
-    width: 50%;
+    width: 140px;
+    height: 100%;
+    flex-shrink: 0;
+    object-fit: cover;
   }
 
   .text_container {
-    width: 50%;
+    flex: 1;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   .scene-name {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    font-weight: 500;
   }
+
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+/* ------------------ */
+/* Large Desktop (≥ 1440px) */
+/* ------------------ */
+
+@media (min-width: 1440px) {
+  
+  .tour-navigator-header {
+    padding: 1.5rem;
+  }
+
+  .scenes-list {
+    padding: 1rem;
+  }
+
+  .list_item {
+    min-height: 140px;
+    max-height: 160px;
+  }
+
+  .scene-thumbnail {
+    width: 160px;
+  }
+
+  .text_container {
+    padding: 1.5rem 2rem;
+  }
+
+  .scene-name {
+    font-size: 1.3rem;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+  }
+}
+
+/* ------------------ */
+/* Accessibility & Motion */
+/* ------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .list_item {
+    transition: none;
+  }
+}
+
+/* Focus states for keyboard navigation */
+.list_item:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Loading states */
+.scene-thumbnail[src=""] {
+  background-color: #404040;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scene-thumbnail[src=""]:after {
+  content: "Loading...";
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* Active scene indicator */
+.list_item.active {
+  background-color: #1a5490;
+  border: 2px solid #007bff;
+}
+
+.list_item.active:hover {
+  background-color: #1e5ba8;
+}
+
+/* Error states */
+.scene-thumbnail[alt*="error"] {
+  background-color: #4a2424;
+  color: #ff6b6b;
 }
 
 </style>

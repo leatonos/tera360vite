@@ -139,7 +139,8 @@ h1 {
   .list_item {
     min-width: 280px;
     flex-shrink: 0;
-    max-height: 100%;
+    max-height: none;
+    min-height: 100%;
   }
 
   .scene-thumbnail {

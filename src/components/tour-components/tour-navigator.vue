@@ -74,7 +74,7 @@ h1 {
 .list_item {
   flex: 0 0 45%;             /* card takes 85% of screen width */
   max-width: 320px;          /* prevents huge cards on large phones */
-
+  max-height: 50px;
   display: flex;
   flex-direction: column;
 

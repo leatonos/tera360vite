@@ -14,7 +14,6 @@ import FullscreenIcon from '../assets/fullscreen.svg';
 import ReverseFullscreenIcon from '../assets/fullscreen_reverse.svg';
 import PanIcon from '../assets/3d.svg'; 
 import TourThreeSix from '../assets/360-view.svg'
-import { set } from '@tresjs/core/utils';
 
 const apiUrl = import.meta.env.VITE_API;
 const route = useRoute();
@@ -24,9 +23,7 @@ const loading = ref(true);
 const loadingText = ref("");
 const cornerIcon = ref(FullscreenIcon);
 const leftCornerIcon = ref(PanIcon);
-const showRetry = ref(false);
-
-const loadingMessage = ref("");
+//const showRetry = ref(false);
 
 const arrowText = ref("<");
 const isOpen = ref(true);

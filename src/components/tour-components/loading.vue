@@ -19,9 +19,9 @@ const props = defineProps<{
     <div class="loader"></div>
 
     <!-- Show progress only if provided -->
-    <div v-if="props.loadingProgress" class="progress-text">{{ props.loadingProgress }}%</div>
     <div v-if="props.message" class="message-text">{{ props.message }}</div>
-    
+    <div v-if="props.loadingProgress" class="progress-text">{{ props.loadingProgress }}%</div>
+
   </div>
 </template>
 
@@ -59,10 +59,13 @@ const props = defineProps<{
   }
 }
 
-.progress-text {
+.progress-text, .message-text {
   margin-top: 16px;
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #333;
   font-weight: 500;
+  text-align: center;
+  padding: 0 50px;
 }
+
 </style>

@@ -25,6 +25,7 @@ const textures = ref<Record<string, THREE.Texture>>({});
 const currentTexture = ref(null as THREE.Texture|null);
 const loadingTexture = ref(true);
 const loadingProgress = ref(0);
+const loadingText = ref("");
 const isFading = ref(false)
 const cameraSpeed = ref(-0.2)
 const isTouch = ref(false);
@@ -90,12 +91,15 @@ onMounted(async () => {
   
   // Preload all textures and tracks loading progress
   try {
+  loadingText.value = "Loading images...";
   const loadAllTexturesResult = await loadAllTextures(allBackgrounds, (percent) => {
     loadingProgress.value = percent;
   });
+    loadingText.value = "Images loaded!";
     textures.value = loadAllTexturesResult;
   } catch (err) {
     // show an error state to the user if needed
+    loadingText.value = `Failed to load images: ${JSON.stringify(err)}`;
     console.error("Failed to load textures after retries:", err);
   }
 
@@ -313,7 +317,7 @@ function updateCamera() {
   
   <div class="canvas-wrapper" ref="canvasElement" :class="{ fadeOut: isFading }">
     <div v-if="loadingTexture" class="loading-screen">
-      <LoadingAnimation :loadingProgress="loadingProgress"/>
+      <LoadingAnimation :loadingProgress="loadingProgress" :message="loadingText" />
     </div>
     <TresCanvas :preserveDrawingBuffer="true" preset="realistic" clearColor="#ffffff" :antialias="true">    
       <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="10000" :fov="cameraFOV" />

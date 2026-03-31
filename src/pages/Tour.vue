@@ -90,7 +90,7 @@ onMounted(async () => {
     const result = await getTour(tourId);
     if (result.success) {
       console.log("Tour data fetched:");
-      console.table(result.data.scenes);
+      console.log(result);
       store.setTour(result.data);
       loading.value = false;
       break;
@@ -102,25 +102,38 @@ onMounted(async () => {
   }
 });
 
+
+/**
+ * Loads tour data from the API using the provided tour ID.
+ * @param id 
+ */
 async function getTour(id: string): Promise<{ success: true; data: Tour } | { success: false; error: string }> {
   console.log("Fetching tour with ID:", id);
-  const response = await fetch(`${apiUrl}/tour/${id}`);
-  const responseData = await response.json();
-  if (response.ok) {
-    return { success: true, data: responseData.tour as Tour };
+  try {
+    const response = await fetch(`${apiUrl}/tour/${id}`);
+    const responseData = await response.json();
+    if (response.ok) {
+      console.log("Tour data received from API:", responseData);
+      return { success: true, data: responseData as Tour };
+    }
+    const error = responseData.message || 'Unknown error';
+    console.error("Failed to fetch tour data:", error);
+    return { success: false, error };
+  } catch (err) {
+    console.error("Network error:", err);
+    return { success: false, error: 'Network error. Check your connection.' };
   }
-  const error = responseData.message || 'Unknown error';
-  console.error("Failed to fetch tour data:", error);
-  return { success: false, error };
 }
 
 </script>
 
 <template>
   <div ref="box" class="main-container">
+    <!-- Loading Screen -->
     <template v-if="loading">
       <LoadingAnimation :message="loadingText" />
     </template>
+     <!-- This Part only appears when data is available -->
     <template v-else>
       <!-- Sidebar -->
       <div class="tour-navigator-container" :class="{ open: isOpen }" ref="navigator">

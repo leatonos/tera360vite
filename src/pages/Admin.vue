@@ -24,10 +24,11 @@ onMounted( async()=>{
     
     const allToursAPIRequest = await fetch(`${apiUrl}/all-tours`);
     const allToursAPIResponse = await allToursAPIRequest.json();
+    
     console.log("All tours fetched from API:", allToursAPIResponse);
+    
     allTours.value = allToursAPIResponse.tours
     isLoading.value = false
-   
     authenticated.value = await validateSession()
 
 })
@@ -41,9 +42,7 @@ const loginAction = async (event: Event) => {
     try {
         const response = await fetch(`${apiUrl}/login`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: {"Content-Type": "application/json"},
             credentials: "include",
             body: raw,
         });

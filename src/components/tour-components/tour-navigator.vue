@@ -35,9 +35,9 @@ const selectScene = (scene: SceneInfo, index: number) => {
 
 <style scoped>
 
-/* ------------------ */
+/* ------------------- */
 /* Base (Mobile First) */
-/* ------------------ */
+/* ------------------- */
 
 .tour-navigator {
   display: flex;

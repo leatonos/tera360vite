@@ -3,16 +3,18 @@ import Scene from '../components/3d-components/Scene.vue';
 import { useRoute, useRouter } from "vue-router";
 import { onMounted, ref } from 'vue';
 import type { Tour } from '../types';
+import { storeToRefs } from "pinia";
 import { useTourStore } from '../piniaStore/store';
+
 import LoadingAnimation from '../components/tour-components/loading.vue';
 import SketchfabViewer from '../components/3d-components/SketchfabViewer.vue';
-
 import teraLogoWhite from '../assets/teraLogoBranco.svg';
 import TourNavigator from '../components/tour-components/tour-navigator.vue';
 import FullscreenIcon from '../assets/fullscreen.svg';
 import ReverseFullscreenIcon from '../assets/fullscreen_reverse.svg';
 import PanIcon from '../assets/3d.svg'; 
 import TourThreeSix from '../assets/360-view.svg'
+import { set } from '@tresjs/core/utils';
 
 const apiUrl = import.meta.env.VITE_API;
 const route = useRoute();
@@ -21,14 +23,16 @@ const store = useTourStore();
 const loading = ref(true);
 const loadingText = ref("");
 const cornerIcon = ref(FullscreenIcon);
-const leftCornerIcon = ref(PanIcon)
+const leftCornerIcon = ref(PanIcon);
+const showRetry = ref(false);
+
+const loadingMessage = ref("");
 
 const arrowText = ref("<");
 const isOpen = ref(true);
 const tourId = route.params.tourId as string | undefined;
 const isFullscreen = ref(false);
 const sceneKey = ref(0)
-import { storeToRefs } from "pinia";
 
 
 const box = ref<HTMLElement | null>(null);
@@ -60,13 +64,6 @@ function toogleTourView(){
   }
 }
 
-async function getTour(id: string) {
-  console.log("Fetching tour with ID: ", id);
-  const response = await fetch(`${apiUrl}/tour/${id}`);
-  return await response.json();
-}
-
-
 onMounted(() => {
   document.addEventListener("fullscreenchange", () => {
     isFullscreen.value = !!document.fullscreenElement
@@ -77,7 +74,7 @@ onMounted(() => {
     sceneKey.value++
   })
 })
-
+ 
 function toggleNavigator() {
   isOpen.value = !isOpen.value;
   arrowText.value = isOpen.value ? "<" : ">";
@@ -86,22 +83,43 @@ function toggleNavigator() {
 onMounted(async () => {
   if (!tourId) {
     router.replace({ path: `/` });
-  } else {
-    const tourData: Tour = await getTour(tourId);
-    loadingText.value = `Loading tour: ${tourId}...`;
-    console.log("Tour data fetched:");
-    console.table(tourData.scenes);
-    store.setTour(tourData);
-    loading.value = false;
+    return;
+  }
+  while (true) {
+    loadingText.value = `Loading tour data...`;
+    const result = await getTour(tourId);
+    if (result.success) {
+      console.log("Tour data fetched:");
+      console.table(result.data.scenes);
+      store.setTour(result.data);
+      loading.value = false;
+      break;
+    }
+    for (let i = 5; i > 0; i--) {
+      loadingText.value = `${result.error} Retrying in ${i}...`;
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
 });
+
+async function getTour(id: string): Promise<{ success: true; data: Tour } | { success: false; error: string }> {
+  console.log("Fetching tour with ID:", id);
+  const response = await fetch(`${apiUrl}/tour/${id}`);
+  const responseData = await response.json();
+  if (response.ok) {
+    return { success: true, data: responseData.tour as Tour };
+  }
+  const error = responseData.message || 'Unknown error';
+  console.error("Failed to fetch tour data:", error);
+  return { success: false, error };
+}
 
 </script>
 
 <template>
   <div ref="box" class="main-container">
     <template v-if="loading">
-      <LoadingAnimation />
+      <LoadingAnimation :message="loadingText" />
     </template>
     <template v-else>
       <!-- Sidebar -->

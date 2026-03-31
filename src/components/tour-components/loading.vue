@@ -3,6 +3,7 @@ import { DotLottieVue } from '@lottiefiles/dotlottie-vue';
 
 const props = defineProps<{
   loadingProgress?: number | null;
+  message?: string;
 }>();
 
 
@@ -19,6 +20,8 @@ const props = defineProps<{
 
     <!-- Show progress only if provided -->
     <div v-if="props.loadingProgress" class="progress-text">{{ props.loadingProgress }}%</div>
+    <div v-if="props.message" class="message-text">{{ props.message }}</div>
+    
   </div>
 </template>
 

@@ -316,16 +316,13 @@ function updateCamera() {
       <LoadingAnimation :loadingProgress="loadingProgress"/>
     </div>
     <TresCanvas :preserveDrawingBuffer="true" preset="realistic" clearColor="#ffffff" :antialias="true">    
-      <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="10000
-      
-      " :fov="cameraFOV" />
+      <TresPerspectiveCamera ref="cameraRef" :position="[0,0,0.5]" :far="10000" :fov="cameraFOV" />
       <CameraControls 
         @end="updateCamera" 
         :maxDistance="3"
         :azimuthRotateSpeed="cameraSpeed"
         :polarRotateSpeed="cameraSpeed"
-        />
-
+      />
       <!-- Skybox -->
       <TresMesh color="#ffffff" :position="[0,0,0]" :scale="[-30, 30, 30]" :rotation="[0,rotationRad,0]">
         <TresSphereGeometry :args="[1,100,100]" />

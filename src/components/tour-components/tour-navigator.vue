@@ -151,7 +151,7 @@ h1 {
 /* Desktop (≥ 1024px) */
 /* ------------------ */
 
-@media (min-width: 1024px) {
+@media (min-width: 769px) {
 
   .scenes-list {
      flex: 1 1 100%;

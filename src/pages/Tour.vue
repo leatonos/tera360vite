@@ -5,11 +5,12 @@ import { onMounted, ref } from 'vue';
 import type { Tour } from '../types';
 import { storeToRefs } from "pinia";
 import { useTourStore } from '../piniaStore/store';
-
+//Component Imports
 import LoadingAnimation from '../components/tour-components/loading.vue';
 import SketchfabViewer from '../components/3d-components/SketchfabViewer.vue';
-import teraLogoWhite from '../assets/teraLogoBranco.svg';
 import TourNavigator from '../components/tour-components/tour-navigator.vue';
+//Image Imports
+import teraLogoWhite from '../assets/teraLogoBranco.svg';
 import FullscreenIcon from '../assets/fullscreen.svg';
 import ReverseFullscreenIcon from '../assets/fullscreen_reverse.svg';
 import PanIcon from '../assets/3d.svg'; 
@@ -71,11 +72,6 @@ onMounted(() => {
     sceneKey.value++
   })
 })
- 
-function toggleNavigator() {
-  isOpen.value = !isOpen.value;
-  arrowText.value = isOpen.value ? "<" : ">";
-}
 
 onMounted(async () => {
   if (!tourId) {
@@ -98,6 +94,11 @@ onMounted(async () => {
     }
   }
 });
+
+function toggleNavigator() {
+  isOpen.value = !isOpen.value;
+  arrowText.value = isOpen.value ? "<" : ">";
+}
 
 
 /**
@@ -259,7 +260,7 @@ async function getTour(id: string): Promise<{ success: true; data: Tour } | { su
   position: fixed;
   top: 20px;
   right: 20px;
-  width: 150px;
+  width: 60px;
   height: auto;
   z-index: 10;
 }
@@ -364,7 +365,7 @@ async function getTour(id: string): Promise<{ success: true; data: Tour } | { su
   #icone-superior {
     top: 20px;
     left: 20px;
-    width: 60px;
+    width: 40px;
   }
 }
 

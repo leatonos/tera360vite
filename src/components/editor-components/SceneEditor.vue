@@ -115,18 +115,22 @@ const handleFileChange = async (event: Event) => {
       console.log("Scene background updated in store.");
       console.log("Current scene data:", store.$state.tour.scenes[sceneIndex.value]);
       
-      const storeState = store.$state
-      const tourIdentifier = storeState.tour._id
-      const tourData = storeState.tour
-      const saveResult = await saveData(tourData, tourIdentifier)
-      if(saveResult){
-        console.log("Tour data saved successfully after background update.");
-      } else {
-        console.error("Failed to save tour data after background update.");
-      }
+      await autoSave()
     }
   }
 };
+
+const autoSave = async() =>{
+  const storeState = store.$state
+  const tourIdentifier = storeState.tour._id
+  const tourData = storeState.tour
+  const saveResult = await saveData(tourData, tourIdentifier)
+  if(saveResult){
+    console.log("Tour data auto-saved successfully.");
+  } else {
+    console.error("Failed to auto-save tour data.");
+   }
+  }
 
 const uploadToS3 = async(file: File, tourId: string, sceneId: string) => {
   try {
@@ -221,6 +225,7 @@ async function createThumbnail(){
 
     if(imageUrl){
       store.setSceneThumbnail(thisSceneIndex.value,imageUrl)
+      await autoSave()
     }
 
  }, 'image/jpeg', 0.7);

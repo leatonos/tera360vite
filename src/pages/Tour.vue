@@ -16,7 +16,10 @@ import ReverseFullscreenIcon from '../assets/fullscreen_reverse.svg';
 import PanIcon from '../assets/3d.svg'; 
 import TourThreeSix from '../assets/360-view.svg'
 
-const apiUrl = import.meta.env.VITE_API;
+//API URL
+//const apiUrl = import.meta.env.VITE_API;
+const apiUrl = "https://teraserver-production.up.railway.app/";
+
 const route = useRoute();
 const router = useRouter();
 const store = useTourStore();
@@ -108,6 +111,7 @@ function toggleNavigator() {
 async function getTour(id: string): Promise<{ success: true; data: Tour } | { success: false; error: string }> {
   console.log("Fetching tour with ID:", id);
   try {
+    console.log(`Making API request to: Railway`);
     const response = await fetch(`${apiUrl}/tour/${id}`);
     const responseData = await response.json();
     if (response.ok) {

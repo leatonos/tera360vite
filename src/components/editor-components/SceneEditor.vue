@@ -5,6 +5,7 @@ import type { SceneInfo } from "../../types";
 import imageCompression from "browser-image-compression";
 
 import { computed, ref } from 'vue';
+import { saveData } from "../../utilis/saveData";
 
 //Props
 const props = defineProps<{
@@ -113,6 +114,16 @@ const handleFileChange = async (event: Event) => {
       store.setBackgroundSize(sceneIndex.value, compressedFile.size);
       console.log("Scene background updated in store.");
       console.log("Current scene data:", store.$state.tour.scenes[sceneIndex.value]);
+      
+      const storeState = store.$state
+      const tourIdentifier = storeState.tour._id
+      const tourData = storeState.tour
+      const saveResult = await saveData(tourData, tourIdentifier)
+      if(saveResult){
+        console.log("Tour data saved successfully after background update.");
+      } else {
+        console.error("Failed to save tour data after background update.");
+      }
     }
   }
 };

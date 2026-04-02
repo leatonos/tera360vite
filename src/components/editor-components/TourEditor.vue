@@ -6,8 +6,7 @@ import SceneEditor from "./SceneEditor.vue";
 import CircleEditor from "./CircleEditor.vue";
 import type { CircleInfo, SceneInfo } from "../../types";
 import { storeToRefs } from "pinia";
-
-const apiUrl:string = import.meta.env.VITE_API
+import { saveData } from "../../utilis/saveData";
 
 //Store
 const store = useTourStore()
@@ -39,45 +38,6 @@ const selectCircle = (circle:CircleInfo, index:number) =>{
     selectedCircleIndex.value = index
 }
 
-const save = async() =>{
-    
-  const itemId = store.$state.tour._id
-  const updateData = store.$state.tour
-  savingText.value = "Saving..."
-
-  // Get username from localStorage
-  const username = localStorage.getItem("username")
-
-  // Add it into the data you send
-  const payload = {
-    ...updateData,
-    user_name: username
-  }
-
-  try {
-    const response = await fetch(`${apiUrl}/update/${itemId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-      credentials: "include"
-    })
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status}`)
-    }else{
-      savingText.value = "Save"
-    }
-
-    const updatedDoc = await response.json()
-    console.log("Updated document:", updatedDoc)
-  } catch (err) {
-    console.error("Update failed:", err)
-  }
-    
-}
-
 const toogleView = () =>{
    if(tourState.value == "360Tour"){
     store.setTourState("3DView")
@@ -94,6 +54,12 @@ const handleNameChange = (value:string) =>{
 
 const handleLinkChange = (value:string) =>{
   store.setIframeLink(value)
+}
+
+const save = async() =>{
+    savingText.value = "Saving..."
+    await saveData(store.$state.tour, store.$state.tour._id)
+    savingText.value = "Save"
 }
 
 </script>

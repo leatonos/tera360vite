@@ -17,8 +17,8 @@ import PanIcon from '../assets/3d.svg';
 import TourThreeSix from '../assets/360-view.svg'
 
 //API URL
-const apiUrl = import.meta.env.VITE_API;
-//const apiUrl = "https://teraserver-production.up.railway.app";
+//const apiUrl = import.meta.env.VITE_API;
+const apiUrl = "https://teraserver-production.up.railway.app";
 
 const route = useRoute();
 const router = useRouter();

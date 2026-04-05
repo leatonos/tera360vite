@@ -18,7 +18,7 @@ import TourThreeSix from '../assets/360-view.svg'
 
 //API URL
 //const apiUrl = import.meta.env.VITE_API;
-const apiUrl = "https://teraserver-production.up.railway.app";
+const apiUrl = "https://server.tera.arq.br/";
 
 const route = useRoute();
 const router = useRouter();

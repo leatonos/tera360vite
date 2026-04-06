@@ -111,7 +111,7 @@ function toggleNavigator() {
 async function getTour(id: string): Promise<{ success: true; data: Tour } | { success: false; error: string }> {
   console.log("Fetching tour with ID:", id);
   try {
-    console.log(`Making API request to: Railway`);
+    console.log(`Making API request to: Railway Server`);
     const response = await fetch(`${apiUrl}/tour/${id}`);
     const responseData = await response.json();
     if (response.ok) {
